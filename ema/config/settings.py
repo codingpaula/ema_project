@@ -11,9 +11,18 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+from unipath import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# unipath: for global settings file use .ancestor(2), for settings directory
+# use .ancestor(2)
+BASE_DIR = Path(__file__).ancestor(2)
+MEDIA_ROOT = BASE_DIR.child("media")
+STATIC_ROOT = BASE_DIR.child("static")
+STATICFILES_DIRS = (
+    BASE_DIR.child("assets"),
+)
+# os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'matrix',
+    'profiles',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -50,12 +61,12 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ema_project.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': (BASE_DIR.child("templates"),),
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,7 +79,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ema_project.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
@@ -76,8 +87,12 @@ WSGI_APPLICATION = 'ema_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'eisen',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
