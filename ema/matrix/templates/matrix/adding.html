@@ -1,0 +1,11 @@
+<h1>Add a task to the topic "{{ topic.topic_name }}"</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'matrix:adding' topic.id %}" method="post">
+  {% csrf_token %}
+  {# <input type="text" name="name" id={{}}
+  <label for=#}
+
+  <input type="submit" value="add task" />
+</form>

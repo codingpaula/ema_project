@@ -3,13 +3,24 @@ from __future__ import unicode_literals
 from django.db import models
 
 # Create your models here.
-class Topic(models.Model):
+class TimeStampedModel(models.Model):
+    """
+    An abstract base class model that provides self-updating ''created''
+    and ''modified'' fields.
+    """
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class Topic(TimeStampedModel):
     topic_name = models.CharField(max_length=30)
     topic_description = models.TextField()
     def __unicode__(self):
         return self.topic_name
 
-class Task(models.Model):
+class Task(TimeStampedModel):
     task_name = models.CharField(max_length=200)
     task_description = models.TextField()
     topic = models.ForeignKey(Topic)
@@ -26,7 +37,6 @@ class Task(models.Model):
     importance = models.CharField(max_length=1,
                                 choices=IMPORTANCE_OPTIONS,
                                 default=LESS_IMPORTANT)
-    date_created = models.DateField(auto_now=False, auto_now_add=True)
-    date_complete = models.DateField(auto_now=False, auto_now_add=False)
+    due_date = models.DateField(auto_now=False, auto_now_add=False)
     def __unicode__(self):
         return self.task_name

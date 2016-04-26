@@ -1,0 +1,10 @@
+<h1>Topics</h1>
+{% if latest_topic_list %}
+  <ul>
+    {% for topic in latest_topic_list %}
+      <li><a href={% url 'matrix:topics' topic.id %}>{{ topic.topic_name }}</a></li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No topics are available.</p>
+{% endif %}

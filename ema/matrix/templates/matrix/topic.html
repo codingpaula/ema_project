@@ -1,0 +1,14 @@
+<h1>{{ topic.topic_name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+{% if topic.task_set.count > 0 %}
+  <ul>
+    {% for task in topic.task_set.all %}
+      <li><a href={% url 'matrix:tasks' task.id %}>{{ task.task_name }}</a></li>
+    {% endfor %}
+    <li><a href={% url 'matrix:adding' topic.id %}>+</a></li>
+  </ul>
+{% else %}
+  <a href={% url 'matrix:adding' topic.id %}>add a task to the topic {{ topic.topic_name }}</a>
+{% endif %}
