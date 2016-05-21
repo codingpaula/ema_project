@@ -18,9 +18,9 @@ from unipath import Path
 # use .ancestor(2)
 BASE_DIR = Path(__file__).ancestor(2)
 MEDIA_ROOT = BASE_DIR.child("media")
-STATIC_ROOT = BASE_DIR.child("static")
+STATIC_ROOT = BASE_DIR.child("staticfiles")
 STATICFILES_DIRS = (
-    BASE_DIR.child("assets"),
+    BASE_DIR.child("static"),
 )
 # os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

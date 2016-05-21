@@ -4,8 +4,8 @@
 
 <form action="{% url 'matrix:adding' topic.id %}" method="post">
   {% csrf_token %}
-  {# <input type="text" name="name" id={{}}
-  <label for=#}
+
+  {{ form }}
 
   <input type="submit" value="add task" />
 </form>

@@ -4,7 +4,9 @@
     {% for topic in latest_topic_list %}
       <li><a href={% url 'matrix:topics' topic.id %}>{{ topic.topic_name }}</a></li>
     {% endfor %}
+    <li><a href={% url 'matrix:addtopic' %}>+</a></li>
   </ul>
 {% else %}
   <p>No topics are available.</p>
+  <p>Add a new topic <a href={% url 'matrix:addtopic' %}>here</a>.</p>
 {% endif %}

@@ -17,12 +17,16 @@ Including another URLconf
 
 from __future__ import absolute_import
 
+from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.conf.urls.static import static
 
 from matrix import urls as matrix_urls
+from profiles import urls as profile_urls
 
 urlpatterns = [
+    url(r'^account/', include(profile_urls, namespace="profiles")),
     url(r'^matrix/', include(matrix_urls, namespace="matrix")),
     url(r'^admin/', include(admin.site.urls)),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

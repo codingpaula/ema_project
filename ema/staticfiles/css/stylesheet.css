@@ -1,0 +1,184 @@
+html, body {
+	font-size: 16px;
+	margin: 0;
+	/* height: 100%; */
+}
+
+body {
+	font-family: "Helvetica Neue", "Verdana", sans-serif;
+	font-weight: 200;
+	font-size: 0.875em;
+	min-height: 100%;
+	position: absolute;
+	right:0;
+	left:0;
+}
+
+footer {
+	width: 99.4%;
+	text-align: right;
+	overflow: hidden;
+	background-color: #DDDDCC;
+	padding: 5px;
+	text-decoration: none;
+	text-transform: uppercase;
+	position: absolute;
+	bottom: 0;
+}
+footer li {
+	display: inline-block;
+	margin: 3px 2%;
+}
+footer p {
+	margin-right: 15px;
+}
+
+/* forms */
+form {
+	text-align: center;
+}
+input {
+	margin: 5px 10px 15px 10px;
+}
+
+/* links */
+a {
+	text-decoration: none;
+}
+a:link {
+	color: #111;
+}
+a:visited {
+	color: #111;
+}
+a:hover {
+	color: #777;
+}
+a:active {
+	color: #777;
+}
+
+p {
+
+}
+
+.main {
+	margin: 10px auto;
+	width: 90%;
+	background-color: #EEE;
+	padding: 20px;
+	/* min-height: 80%; */
+	/* equal to footer height */
+  	margin-bottom: 100px; */
+}
+
+/* buttons */
+.navbar div {
+	display: inline-block;
+	padding: 3px 5px 3px 5px;
+	margin: 3px 3%;
+}
+.gap {
+	margin-left: 18%;
+}
+
+.navbar {
+	width: 99.4%;
+	text-align: center;
+	overflow: hidden;
+	background-color: #DDDDCC;
+	padding: 5px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+.navbar ul {
+	margin: 0 auto;
+}
+
+.add {
+	position: absolute;
+	top: 300px;
+}
+
+.settings {
+
+}
+
+/* stuff to decorate */
+.center {
+	text-align: center;
+}
+.container:after {
+	content:"";
+	display: table;
+	clear: both;
+}
+.container {
+	width: 100%;
+	position: relative;
+}
+.align-left {
+	display: inline-block;
+	width: 94%;
+}
+.align-right {
+	display: inline-block;
+	width: 4%;
+}
+.clear {
+	clear: both;
+}
+.cf:before,
+.cf:after {
+    content:"";
+    display:table;
+}
+.cf:after {
+    clear:both;
+}
+.float-right {
+	float: right;
+}
+.lorem {
+	height: 2500px;
+}
+.now {
+	color: #666;
+}
+.borderR {
+	border: 1px solid red;
+	background-color: white;
+}
+.borderB {
+	border: 1px dashed blue;
+	background-color: white;
+}
+.navbar li {
+	display: inline;
+}
+
+/* IDs */
+#MatrixSettings {
+	display: inline-block;
+	vertical-align: top;
+	width: 17%;
+	border: 1px solid #111;
+	margin: 5px 1%;
+	padding: 2px 1% 5px 1%;
+}
+#MatrixSettings h3 {
+	padding: 3px;
+	border-bottom: 1px solid #777;
+}
+#Topics {
+	/* border-bottom: 1px solid #777; */
+}
+
+#Matrix {
+	display: inline-block;
+	vertical-align: top;
+	width: 73%;
+	border: 1px solid #111;
+	margin: 5px 1%;
+	padding: 10px 1%;
+}

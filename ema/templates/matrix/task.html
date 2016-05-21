@@ -1,0 +1,19 @@
+<h1>{{ task.task_name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<ul>
+  <li><small>Task Description:</small> {{ task.task_description }}</li>
+  <li><small>Topic:</small> {{ task.topic }}</li>
+  <li><small>Importance:</small> {{ task.get_importance_display }}</li>
+  <li><small>Due Date:</small> {{ task.due_date }}</li>
+  <li><small>Task was created:</small> {{ task.created }}</li>
+</ul>
+
+<a href={% url 'matrix:taskediting' task.id %}>
+  <button>Edit this task!</button>
+</a>
+
+<a href={% url 'matrix:adding' task.topic.id %}>
+  <button>Add a new task!</button>
+</a>

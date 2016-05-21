@@ -1,0 +1,43 @@
+{% load staticfiles %}
+<html>
+  <head>
+    <title>
+      {% block title %}Eisenhower Matrix{% endblock title %}
+    </title>
+    {% block stylesheets %}
+      <link rel="stylesheet" type="text/css"
+            href={% static "css/stylesheet.css" %}>
+    {% endblock stylesheets %}
+  </head>
+  <body>
+    <div class="navbar cf">
+      {% block navbar %}
+      <ul>
+				<li><a href={% url 'matrix:matrix' %}><div class="now">EMa</div></a></li>
+				<li><a href={% url 'profiles:account' %}><div>Account</div></a></li>
+				<li><a href="preferences.html"><div>Preferences</div></a></li>
+				<li><a href="help.html"><div>Help</div></a></li>
+				<li class="gap"><a href="signup.html"><div>Sign Up</div></a></li>
+				<li><a href="login.html"><div>Log In</div></a></li>
+			</ul>
+      {% endblock navbar %}
+    </div>
+    {% block content %}
+    {% endblock content %}
+  </body>
+  <footer>
+    {% block footer %}
+      <div>
+        <p>Find us on facebook:</p>
+        <ul>
+          <li>
+            <a href="www.facebook.com/EMatrix">
+              <button>fb</button>
+              <!--img src="glyphis/glyphicons_social/png/social-31-facebook.png"-->
+            </a>
+          </li>
+        </ul>
+      </div>
+    {% endblock footer %}
+  </footer>
+</html>

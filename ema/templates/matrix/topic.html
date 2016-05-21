@@ -10,5 +10,6 @@
     <li><a href={% url 'matrix:adding' topic.id %}>+</a></li>
   </ul>
 {% else %}
-  <a href={% url 'matrix:adding' topic.id %}>add a task to the topic {{ topic.topic_name }}</a>
+  <a href={% url 'matrix:adding' topic.id %}>add a task to the topic
+        {{ topic.topic_name }}</a>
 {% endif %}
