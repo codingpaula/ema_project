@@ -18,10 +18,10 @@
           </div>
           <div>
             {% if all_topics %}
-            <ul>
+            <ul class="noIndentList">
               {% for topic in all_topics %}
-              <li>
-                <a href={% url 'matrix:topics' topic.id %}>
+              <li class="topicList">
+                <a href={% url 'matrix:topics' topic.id %} style="color: {{ topic.color }};">
                   {{ topic.topic_name}}
                 </a>
               </li>
