@@ -1,0 +1,37 @@
+{% block navbar %}
+<div class="navbar">
+  <ul>
+    <li>
+      <!-- https://djangosnippets.org/snippets/2421/ navbar DRY method -->
+      <a href={% url 'matrix:matrix' %}>
+        <div class="{% if active_tab == 'EMA' %}now{% endif %}">EMa</div>
+      </a>
+    </li>
+    <li>
+      <a href={% url 'profiles:account' %}>
+        <div class="{% if active_tab == 'Account' %}now{% endif %}">Account</div>
+      </a>
+    </li>
+    <li>
+      <a href="preferences.html">
+        <div class="{% if active_tab == 'Preferences' %}now{% endif %}">Preferences</div>
+      </a>
+    </li>
+    <li>
+      <a href="help.html">
+        <div class="{% if active_tab == 'Help' %}now{% endif %}">Help</div>
+      </a>
+    </li>
+    <li class="gap">
+      <a href={% url 'profiles:signup' %}>
+        <div class="{% if active_tab == 'Signup' %}now{% endif %}">Sign Up</div>
+      </a>
+    </li>
+    <li>
+      <a href={% url 'profiles:login' %}>
+        <div class="{% if active_tab == 'Login' %}now{% endif %}">Log In</div>
+      </a>
+    </li>
+  </ul>
+</div>
+{% endblock navbar %}

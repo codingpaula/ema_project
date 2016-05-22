@@ -140,14 +140,6 @@ p {
 .clear {
 	clear: both;
 }
-.cf:before,
-.cf:after {
-    content:"";
-    display:table;
-}
-.cf:after {
-    clear:both;
-}
 .float-right {
 	float: right;
 }

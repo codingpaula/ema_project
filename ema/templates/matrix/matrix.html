@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+
 {% block navbar %}
-  {% include "base.html" with active_tab='EMA' %}
+  {% include "navbar.html" with active_tab='EMA' %}
 {% endblock navbar %}
+
 {% block content %}
-  <div class="main">
-    {% block leftside %}
       <div id="MatrixSettings">
         <div id="Topics" class="container">
           <div class="align-left">
@@ -36,18 +36,14 @@
           </div>
         </div>
       </div>
-    {% endblock leftside %}
-    {% block rightside %}
       <div id="Matrix">
         <canvas id="ema" width="900" height="700">
           The Eisenhower Matrix! If you are seeing this text, your browser does
           not support this website. Please update or download Firefox or Opera.
         </canvas>
       </div>
-    {% endblock rightside %}
-  </div>
-  {% block javascript %}
+{% endblock content %}
+{% block javascript %}
     <script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
     <script type="text/javascript" src={% static "js/matrix.js" %}></script>
-  {% endblock javascript %}
-{% endblock content %}
+{% endblock javascript %}

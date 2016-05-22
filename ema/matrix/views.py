@@ -24,9 +24,11 @@ class AddTopicView(View):
         if form.is_valid():
             topic_name = form.cleaned_data['topic_name']
             topic_description = form.cleaned_data['topic_description']
+            color = form.cleaned_data['color']
 
             new_topic = Topic(topic_name = topic_name,
-                                topic_description = topic_description)
+                                topic_description = topic_description,
+                                color = color)
             new_topic.save()
             return HttpResponseRedirect('/matrix/addedtopic')
 
@@ -81,6 +83,10 @@ def adding(request, topic_id):
 def added(request):
     return render(request, 'matrix/added.html')
 
+def edittopic(request, topic_id):
+    topic = get_object_or_404(Topic, pk=topic_id)
+    return render(request, 'matrix/topicediting.html', {'topic': topic})
+    
 def editing(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     return render(request, 'matrix/taskediting.html', {'task': task})
