@@ -1,3 +1,4 @@
 # READ ME file for ema-project
-I am still learning how this thing works and how Django works and life and
-everything else :P
+This is a web application for time management that uses the Eisenhower Matrix.
+
+It is still work in progress ... :)
