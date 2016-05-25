@@ -1,3 +1,11 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Add topic{% endblock title %}
+{% block navbar %}
+  {% include "navbar.html" with active_tab='EMA' %}
+{% endblock navbar %}
+{% block content %}
 <h1> You successfully added a new topic!</h1>
 
-<p>back to <a href={% url 'matrix:index' %}>Topics</a></p>
+<p>back to <a href={% url 'matrix:matrix' %}>Topics</a></p>
+{% endblock content %}

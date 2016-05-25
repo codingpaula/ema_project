@@ -1,3 +1,10 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Add topic{% endblock title %}
+{% block navbar %}
+  {% include "navbar.html" with active_tab='EMA' %}
+{% endblock navbar %}
+{% block content %}
 <h1>{{ task.task_name }}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
@@ -17,3 +24,4 @@
 <a href={% url 'matrix:adding' task.topic.id %}>
   <button>Add a new task!</button>
 </a>
+{% endblock content %}
