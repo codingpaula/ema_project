@@ -19,7 +19,7 @@ class Topic(TimeStampedModel):
     topic_name = models.CharField(max_length=30)
     topic_description = models.TextField(blank=True)
     """ TODO find color picker """
-    color = models.TextField(default='red')
+    color = models.CharField(max_length=15, default='red')
     def __unicode__(self):
         return self.topic_name
 

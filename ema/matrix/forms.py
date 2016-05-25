@@ -10,4 +10,4 @@ class TaskForm(ModelForm):
 class TopicForm(ModelForm):
     class Meta:
         model = Topic
-        fields = ['topic_name', 'topic_description']
+        fields = ['topic_name', 'topic_description', 'color']

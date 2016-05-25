@@ -1,4 +1,13 @@
-<h1>{{ topic.topic_name }}</h1>
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Add topic{% endblock title %}
+{% block navbar %}
+  {% include "navbar.html" with active_tab='EMA' %}
+{% endblock navbar %}
+{% block content %}
+<h1 style="color: {{ topic.color }};">{{ topic.topic_name }}</h1>
+
+<button><a href={% url 'matrix:topicediting' topic.id %}>edit</button>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
@@ -13,3 +22,4 @@
   <a href={% url 'matrix:adding' topic.id %}>add a task to the topic
         {{ topic.topic_name }}</a>
 {% endif %}
+{% endblock content %}

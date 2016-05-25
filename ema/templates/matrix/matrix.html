@@ -1,50 +1,49 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+
+{% block navbar %}
+  {% include "navbar.html" with active_tab='EMA' %}
+{% endblock navbar %}
+
 {% block content %}
-  <div class="main">
-    {% block leftside %}
-      <div id="MatrixSettings">
-        <div id="Topics" class="container">
-          <div class="align-left">
-            <h3>Topics</h3>
-          </div>
-          <div class="align-right" class="add">
-            <a href={% url 'matrix:addtopic' %}>
-              <button>+</button>
+  <div id="MatrixSettings">
+    <div id="Topics" class="container">
+      <div class="align-left">
+        <h3>Topics</h3>
+      </div>
+      <div class="align-right" class="add">
+        <a href={% url 'matrix:addtopic' %}>
+          <button>+</button>
+        </a>
+      </div>
+      <div>
+        {% if all_topics %}
+        <ul class="noIndentList">
+          {% for topic in all_topics %}
+          <li class="topicList">
+            <a href={% url 'matrix:topics' topic.id %} style="color: {{ topic.color }};">
+              {{ topic.topic_name}}
             </a>
-          </div>
-          <div>
-            {% if all_topics %}
-            <ul>
-              {% for topic in all_topics %}
-              <li>
-                <a href={% url 'matrix:topics' topic.id %}>
-                  {{ topic.topic_name}}
-                </a>
-              </li>
-              {% endfor %}
-            </ul>
-            {% else %}
-              <p>No topics are available.</p>
-              <a href={% url 'matrix:addtopic' %}>
-                <button>add a new topic!</button>
-              </a>
-            {% endif %}
-          </div>
-        </div>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+          <p>No topics are available.</p>
+          <a href={% url 'matrix:addtopic' %}>
+            <button>add a new topic!</button>
+          </a>
+        {% endif %}
       </div>
-    {% endblock leftside %}
-    {% block rightside %}
-      <div id="Matrix">
-        <canvas id="ema" width="900" height="700">
-          The Eisenhower Matrix! If you are seeing this text, your browser does
-          not support this website. Please update or download Firefox or Opera.
-        </canvas>
-      </div>
-    {% endblock rightside %}
+    </div>
   </div>
-  {% block javascript %}
-    <script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
-    <script type="text/javascript" src={% static "js/matrix.js" %}></script>
-  {% endblock javascript %}
+  <div id="Matrix">
+    <canvas id="ema" width="900" height="700">
+      The Eisenhower Matrix! If you are seeing this text, your browser does
+      not support this website. Please update or download Firefox or Opera.
+    </canvas>
+  </div>
 {% endblock content %}
+{% block javascript %}
+  <script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
+  <script type="text/javascript" src={% static "js/matrix.js" %}></script>
+{% endblock javascript %}

@@ -1,3 +1,10 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Add topic{% endblock title %}
+{% block navbar %}
+  {% include "navbar.html" with active_tab='EMA' %}
+{% endblock navbar %}
+{% block content %}
 <h1>Topics</h1>
 {% if latest_topic_list %}
   <ul>
@@ -10,3 +17,4 @@
   <p>No topics are available.</p>
   <p>Add a new topic <a href={% url 'matrix:addtopic' %}>here</a>.</p>
 {% endif %}
+{% endblock content %}

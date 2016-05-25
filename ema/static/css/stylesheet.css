@@ -108,6 +108,18 @@ p {
 .center {
 	text-align: center;
 }
+.noIndentList {
+	list-style: inside;
+	list-style-type: none;
+	padding: 0;
+}
+.topicList {
+	font-size: 1.1em;
+	list-style-type: none;
+	text-decoration: none;
+	margin: 3px 0 10px 3px;
+	padding-left: 0;
+}
 .container:after {
 	content:"";
 	display: table;
@@ -127,14 +139,6 @@ p {
 }
 .clear {
 	clear: both;
-}
-.cf:before,
-.cf:after {
-    content:"";
-    display:table;
-}
-.cf:after {
-    clear:both;
 }
 .float-right {
 	float: right;
