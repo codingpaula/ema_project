@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.db import models
 
 # Create your models here.
@@ -16,6 +17,7 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 class Topic(TimeStampedModel):
+    topic_owner = models.ForeignKey(settings.AUTH_USER_MODEL)
     topic_name = models.CharField(max_length=30)
     topic_description = models.TextField(blank=True)
     """ TODO find color picker """
