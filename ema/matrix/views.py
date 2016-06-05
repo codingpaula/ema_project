@@ -8,10 +8,11 @@ from django.contrib import messages
 from .models import Topic, Task
 from .forms import TaskForm, TopicForm
 
-def index(request):
-    latest_topic_list = Topic.objects.order_by('-id')[:5]
-    context = {'latest_topic_list': latest_topic_list}
-    return render(request, 'matrix/index.html', context)
+@login_required(login_url='/account/login')
+def matrix(request):
+    all_topics = Topic.objects.filter(topic_owner=request.user.id)
+    return render(request, 'matrix/matrix.html',
+                    {'all_topics': all_topics})
 
 class AddTopicView(View):
     form_class = TopicForm
@@ -61,7 +62,7 @@ class AddTaskView(View):
                                 due_date = due_date, importance = importance,
                                 topic = topic)
             new_task.save()
-            messages.info(request, 'Task %s successfully created.' % new_task.task_name)
+            messages.info(request, 'Task \"%s\" successfully created.' % new_task.task_name)
             return HttpResponseRedirect('/matrix/')
 
         return render(request, self.template_name, {'form': form, 'topic': topic})
@@ -95,10 +96,8 @@ def editing(request, task_id):
 class TaskUpdate(UpdateView):
     model = Task
     fields = ['task_name', 'task_description', 'importance', 'due_date']
-    template_name_suffix = 'taskediting'
+    template_name_suffix = 'editing'
 
-@login_required(login_url='/account/login')
-def matrix(request):
-    all_topics = Topic.objects.filter(topic_owner=request.user.id)
-    return render(request, 'matrix/matrix.html',
-                    {'all_topics': all_topics})
+    def get_object(self):
+        task = Task.objects.get(id=self.kwargs['task_id'])
+        return task

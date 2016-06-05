@@ -6,4 +6,15 @@
 {% endblock navbar %}
 {% block content %}
 <h1>Editing Task "{{ task.task_name }}"</h1>
+<div>
+  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+  <form action="{% url 'matrix:taskediting' task.id %}" method="post">
+    {% csrf_token %}
+
+    {{ form }}
+
+    <input type="submit" value="save task" />
+  </form>
+</div>
 {% endblock content %}

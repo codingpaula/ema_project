@@ -20,5 +20,5 @@ urlpatterns = [
     url(r'^(?P<topic_id>[0-9]+)/topicediting/$', views.edittopic,
             name='topicediting'),
     # /matrix/5/tasks/editing
-    url(r'^(?P<task_id>[0-9]+)/taskediting/$', views.editing, name='taskediting')
+    url(r'^(?P<task_id>[0-9]+)/taskediting/$', views.TaskUpdate.as_view(), name='taskediting')
 ]
