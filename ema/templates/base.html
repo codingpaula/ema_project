@@ -19,16 +19,11 @@
   </body>
   <footer>
     {% block footer %}
-      <div>
-        <p>Find us on facebook:</p>
-        <ul>
-          <li>
-            <a href="http://www.facebook.com/ematrixapp">
-              <button>fb</button>
-              <!--img src="glyphis/glyphicons_social/png/social-31-facebook.png"-->
-            </a>
-          </li>
-        </ul>
+      <div class="footer">
+        <a href="http://www.facebook.com/ematrixapp">
+          Find us on facebook:
+          <img src="{% static "icons/facebook.png" %}" alt="Facebook">
+        </a>
       </div>
     {% endblock footer %}
   </footer>

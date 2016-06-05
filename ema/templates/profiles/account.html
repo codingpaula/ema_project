@@ -5,4 +5,9 @@
   {% include "navbar.html" with active_tab='Account' %}
 {% endblock navbar %}
 {% block content %}
+  {% if user.is_authenticated %}
+    <h1>Welcome {{ user.username }}. Thanks for logging in.</h1>
+  {% else %}
+    <h1>Please <a href="{% url 'profiles:login' %}">log in</a>.</h1>
+  {% endif %}
 {% endblock content %}

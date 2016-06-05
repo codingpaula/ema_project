@@ -23,7 +23,9 @@
       </a>
     </li>
     <li class="gap">
-      <a href={% url 'profiles:signup' %}>
+      {{ user }}
+      {% if user.is_anonymous %}
+      <a href={% url 'profiles:register' %}>
         <div class="{% if active_tab == 'Signup' %}now{% endif %}">Sign Up</div>
       </a>
     </li>
@@ -31,6 +33,11 @@
       <a href={% url 'profiles:login' %}>
         <div class="{% if active_tab == 'Login' %}now{% endif %}">Log In</div>
       </a>
+      {% else %}
+      <a href={% url 'profiles:loggedout' %}>
+        <div class="{% if active_tab == 'Logout' %}now{% endif %}">Log Out</div>
+      </a>
+      {% endif %}
     </li>
   </ul>
 </div>

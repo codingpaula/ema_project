@@ -6,6 +6,15 @@
 {% endblock navbar %}
 
 {% block content %}
+  {% if messages %}
+  <div>
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
   <div id="MatrixSettings">
     <div id="Topics" class="container">
       <div class="align-left">

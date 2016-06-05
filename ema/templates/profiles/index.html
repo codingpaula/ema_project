@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Herzlich Willkommen bei der Eisenhower Matrix App!</h1>
+  <p>Ein Tool für Ihr Zeitmanagement.</p>
+  <button>
+    <a href={% url 'profiles:login' %}>einloggen</a>
+  </button>
+  <button>
+    <a href={% url 'profiles:signup' %}>registrieren</a>
+  </button>
+{% endblock content %}

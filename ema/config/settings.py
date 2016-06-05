@@ -64,6 +64,10 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'config.urls'
 
+LOGIN_URL = '/account/login/'
+
+LOGIN_REDIRECT_URL = '/account/'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
