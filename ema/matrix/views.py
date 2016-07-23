@@ -15,8 +15,10 @@ hands over all topics of the current user
 @login_required(login_url='/account/login')
 def matrix(request):
     all_topics = Topic.objects.filter(topic_owner=request.user.id)
+    for Topic in all_topics:
+        all_taks = all_tasks + Task.objects.filter(topic_id=Topic.id)
     return render(request, 'matrix/matrix.html',
-                    {'all_topics': all_topics})
+                    {'all_topics': all_topics, 'all_tasks': all_tasks})
 
 """
 new topic:
@@ -123,4 +125,3 @@ class TaskUpdate(UpdateView):
     model = Task
     fields = ['task_name', 'task_description', 'importance', 'due_date']
     template_name_suffix = 'taskediting'
-    
