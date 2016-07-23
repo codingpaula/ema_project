@@ -1,3 +1,5 @@
+{# variable active_tab to reduce redundance, activates the class now to #}
+{# hightlight current tab #}
 {% block navbar %}
 <div class="navbar">
   <ul>
@@ -23,7 +25,10 @@
       </a>
     </li>
     <li class="gap">
-      {{ user }}
+      {% if user.is_anonymous %}
+      {% else %}
+        {{ user }}
+      {% endif %}
       {% if user.is_anonymous %}
       <a href={% url 'profiles:register' %}>
         <div class="{% if active_tab == 'Signup' %}now{% endif %}">Sign Up</div>

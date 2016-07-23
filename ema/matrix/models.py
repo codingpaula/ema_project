@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 
 # Create your models here.
+# meta class for the fields created and modified
 class TimeStampedModel(models.Model):
     """
     An abstract base class model that provides self-updating ''created''

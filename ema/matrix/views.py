@@ -8,11 +8,20 @@ from django.contrib import messages
 from .models import Topic, Task
 from .forms import TaskForm, TopicForm
 
-def index(request):
-    latest_topic_list = Topic.objects.order_by('-id')[:5]
-    context = {'latest_topic_list': latest_topic_list}
-    return render(request, 'matrix/index.html', context)
+"""
+view for startpage after login - matrix
+hands over all topics of the current user
+"""
+@login_required(login_url='/account/login')
+def matrix(request):
+    all_topics = Topic.objects.filter(topic_owner=request.user.id)
+    return render(request, 'matrix/matrix.html',
+                    {'all_topics': all_topics})
 
+"""
+new topic:
+uses TopicForm
+"""
 class AddTopicView(View):
     form_class = TopicForm
     template_name = 'matrix/addtopic.html'
@@ -38,6 +47,11 @@ class AddTopicView(View):
 
         return render(request, self.template_name, {'form': form})
 
+"""
+new task:
+uses TaskForm
+@params: topic_id
+"""
 class AddTaskView(View):
     form_class = TaskForm
     template_name = 'matrix/adding.html'
@@ -66,6 +80,11 @@ class AddTaskView(View):
 
         return render(request, self.template_name, {'form': form, 'topic': topic})
 
+"""
+shows all the topics of the logged in owner
+@params: topic_id
+Permission denied message if unsuccessful
+"""
 @login_required(login_url='/account/login')
 def topics(request, topic_id):
     topic = get_object_or_404(Topic, pk=topic_id)
@@ -75,6 +94,11 @@ def topics(request, topic_id):
         messages.info(request, 'Permission denied!')
         return HttpResponseRedirect('/matrix/')
 
+"""
+shows requested task details
+@params: task_id
+Permission denied message if unsuccessful
+"""
 @login_required(login_url='/account/login')
 def tasks(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
@@ -84,6 +108,9 @@ def tasks(request, task_id):
         messages.info(request, 'Permission denied!')
         return HttpResponseRedirect('/matrix/')
 
+"""
+TODO: editing
+"""
 def edittopic(request, topic_id):
     topic = get_object_or_404(Topic, pk=topic_id)
     return render(request, 'matrix/topicediting.html', {'topic': topic})
@@ -96,9 +123,4 @@ class TaskUpdate(UpdateView):
     model = Task
     fields = ['task_name', 'task_description', 'importance', 'due_date']
     template_name_suffix = 'taskediting'
-
-@login_required(login_url='/account/login')
-def matrix(request):
-    all_topics = Topic.objects.filter(topic_owner=request.user.id)
-    return render(request, 'matrix/matrix.html',
-                    {'all_topics': all_topics})
+    
