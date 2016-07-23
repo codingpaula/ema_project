@@ -15,8 +15,7 @@ hands over all topics of the current user
 @login_required(login_url='/account/login')
 def matrix(request):
     all_topics = Topic.objects.filter(topic_owner=request.user.id)
-    for Topic in all_topics:
-        all_taks = all_tasks + Task.objects.filter(topic_id=Topic.id)
+    all_tasks = Task.objects.filter(task_owner=request.user.id)
     return render(request, 'matrix/matrix.html',
                     {'all_topics': all_topics, 'all_tasks': all_tasks})
 
@@ -71,6 +70,11 @@ class AddTaskView(View):
             task_description = form.cleaned_data['task_description']
             due_date = form.cleaned_data['due_date']
             importance = form.cleaned_data['importance']
+            if topic.topic_owner == request.user:
+                task_owner = request.user
+            else:
+                messages.info(request, 'No permission to add a task to this topic!')
+                return HttpResponseRedirect('/matrix/')
 
             new_task = Task(task_name = task_name,
                                 task_description = task_description,
