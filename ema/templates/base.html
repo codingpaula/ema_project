@@ -26,15 +26,7 @@
     {# javascript only where needed -> matrix #}
     {% endblock javascript %}
   </body>
-  <footer>
-    {% block footer %}
-    {# footer stays nearly the same for all pages #}
-      <div class="footer">
-        <a href="http://www.facebook.com/ematrixapp">
-          Find us on facebook:
-          <img src="{% static "icons/facebook.png" %}" alt="Facebook">
-        </a>
-      </div>
-    {% endblock footer %}
-  </footer>
+  {% block footer %}
+  {# footer included in every template #}
+  {% endblock footer %}
 </html>

@@ -1,10 +1,5 @@
-{% extends "base.html" %}
+{% extends "matrix_base.html" %}
 {% load staticfiles %}
-
-{% block navbar %}
-  {% include "navbar.html" with active_tab='EMA' %}
-{% endblock navbar %}
-
 {% block content %}
   {% if messages %}
   <div>

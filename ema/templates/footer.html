@@ -1,0 +1,31 @@
+{% load staticfiles %}
+{% block footer %}
+<footer>
+  <div class="footer">
+    <div class="navbar">
+      <ul>
+        <li>
+          <a href={% url 'orga:impressum' %}>
+            <div class="{% if active_footer == 'Impressum' %}now{% endif %}">
+              Impressum
+            </div>
+          </a>
+        </li>
+        <li>
+          <a href={% url 'orga:about_ema' %}>
+            <div class="{% if active_footer == 'About' %}now{% endif %}">
+              About EMA
+            </div>
+          </a>
+        </li>
+        <li class="gap">
+          <a href="http://www.facebook.com/ematrixapp">
+            Find us on facebook:
+            <img src="{% static "icons/facebook.png" %}" alt="Facebook">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</footer>
+{% endblock footer %}
