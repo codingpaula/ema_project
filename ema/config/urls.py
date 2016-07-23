@@ -24,9 +24,16 @@ from django.conf.urls.static import static
 
 from matrix import urls as matrix_urls
 from profiles import urls as profile_urls
+from profiles.views import index
 
 urlpatterns = [
+    # startpage
+    url(r'^$', index, name='startpage'),
+    # account app
     url(r'^account/', include(profile_urls, namespace="profiles")),
+    # matrix app
     url(r'^matrix/', include(matrix_urls, namespace="matrix")),
+    # admin tool
     url(r'^admin/', include(admin.site.urls)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# static files und speicherung static files

@@ -6,6 +6,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
+def index(request):
+    return render(request, 'profiles/index.html')
+
 @login_required(login_url='/account/login')
 def account(request):
     return render(request, 'profiles/account.html')
@@ -15,9 +18,6 @@ def signup(request):
 
 def loggingin(request):
     return render(request, 'profiles/login.html')
-
-def index(request):
-    return render(request, 'profiles/index.html')
 
 # http://www.djangobook.com/en/2.0/chapter14.html
 def register(request):
