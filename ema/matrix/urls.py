@@ -8,6 +8,8 @@ from .views import AddTopicView, AddTaskView, TaskUpdate
 urlpatterns = [
     # /matrix/
     url(r'^$', views.matrix, name='matrix'),
+    # /matrix/test/
+    url(r'^test/$', views.matrix_test, name='matrix_test'),
     # /matrix/addtopic
     url(r'^addtopic/$', AddTopicView.as_view(), name='addtopic'),
     # /matrix/5/

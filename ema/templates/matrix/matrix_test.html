@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css"
+      href={% static "css/scatterplot.css" %}>
+{% endblock stylesheets %}
+{% block javascript %}
+<script type="text/javascript" src={% static "js/underscore.js" %}></script>
+<script type="text/javascript" src={% static "js/data.js"}></script>
+<script type="text/javascript" src={% static "js/dance.js"}></script>
+<script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
+
+<script>
+  window.task_data = {{ end_data }};
+</script>
+
+<script src={% static "js/scatterplot.js" %}></script>
+
+<script>
+  $(function() {
+    window.tasks = new Data.Collection(task_data);
+    window.scatterplot = new Scatterplot({});
+
+    scatterplot.update(tasks, ["due", "importance"]);
+
+    // Update
+    function update() {
+      var topic = $('#topic').val();
+      var query = {};
+      if (topic) query["topic"] = [ topic ];
+      var items = tasks.find(query);
+      scatterplot.update(items, [$('#property_x').val(), $('#property_y').val()]);
+    }
+
+    $('#property_x').change(update);
+    $('#property_y').change(update);
+    $('#topic').change(update);
+  });
+</script>
+{% endblock javascript %}
+{% block content %}
+<div id='container'>
+  X
+  <select id="property_x">
+    <option value="due">Date Due</option>
+    <option value="importance">Importance</option>
+  </select>
+
+  Y
+  <select id="property_y">
+    <option value="due">Date Due</option>
+    <option selected="selected" value="importance">Importance</option>
+  </select>
+
+  <select id="topic">
+    <option value="">All</option>
+    <option value="Uni">Universität</option>
+    <option value="Hausarbeit">Hausarbeit</option>
+  </select>
+
+  <div id='canvas'></div>
+</div>
+{% endblock content %}

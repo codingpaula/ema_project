@@ -30,7 +30,6 @@ class Task(TimeStampedModel):
     task_name = models.CharField(max_length=200)
     task_description = models.TextField(blank=True)
     topic = models.ForeignKey(Topic)
-    task_owner = models.ForeignKey(settings.AUTH_USER_MODEL)
     NOT_IMPORTANT = '0'
     LESS_IMPORTANT = '1'
     IMPORTANT = '2'
@@ -44,16 +43,7 @@ class Task(TimeStampedModel):
     importance = models.CharField(max_length=1,
                                 choices=IMPORTANCE_OPTIONS,
                                 default=LESS_IMPORTANT)
-    due_date = models.DateField(auto_now=False, auto_now_add=False)
+    due_date = models.DateTimeField(auto_now=False, auto_now_add=False)
     done = models.BooleanField(default=False)
     def __unicode__(self):
         return self.task_name
-
-    def setOwner(self):
-        self.task_owner = self.topic.topic_owner
-
-    def checkOwner(self):
-        if self.task_owner == self.topic.topic_owner:
-            return True
-        else:
-            return False
