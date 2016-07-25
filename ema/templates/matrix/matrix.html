@@ -46,8 +46,14 @@
       not support this website. Please update or download Firefox or Opera.
     </canvas>
   </div>
+  <div>
+    <p>{{ end_data }}</p>
+  </div>
 {% endblock content %}
 {% block javascript %}
+  <script type="text/javascript">
+    window.task_data = {{ end_data }};
+  </script>
   <script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
   <script type="text/javascript" src={% static "js/matrix.js" %}></script>
 {% endblock javascript %}
