@@ -5,18 +5,17 @@
 <link rel="stylesheet" type="text/css"
       href={% static "css/scatterplot.css" %}>
 {% endblock stylesheets %}
-{% block javascript %}
+{% block js %}
 <script type="text/javascript" src={% static "js/underscore.js" %}></script>
-<script type="text/javascript" src={% static "js/data.js"}></script>
-<script type="text/javascript" src={% static "js/dance.js"}></script>
+<script type="text/javascript" src={% static "js/data.js" %}></script>
 <script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
+<script type="text/javascript" src={% static "js/dance.js" %}></script>
 
 <script>
-  window.task_data = {{ end_data }};
+  window.task_data = {{ end_data|safe }};
 </script>
 
 <script src={% static "js/scatterplot.js" %}></script>
-
 <script>
   $(function() {
     window.tasks = new Data.Collection(task_data);
@@ -38,8 +37,11 @@
     $('#topic').change(update);
   });
 </script>
-{% endblock javascript %}
+{% endblock js %}
 {% block content %}
+<div id="test">
+  <p></p>
+</div>
 <div id='container'>
   X
   <select id="property_x">
