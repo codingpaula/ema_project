@@ -1,6 +1,7 @@
 {% load staticfiles %}
 <html>
   <head>
+    <meta charset='UTF-8'/>
     <title>
       {% block title %}
       {# different titles for different tabs, standard: #}
@@ -12,6 +13,8 @@
       <link rel="stylesheet" type="text/css"
             href={% static "css/stylesheet.css" %}>
     {% endblock stylesheets %}
+    {% block js %}
+    {% endblock js %}
   </head>
   <body>
     {% block navbar %}

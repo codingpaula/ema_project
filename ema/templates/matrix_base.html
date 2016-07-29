@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block title %}EMA{% endblock title %}
+{% block stylesheets %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css"
+        href={% static "css/matrix.css" %}>
+{% endblock stylesheets %}
 {% block navbar %}
   {% include "navbar.html" with active_tab='EMA' %}
 {% endblock navbar %}
