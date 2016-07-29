@@ -1,6 +1,13 @@
 {% extends "matrix_base.html" %}
 {% load staticfiles %}
+{% block js %}
+<script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
+{% endblock js %}
 {% block content %}
+<script>
+  var task_data = {{ end_data|safe }};
+  var topic_data = {{ topic_data|safe }};
+</script>
   {% if messages %}
   <div>
     <ul>
@@ -25,9 +32,12 @@
         <ul class="noIndentList">
           {% for topic in all_topics %}
           <li class="topicList">
-            <a href={% url 'matrix:topics' topic.id %} style="color: {{ topic.color }};">
-              {{ topic.topic_name}}
-            </a>
+            <button class="topicButton" onclick="{{ topic.topic_id }}" style="background-color: {{ topic.color }}; border: 1px solid {{ topic.color }}">
+              <input type="checkbox" id="{{ topic.color }}" name="{{ topic.topic_name }}" checked/>
+              <a href={% url 'matrix:topics' topic.id %}>
+                {{ topic.topic_name }}
+              </a>
+            </button>
           </li>
           {% endfor %}
         </ul>
@@ -45,15 +55,12 @@
       The Eisenhower Matrix! If you are seeing this text, your browser does
       not support this website. Please update or download Firefox or Opera.
     </canvas>
-  </div>
-  <div>
-    <p>{{ end_data }}</p>
+    <div id="dots" style="width: 900px; height:700;"></div>
   </div>
 {% endblock content %}
 {% block javascript %}
-  <script type="text/javascript">
-    window.task_data = {{ end_data }};
-  </script>
-  <script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
+  <script type="text/javascript" src={% static "js/sidebar.js" %}></script>
+  <script type="text/javascript" src={% static "js/daten.js" %}></script>
   <script type="text/javascript" src={% static "js/matrix.js" %}></script>
+  <script type="text/javascript" src={% static "js/display.js" %}></script>
 {% endblock javascript %}
