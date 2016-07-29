@@ -70,6 +70,14 @@ p {
 }
 
 /* buttons */
+.topicButton {
+	border-radius: 4px;
+}
+
+.topicButton a {
+	color: #fff;
+}
+
 .navbar div {
 	display: inline-block;
 	padding: 3px 5px 3px 5px;
@@ -178,13 +186,4 @@ p {
 }
 #Topics {
 	/* border-bottom: 1px solid #777; */
-}
-
-#Matrix {
-	display: inline-block;
-	vertical-align: top;
-	width: 73%;
-	border: 1px solid #111;
-	margin: 5px 1%;
-	padding: 10px 1%;
 }

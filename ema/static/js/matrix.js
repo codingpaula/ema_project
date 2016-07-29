@@ -1,10 +1,10 @@
-var ema, matrix, canX, canY, mouseIsDown = 0;
+// var ema, matrix, canX, canY, mouseIsDown = 0;
 var circleObjects = [];
 var redrawCircle = false;
 // später aus der Datenbank
 var circles = [[850,600,'red'],[100,100,'red'],[200,200,'green'],[400,500,'black'],[700,100,'blue'],[90,300,'pink'],[600,200,'brown']];
-ema = document.getElementById("ema");
-matrix = ema.getContext("2d");
+// ema = document.getElementById("ema");
+// matrix = ema.getContext("2d");
 
 // constructor for a task / circle
 function Circle(x,y,topicC) {
@@ -25,7 +25,7 @@ Circle.prototype.drawCircle = function (field) {
 	this.drawn = true;
 }
 
-// when the mouse cursor howers over a circle, the middle of the circle is filled 
+// when the mouse cursor howers over a circle, the middle of the circle is filled
 // TODO opens up div with description of the task
 Circle.prototype.howerCircle = function (field) {
 	field.beginPath();
@@ -58,10 +58,10 @@ function init() {
 	ema.addEventListener("touchstart", touchDown, false);
 	ema.addEventListener("touchmove", touchXY, true);
 	ema.addEventListener("touchend", touchUp, false);
-	
+
 	document.body.addEventListener("mouseup", mouseUp, false);
 	document.body.addEventListener("touchcancel", touchUp, false);
-	
+
 	var width = ema.width;
 	var height = ema.height;
 
@@ -88,8 +88,8 @@ function touchUp() {
 
 function mouseDown() {
 	mouseIsDown = 1;
-	mouseXY(); 
-} 
+	mouseXY();
+}
 
 function touchDown() {
 	mouseIsDown = 1;
@@ -134,73 +134,139 @@ function showPos() {
 			if (circleObjects[i]["touched"]) {
 				circleObjects[i].emptyCircle(matrix);
 			}
-		}		
-	}	
+		}
+	}
 	// control to display correct coordinates
 	matrix.clearRect(850,625,50,40);
 	matrix.fillText(str, 850, 625, 50);
 }
 
-function drawAxes(field, width, height) {
-	// untere Ecke y-Wert
-	var uEy = height-25;
-	// rechte Ecke x-Wert
-	var rEx = width-20;
-	// Mitte y-Achse
-	var my = (height-20-25)/2 + 20;
-	// Mitte x-Achse
-	var mx = (width-25-20)/2 + 25;
-
-	// Spitze senkrechter Pfeil
-	field.moveTo(25,20);
-	// zur untere Ecke
-	field.lineTo(25,uEy);
-	field.stroke();
-	// zur rechten Spitze
-	field.lineTo(rEx,uEy);
-	field.stroke();
-
-	// Pfeil oben linke Seite
-	field.moveTo(15,30);
-	field.lineTo(25,20);
-	field.stroke();
-	// Pfeil oben rechte Seite
-	field.lineTo(35,30);
-	field.stroke();
-
-	// Pfeil rechts oberer Teil
-	field.moveTo(rEx-10,uEy-10);
-	// zur rechten Spitze
-	field.lineTo(rEx,uEy);
-	field.stroke();
-	// zum Pfeil rechts unterer Teil
-	field.lineTo(rEx-10,uEy+10);
-	field.stroke();
-
-	// Mittellinie y-Achse
-	field.moveTo(25,my);
-	field.lineTo(rEx,my);
-	field.stroke;
-
-	// Mittellinie x-Achse
-	field.moveTo(mx,20);
-	field.lineTo(mx,uEy);
-	field.stroke();
-
-	// Beschriftung x-Achse
-	field.font = "20px Arial";
-	// field.textAlign = "center";
-	field.fillText("U R G E N T", width/2-50, height);
-
-	field.save();
-	field.translate(width/2,height/2);
-	// Beschriftung y-Achse
-	field.font = "20px Arial";
-	field.rotate(-Math.PI/2);
-	field.translate(height/2,-width/2);
-	field.fillText("I M P O R T A N T", -height/2-50, 15);
-
-	field.restore();
+// Helfer-Funktionen
+// Datumskoordinate herausfinden
+var today = new Date();
+function dateCoordinate(date) {
+  // aktuelles Datum, Grenze 2 Monate = 5184000000
+  var coordinate = 1-(Date.parse(date) - Date.parse(today))/5184000000;
+	// damit Aufgaben, die noch zu weit links sind nicht verschwinden
+  if (coordinate < 0) return 37;
+	// damit überfällige Aufgaben nicht verschwinden
+	if (coordinate > 1) return (s.width-20);
+  else return coordinate*s.width;
 }
 
-init();
+// Wichtigkeitskoordinate
+function importanceCoordinate(imp) {
+	return imp/4*s.height + 25;
+}
+
+// Verteilung
+/*
+	@param task_x = x-Koordinate(date) des neuen Punktes
+	@param task_y = y-Koordinate(importance) des neuen Punktes
+*/
+function doubles(taken, task_x, task_y) {
+	//
+}
+
+var s,
+Matrix = {
+	settings: {
+		canvas: $('canvas'),
+		drawing: document.getElementById('ema').getContext("2d"),
+		width: $('canvas').width(),
+		height: $('canvas').height()
+	},
+	init: function() {
+		s = this.settings;
+	},
+	drawAxes: function(field, width, height) {
+		// untere Ecke y-Wert
+		var uEy = height-25;
+		// rechte Ecke x-Wert
+		var rEx = width-20;
+		// Mitte y-Achse
+		var my = (height-20-25)/2 + 20;
+		// Mitte x-Achse
+		var mx = (width-25-20)/2 + 25;
+
+		// Spitze senkrechter Pfeil
+		field.moveTo(25,20);
+		// zur untere Ecke
+		field.lineTo(25,uEy);
+		field.stroke();
+		// zur rechten Spitze
+		field.lineTo(rEx,uEy);
+		field.stroke();
+
+		// Pfeil oben linke Seite
+		field.moveTo(15,30);
+
+		field.lineTo(25,20);
+		field.stroke();
+
+		// Pfeil oben rechte Seite
+		field.lineTo(35,30);
+		field.stroke();
+
+		// Pfeil rechts oberer Teil
+		field.moveTo(rEx-10,uEy-10);
+		// zur rechten Spitze
+		field.lineTo(rEx,uEy);
+		field.stroke();
+		// zum Pfeil rechts unterer Teil
+		field.lineTo(rEx-10,uEy+10);
+		field.stroke();
+
+		// Mittellinie y-Achse
+		field.moveTo(25,my);
+		field.lineTo(rEx,my);
+		field.stroke;
+
+		// Mittellinie x-Achse
+		field.moveTo(mx,20);
+		field.lineTo(mx,uEy);
+		field.stroke();
+
+		// Beschriftung x-Achse
+		field.font = "20px Arial";
+		// field.textAlign = "center";
+		field.fillText("U R G E N T", width/2-50, height);
+
+		field.save();
+		field.translate(width/2,height/2);
+		// Beschriftung y-Achse
+		field.font = "20px Arial";
+		field.rotate(-Math.PI/2);
+		field.translate(height/2,-width/2);
+		field.fillText("I M P O R T A N T", -height/2-50, 15);
+
+		field.restore();
+	},
+	drawTasks: function(field, taskData, topicData, width, height) {
+		// how to find out if tasks are on the same spot
+		var taken = [];
+		// Hilfsvariablen
+		var date, imp = 0;
+		// durch alle übergebenen Aufgaben
+		taskData.forEach(function(task){
+			// definiere x und y und die Farbe
+			date = dateCoordinate(task.x);
+			imp = importanceCoordinate(task.y);
+			var colorIndex = task.topic;
+			// eigentlichen Punkt kreieren
+			var taskItem = $('<div class="dot" id="'+task.id+'"><div class="label">'+task.name+'</div></div>')
+												.css('left', date)
+												.css('bottom', imp)
+												.css('border-color', topicData[colorIndex]['color'])
+												.css('width', 5)
+												.css('height', 5);
+			// Punkt anhängen
+			$('#dots').append(taskItem);
+			// und ins Array eintragen, um doppelte zu erkennen
+			taken.push({date, imp});
+		});
+		console.log(taken);
+	}
+};
+
+// init();
