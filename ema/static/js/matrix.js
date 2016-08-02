@@ -1,180 +1,50 @@
-// var ema, matrix, canX, canY, mouseIsDown = 0;
-var circleObjects = [];
-var redrawCircle = false;
-// später aus der Datenbank
-var circles = [[850,600,'red'],[100,100,'red'],[200,200,'green'],[400,500,'black'],[700,100,'blue'],[90,300,'pink'],[600,200,'brown']];
-// ema = document.getElementById("ema");
-// matrix = ema.getContext("2d");
-
-// constructor for a task / circle
-function Circle(x,y,topicC) {
-	this.x = x || width-50;
-	this.y = y || height-50;
-	this.topicC = topicC || "black";
-	this.touched = false;
-	this.drawn = false;
-}
-
-// draw that particular circle
-Circle.prototype.drawCircle = function (field) {
-	field.beginPath();
-	field.arc(this.x, this.y, 5, 0, 2*Math.PI);
-	field.lineWidth = 2;
-	field.strokeStyle = this.topicC;
-	field.stroke();
-	this.drawn = true;
-}
-
-// when the mouse cursor howers over a circle, the middle of the circle is filled
-// TODO opens up div with description of the task
-Circle.prototype.howerCircle = function (field) {
-	field.beginPath();
-	field.arc (this.x, this.y, 1, 0, 2*Math.PI);
-	field.Width = 0.1;
-	field.strokeStyle = this.topicC;
-	field.stroke();
-	this.touched = true;
-}
-
-// when the mouse cursor is no longer on the circle, the circle should be unfilled again
-// TODO and the div should disappear
-Circle.prototype.emptyCircle = function (field) {
-	field.clearRect(this.x-7,this.y-7,14,14);
-	this.touched = false;
-	this.drawCircle(field);
-}
-
-// uses the property method drawCircle to draw all circles in the beginning
-function drawCircles(field, array) {
-	for (i = 0; i < array.length; i++) {
-		array[i].drawCircle(field);
-	}
-}
-
-// start
-function init() {
-	ema.addEventListener("mousedown", mouseDown, false);
-	ema.addEventListener("mousemove", mouseXY, false);
-	ema.addEventListener("touchstart", touchDown, false);
-	ema.addEventListener("touchmove", touchXY, true);
-	ema.addEventListener("touchend", touchUp, false);
-
-	document.body.addEventListener("mouseup", mouseUp, false);
-	document.body.addEventListener("touchcancel", touchUp, false);
-
-	var width = ema.width;
-	var height = ema.height;
-
-	for (i=0; i<circles.length; i++) {
-		circleObjects.push(new Circle(circles[i][0], circles[i][1], circles[i][2]));
-	}
-
-	// Matrix Achsen und Tasks zeichnen
-	drawAxes(matrix, width, height);
-	drawCircles(matrix, circleObjects);
-
-}
-
-function mouseUp() {
-	mouseIsDown = 0;
-	mouseXY();
-}
-
-function touchUp() {
-	mouseIsDown = 0;
-	// no touch to track, so just show state
-	showPos();
-}
-
-function mouseDown() {
-	mouseIsDown = 1;
-	mouseXY();
-}
-
-function touchDown() {
-	mouseIsDown = 1;
-	touchXY();
-}
-
-function mouseXY(e) {
-	if (!e)
-		var e = event;
-	canX = e.pageX - ema.offsetLeft;
-	canY = e.pageY - ema.offsetTop;
-	showPos();
-}
-
-function touchXY(e) {
-	if (!e)
-		var e = event;
-	e.preventDefault();
-	canX = e.targetTouches[0].pageX - ema.offsetLeft;
-	canY = e.targetTouches[0].pageY - ema.offsetTop;
-	showPos();
-}
-
-function showPos() {
-	// large, centered, bright green text
-	matrix.font = "12pt Helvetica";
-	matrix.textAlign = "left";
-	matrix.textBaseline = "top";
-	matrix.fillStyle = "black";
-	var str = canX + ", " + canY;
-	if (mouseIsDown)
-		str += " down";
-	if (!mouseIsDown)
-		str += " up";
-	// var touched;
-	for (i=0; i<circleObjects.length; i++) {
-		if (canX >= circleObjects[i].x-5 && canX <= circleObjects[i].x+5 && canY >= circleObjects[i].y-5 && canY <= circleObjects[i].y+5) {
-			if (!circleObjects[i]["touched"]) {
-				circleObjects[i].howerCircle(matrix);
-			}
-		} else {
-			if (circleObjects[i]["touched"]) {
-				circleObjects[i].emptyCircle(matrix);
-			}
-		}
-	}
-	// control to display correct coordinates
-	matrix.clearRect(850,625,50,40);
-	matrix.fillText(str, 850, 625, 50);
-}
-
 // Helfer-Funktionen
-// Datumskoordinate herausfinden
-var today = new Date();
-function dateCoordinate(date) {
-  // aktuelles Datum, Grenze 2 Monate = 5184000000
-  var coordinate = 1-(Date.parse(date) - Date.parse(today))/5184000000;
-	// damit Aufgaben, die noch zu weit links sind nicht verschwinden
-  if (coordinate < 0) return 37;
-	// damit überfällige Aufgaben nicht verschwinden
-	if (coordinate > 1) return (s.width-20);
-  else return coordinate*s.width;
-}
-
-// Wichtigkeitskoordinate
-function importanceCoordinate(imp) {
-	return imp/4*s.height + 25;
-}
-
 // Verteilung
 /*
+	@param taken = Array mit schon eingetragenen Punkten (Objekte)
+		dot = {
+			date: x,
+			imp: y
+		}
 	@param task_x = x-Koordinate(date) des neuen Punktes
 	@param task_y = y-Koordinate(importance) des neuen Punktes
 */
-function doubles(taken, task_x, task_y) {
-	//
+function doubles(dots, newDot_x, newDot_y) {
+	dots.forEach(function(oldDot) {
+		if( liesIn(oldDot.date, newDot_x) && liesIn(oldDot.imp, newDot_y) ) {
+			newDot_x += 10;
+			newDot_y += 10;
+		}
+	});
+	var dot = {
+		'date': newDot_x,
+		'imp': newDot_y
+	};
+	return dot;
+}
+
+// left oder bottom property gegeben, bis wo liegen die Punkte ganz oder
+// teilweise aufeinander
+function liesIn(oldCoo, newCoo) {
+	if (oldCoo - 8 < newCoo && oldCoo + 8 > newCoo) {
+		return true;
+	}	else {
+		return false;
+	}
+}
+
+// Date in lesbare Zahlen umwandeln
+function formatDate(date) {
+
 }
 
 var s,
 Matrix = {
 	settings: {
-		canvas: $('canvas'),
-		drawing: document.getElementById('ema').getContext("2d"),
-		width: $('canvas').width(),
-		height: $('canvas').height()
+		//canvas: $('canvas'),
+		//drawing: document.getElementById('ema').getContext("2d"),
+		width: $('#dots').width(),
+		height: $('#dots').height()
 	},
 	init: function() {
 		s = this.settings;
@@ -242,30 +112,50 @@ Matrix = {
 
 		field.restore();
 	},
-	drawTasks: function(field, taskData, topicData, width, height) {
+	drawTasks: function(taskData, topicData, width, height) {
 		// how to find out if tasks are on the same spot
+		var that = this;
 		var taken = [];
 		// Hilfsvariablen
-		var date, imp = 0;
 		// durch alle übergebenen Aufgaben
 		taskData.forEach(function(task){
-			// definiere x und y und die Farbe
-			date = dateCoordinate(task.x);
-			imp = importanceCoordinate(task.y);
+			// check überschneidungen
+			var dot = doubles(taken, task.x, task.y);
+			task.x = dot.date;
+			task.y = dot.imp;
 			var colorIndex = task.topic;
-			// eigentlichen Punkt kreieren
-			var taskItem = $('<div class="dot" id="'+task.id+'"><div class="label">'+task.name+'</div></div>')
-												.css('left', date)
-												.css('bottom', imp)
-												.css('border-color', topicData[colorIndex]['color'])
-												.css('width', 5)
-												.css('height', 5);
-			// Punkt anhängen
-			$('#dots').append(taskItem);
-			// und ins Array eintragen, um doppelte zu erkennen
-			taken.push({date, imp});
+			var topicColor = topicData[colorIndex]['color'];
+			// eigentlichen Punkt kreieren und zeichnen
+			that.drawDot(task, topicColor);
+			// Array mit bereits gezeichneten Koordinaten
+			taken.push(dot);
 		});
-		console.log(taken);
+	},
+	drawDot: function(task, color) {
+		var taskItem = $('<div/>', {
+			class: 'dot',
+			id: task.id,
+			css: {
+				left: task.x,
+				bottom: task.y,
+				borderColor: color,
+				width: 7,
+				height: 7
+			}
+		});
+		$('#dots').append(taskItem);
+		var label = $('<div/>', {
+			class: 'label'
+		});
+		var title = $('<h1/>', {
+			class: 'dotLabel',
+			text: task.name
+		});
+		var attributes = $('<p/>', {
+			text: 'Due Date: '+formatDate(task.due_date)+', Importance: '+task.importance
+		})
+		$('#'+task.id).append(label);
+		$('#'+task.id).children('.label').append(title, attributes);
 	}
 };
 
