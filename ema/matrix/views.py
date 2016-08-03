@@ -1,7 +1,7 @@
 import json
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, render_to_response
 from django.views.generic import View
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -152,7 +152,26 @@ def editing(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     return render(request, 'matrix/taskediting.html', {'task': task})
 
-class TaskUpdate(UpdateView):
+class TaskCreate(CreateView):
     model = Task
     fields = ['task_name', 'task_description', 'importance', 'due_date']
-    template_name_suffix = 'taskediting'
+    template_name = 'matrix/adding.html'
+
+class TaskUpdate(UpdateView):
+    model = Task
+    #form_class = TaskForm
+    fields = ['task_name', 'task_description', 'importance', 'due_date']
+    template_name = 'matrix/taskediting.html'
+    def get_object(self):
+        return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
+
+    #def get(self, request):
+    #    self.object = get_object_or_404(Task, pk=self.request.id)
+    #    form_class = self.get_form_class()
+    #    form = self.get_form(form_class)
+    #    context = self.get_context_data(object=self.object, form=form)
+    #    return render_to_response(context)
+
+class TaskDelete(DeleteView):
+    model = Task
+    fields = ['task_name', 'task_description', 'importance', 'due_date']
