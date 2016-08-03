@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import models
 
@@ -47,3 +48,6 @@ class Task(TimeStampedModel):
     done = models.BooleanField(default=False)
     def __unicode__(self):
         return self.task_name
+
+    # def get_absolute_url(self):
+    #    return reverse('tasks', kwargs={'pk': self.pk})
