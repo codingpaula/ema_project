@@ -1,21 +1,24 @@
 // Helfer-Funktionen
 // Verteilung
 /*
-	@param taken = Array mit schon eingetragenen Punkten (Objekte)
+	@param dots = Array mit schon eingetragenen Punkten (Objekte)
 		dot = {
 			date: x,
 			imp: y
 		}
-	@param task_x = x-Koordinate(date) des neuen Punktes
-	@param task_y = y-Koordinate(importance) des neuen Punktes
+	@param newDot_x = x-Koordinate(date) des neuen Punktes
+	@param newDot_y = y-Koordinate(importance) des neuen Punktes
 */
 function doubles(dots, newDot_x, newDot_y) {
 	dots.forEach(function(oldDot) {
 		if( liesIn(oldDot.date, newDot_x) && liesIn(oldDot.imp, newDot_y) ) {
+			// TODO wie kann erkannt werden dass die neue Stelle nicht auch schon
+			// besetzt ist?
 			newDot_x += 10;
 			newDot_y += 10;
 		}
 	});
+	// Rückgabe von 2 Werten nicht erlaubt, dadurch als Objekt
 	var dot = {
 		'date': newDot_x,
 		'imp': newDot_y
@@ -35,7 +38,16 @@ function liesIn(oldCoo, newCoo) {
 
 // Date in lesbare Zahlen umwandeln
 function formatDate(date) {
+	var datum = new Date(date);
+	return datum.toDateString();
+}
 
+// Wichtigkeit richtig anzeigen
+function formatImp(imp) {
+	if (imp == 0) return "not important";
+	if (imp == 1) return "less important";
+	if (imp == 2) return "important";
+	if (imp == 3) return "very important";
 }
 
 var s,
@@ -131,7 +143,9 @@ Matrix = {
 			taken.push(dot);
 		});
 	},
+	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
 	drawDot: function(task, color) {
+		// eigentlicher Kreis mit task_id in entsprechender Farbe des Topics
 		var taskItem = $('<div/>', {
 			class: 'dot',
 			id: task.id,
@@ -144,19 +158,27 @@ Matrix = {
 			}
 		});
 		$('#dots').append(taskItem);
+		// div mit den Aufgaben-Details
 		var label = $('<div/>', {
 			class: 'label'
 		});
+		// Titel
 		var title = $('<h1/>', {
 			class: 'dotLabel',
 			text: task.name
 		});
+		// weitere Attribute
 		var attributes = $('<p/>', {
-			text: 'Due Date: '+formatDate(task.due_date)+', Importance: '+task.importance
-		})
+			text: 'Due Date: '+formatDate(task.due_date)+', Importance: '+formatImp(task.importance)
+		});
+		// anfügen, Erkennung des richtigen Kreises über task_id
 		$('#'+task.id).append(label);
 		$('#'+task.id).children('.label').append(title, attributes);
 	}
 };
 
-// init();
+var Sidebar = {
+	drawButtons: function(topicData) {
+
+	}
+};
