@@ -25,8 +25,10 @@ var TaskData = {
   /*
     verarbeite Daten, die Django liefert
     index : {
-      'x': relatives Datum,
-      'y': Wichtigkeit,
+      'x': relatives Datum als Koordinate,
+      'y': Wichtigkeit als Koordinate,
+      'due_date': richtiges Datum,
+      'importance': Wichtigkeit,
       'id': ID,
       'name': ..,
       'description': ..,

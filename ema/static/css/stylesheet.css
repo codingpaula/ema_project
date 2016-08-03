@@ -141,7 +141,7 @@ p {
 }
 .align-left {
 	display: inline-block;
-	width: 94%;
+	width: 80%;
 }
 .align-right {
 	display: inline-block;
@@ -175,7 +175,7 @@ p {
 #MatrixSettings {
 	display: inline-block;
 	vertical-align: top;
-	width: 17%;
+	width: 10%;
 	border: 1px solid #111;
 	margin: 5px 1%;
 	padding: 2px 1% 5px 1%;

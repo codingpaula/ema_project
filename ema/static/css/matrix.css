@@ -1,3 +1,4 @@
+/* Aufgaben-Kreise */
 .dot {
   position: absolute;
   bottom: 0px;
@@ -6,10 +7,15 @@
   border-radius: 5px;
 }
 
+.dot:hover {
+  background: steelblue;
+}
+
 .bar:hover {
   opacity: 1.0;
 }
 
+/* Aufgaben-Details (nur angezeigt bei Mouse-hover) */
 .dot .label {
   display: none;
   position: absolute;
@@ -24,14 +30,12 @@
 
 .dot .label h1 {
   text-align: center;
+  font-size: 1em;
 }
 
 .dot .label p {
   text-align: left;
-}
-
-.dot:hover {
-  background: steelblue;
+  font-size: 0.8em;
 }
 
 .dot:hover .label {
@@ -39,14 +43,6 @@
   display: block;
   background-color: white;
   width: 100px;
-}
-
-.dot:hover .label h1 {
-  font-size: 1em;
-}
-
-.dot:hover .label p {
-  font-size: 0.8em;
 }
 
 .dot .value {
@@ -59,31 +55,22 @@
   text-align: center;
 }
 
+/* Matrix-Einstellungen */
 #Matrix {
-  display: block;
+  display: inline-block;
   border: 1px solid #111;
   margin: 5px 1%;
   padding: 10px 1%;
   position: relative;
   width: 73%;
   background-size: 850px;
-  /* position:absolute; top:0; left:0; */
   /* z-index:0; */
   vertical-align: top;
 }
 
+/* div mit den Aufgaben-Kreisen */
 #dots {
   position: relative;
   display: block;
   background-size: 900px;
-}
-
-#Matrix {
-	display: inline-block;
-	vertical-align: top;
-	width: 73%;
-	border: 1px solid #111;
-	margin: 5px 1%;
-	padding: 10px 1%;
-  position: relative;
 }
