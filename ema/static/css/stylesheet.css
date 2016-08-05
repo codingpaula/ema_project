@@ -72,10 +72,10 @@ p {
 /* buttons */
 .topicButton {
 	border-radius: 4px;
-}
-
-.topicButton a {
 	color: #fff;
+	border: 1px solid #f1f1f1;
+	padding: 8px;
+	width: 90%;
 }
 
 .navbar div {
