@@ -4,10 +4,10 @@
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="{% url 'matrix:adding' topic.id %}" method="post">
+<form action="{% url 'matrix:adding' %}" method="post">
   {% csrf_token %}
 
-  {{ form }}
+  {{ form.as_p }}
 
   <input type="submit" value="add task" />
 </form>

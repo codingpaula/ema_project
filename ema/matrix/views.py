@@ -66,10 +66,10 @@ class AddTopicView(View):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
+            topic_owner = request.user
             topic_name = form.cleaned_data['topic_name']
             topic_description = form.cleaned_data['topic_description']
             color = form.cleaned_data['color']
-            topic_owner = request.user
 
             new_topic = Topic(topic_name = topic_name,
                                 topic_description = topic_description,
@@ -89,19 +89,19 @@ class AddTaskView(View):
     form_class = TaskForm
     template_name = 'matrix/adding.html'
 
-    def get(self, request, topic_id):
-        topic = get_object_or_404(Topic, pk=topic_id)
-        form = self.form_class()
-        return render(request, self.template_name, {'form': form, 'topic': topic})
+    def get(self, request):
+        form = TaskForm(user=request.user.id)
+        return render(request, self.template_name, {'form': form})
 
-    def post(self, request, topic_id):
-        topic = get_object_or_404(Topic, pk=topic_id)
-        form = self.form_class(request.POST)
+    def post(self, request):
+        # topic = get_object_or_404(Topic, pk=topic_id)
+        form = TaskForm(request.POST, user=request.user.id)
         if form.is_valid():
             task_name = form.cleaned_data['task_name']
             task_description = form.cleaned_data['task_description']
             due_date = form.cleaned_data['due_date']
             importance = form.cleaned_data['importance']
+            topic = form.cleaned_data['topic']
 
             new_task = Task(task_name = task_name,
                                 task_description = task_description,
@@ -111,7 +111,7 @@ class AddTaskView(View):
             messages.info(request, 'Task %s successfully created.' % new_task.task_name)
             return HttpResponseRedirect('/matrix/')
 
-        return render(request, self.template_name, {'form': form, 'topic': topic})
+        return render(request, self.template_name, {'form': form})
 
 """
 shows all the topics of the logged in owner
@@ -165,13 +165,13 @@ class TaskUpdate(UpdateView):
     def get_object(self):
         return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
 
-    #def get(self, request):
-    #    self.object = get_object_or_404(Task, pk=self.request.id)
-    #    form_class = self.get_form_class()
-    #    form = self.get_form(form_class)
-    #    context = self.get_context_data(object=self.object, form=form)
-    #    return render_to_response(context)
-
 class TaskDelete(DeleteView):
     model = Task
     fields = ['task_name', 'task_description', 'importance', 'due_date']
+
+class TopicUpdate(UpdateView):
+    model = Topic
+    fields = ['topic_name', 'topic_description', 'color']
+    template_name = 'matrix/topicediting.html'
+    def get_object(self):
+        return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))
