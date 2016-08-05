@@ -9,7 +9,13 @@ used in views.AddTaskView
 class TaskForm(ModelForm):
     class Meta:
         model = Task
-        fields = ['task_name', 'task_description', 'due_date', 'importance']
+        fields = ['task_name', 'task_description', 'due_date', 'importance', 'topic']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs['user']
+        kwargs.pop('user')
+        super(TaskForm, self).__init__(*args, **kwargs)
+        self.fields['topic'].queryset = Topic.objects.filter(topic_owner=self.user)
 
 """
 create new Topic
