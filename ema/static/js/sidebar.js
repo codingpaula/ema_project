@@ -1,19 +1,19 @@
-$(function() {
-  var topicsArray = button.update(topic_data.topics);
+/* $(function() {
   $('.topicButton').click(function() {
-    var topicColor = $(this).children('input').attr('id');
+    var topicColorIndex = $(this).children('input').attr('id');
+    console.log(topicColorIndex);
     if ($(this).children('input').is(":checked")) {
-      $(this).css('background-color', topicColor);
+      $(this).css('background-color', TopicData.data[topicColorIndex].color);
       $(this).children('a').css('color', '#fff');
     } else {
       $(this).css('background-color', '#f1f1f1');
-      $(this).children('a').css('color', topicColor);
+      $(this).children('a').css('color', TopicData.data[topicColorIndex].color);
     }
   });
-});
+}); */
 
-var buttons = {};
-var jsonData = {
+
+/*var jsonData = {
     "topics": {
       start: function(topics) {
         topic_data.topics.forEach(function(topic) {
@@ -45,5 +45,5 @@ var button = {
   reloadMatrix: function() {
 
   }
-  */
-}
+
+}*/

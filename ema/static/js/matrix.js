@@ -50,6 +50,8 @@ function formatImp(imp) {
 	if (imp == 3) return "very important";
 }
 
+// structure:
+// https://css-tricks.com/how-do-you-structure-javascript-the-module-pattern-edition/
 var s,
 Matrix = {
 	settings: {
@@ -125,27 +127,34 @@ Matrix = {
 		field.restore();
 	},
 	drawTasks: function(taskData, topicData, width, height) {
+		// TODO draw everything new or check if it is there?
+		$('#dots').empty();
 		// how to find out if tasks are on the same spot
 		var that = this;
 		var taken = [];
 		// Hilfsvariablen
 		// durch alle übergebenen Aufgaben
 		taskData.forEach(function(task){
-			// check überschneidungen
-			var dot = doubles(taken, task.x, task.y);
-			task.x = dot.date;
-			task.y = dot.imp;
 			var colorIndex = task.topic;
-			var topicColor = topicData[colorIndex]['color'];
-			// eigentlichen Punkt kreieren und zeichnen
-			that.drawDot(task, topicColor);
-			// Array mit bereits gezeichneten Koordinaten
-			taken.push(dot);
+			if(topicData[colorIndex]['displayed'] == false) {
+				// that.deleteDot(task);
+			} else {
+				// check überschneidungen
+				var dot = doubles(taken, task.x, task.y);
+				task.x = dot.date;
+				task.y = dot.imp;
+				var topicColor = topicData[colorIndex]['color'];
+				// eigentlichen Punkt kreieren und zeichnen
+				that.drawDot(task, topicColor);
+				// Array mit bereits gezeichneten Koordinaten
+				taken.push(dot);
+			}
 		});
 	},
 	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
 	drawDot: function(task, color) {
 		// eigentlicher Kreis mit task_id in entsprechender Farbe des Topics
+		var clickHandler = "location.href='/matrix/"+task.id+"/tasks'"
 		var taskItem = $('<div/>', {
 			class: 'dot',
 			id: task.id,
@@ -155,7 +164,8 @@ Matrix = {
 				borderColor: color,
 				width: 7,
 				height: 7
-			}
+			},
+			onclick: clickHandler
 		});
 		$('#dots').append(taskItem);
 		// div mit den Aufgaben-Details
@@ -172,13 +182,47 @@ Matrix = {
 			text: 'Due Date: '+formatDate(task.due_date)+', Importance: '+formatImp(task.importance)
 		});
 		// anfügen, Erkennung des richtigen Kreises über task_id
-		$('#'+task.id).append(label);
-		$('#'+task.id).children('.label').append(title, attributes);
+		$('#dots').children('#'+task.id).append(label);
+		$('#dots').children('#'+task.id).children('.label').append(title, attributes);
+	},
+	deleteDot: function(task) {
+		$('#dots').children('#'+task.id).remove();
+		console.log("i removed "+task.id);
 	}
 };
 
 var Sidebar = {
-	drawButtons: function(topicData) {
+	button: function(topic_id) {
+		if(TopicData.data[topic_id].displayed == true) {
+			$('button#'+topic_id).css('background-color', '#f1f1f1');
+			$('button#'+topic_id).css('color', TopicData.data[topic_id].color);
+			TopicData.data[topic_id].displayed = false;
+			Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+		} else {
+			$('button#'+topic_id).css('background-color', TopicData.data[topic_id].color);
+			$('button#'+topic_id).css('color', '#fff');
+			TopicData.data[topic_id].displayed = true;
+			Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+		}
+	},
+	allButton: function() {
+		console.log($('button#all').css('background-color'));
+		if($('button#all').css('background-color') == 'rgb(192, 192, 192)') {
+			for(button in TopicData.data) {
+				if(TopicData.data[button].displayed == false) {
+						$('button#'+button).click();
+				}
+			}
+			$('button#all').css('background-color', '#eee');
+			console.log("changed color to #eee");
+		} else {
+			for(button in TopicData.data) {
+				if(TopicData.data[button].displayed == true) {
+						$('button#'+button).click();
+				}
+			}
+			$('button#all').css('background-color', 'rgb(192, 192, 192)');
+		}
 
 	}
 };

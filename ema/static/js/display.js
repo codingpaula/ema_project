@@ -9,4 +9,6 @@ $(function() {
   TaskData.getTasks(task_data);
   // Aufgaben in die Matrix zeichnen
   Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+  // onclick Funktionen der Buttons
+  //Sidebar.drawButtons();
 });

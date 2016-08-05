@@ -3,7 +3,11 @@ var TopicData = {
   data: {},
   /*
     verarbeite Daten, die Django liefert
-    id = {'color': .., 'name': ..}
+    id = {
+      'color': ..,
+      'name': ..,
+      'displayed': true or false
+    }
   */
   getTopics: function(topics) {
     // workaround um data zu editieren
@@ -12,7 +16,8 @@ var TopicData = {
       var id = topic.id;
       that.data[id] = {
         'color': topic.color,
-        'name': topic.topic_name
+        'name': topic.topic_name,
+        'displayed': true
       };
     });
   }

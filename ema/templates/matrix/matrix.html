@@ -32,14 +32,23 @@
         <ul class="noIndentList">
           {% for topic in all_topics %}
           <li class="topicList">
-            <button class="topicButton" onclick="{{ topic.topic_id }}" style="background-color: {{ topic.color }}; border: 1px solid {{ topic.color }}">
-              <input type="checkbox" id="{{ topic.color }}" name="{{ topic.topic_name }}" checked/>
-              <a href={% url 'matrix:topics' topic.id %}>
-                {{ topic.topic_name }}
-              </a>
+            <button class="topicButton"
+                    id="{{ topic.id }}"
+                    onclick="Sidebar.button({{ topic.id }});"
+                    style="background-color: {{ topic.color }};
+                          border: 1px solid {{ topic.color }}">
+              {{ topic.topic_name }}
             </button>
           </li>
           {% endfor %}
+          <li class="topicList">
+            <button class="topicButton"
+                    id="all"
+                    onclick="Sidebar.allButton();"
+                    style="margin-top: 15px;">
+              -- all --
+            </button>
+          </li>
         </ul>
         {% else %}
           <p>No topics are available.</p>
@@ -60,6 +69,20 @@
   <div id="Detail">
     <h1>Test1</h1>
     <p>Attributs</p>
+  </div>
+  <div id="NewTask">
+    <a href={% url 'matrix:adding' %}>
+      <button>
+        new Task
+      </button>
+    </a>
+  </div>
+  <div id="EditTask">
+    <!--form action="{#% url 'matrix:taskediting' %#}" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Update" />
+    </form-->
   </div>
 {% endblock content %}
 {% block javascript %}
