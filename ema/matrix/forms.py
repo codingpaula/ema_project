@@ -1,4 +1,5 @@
 from django.forms import ModelForm
+from django import forms
 
 from .models import Task, Topic
 from .utils import get_user_colors
@@ -23,6 +24,7 @@ create new Topic
 used in views.AddTopicView
 """
 class TopicForm(ModelForm):
+    color = forms.ChoiceField(widget=forms.RadioSelect, choices=Topic.COLOR_OPTIONS)
     class Meta:
         model = Topic
         fields = ['topic_name', 'topic_description', 'color']

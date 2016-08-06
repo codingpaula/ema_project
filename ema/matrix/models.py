@@ -71,8 +71,6 @@ class Topic(TimeStampedModel):
         (REBECCAPURPLE, 'darkpurple'),
         (MEDIUMORCHID, 'orchid'),
     ]
-    """ TODO find color picker """
-    # validator for not the same color per user --> used in ModelForm automatically!
     color = models.CharField(max_length=15,
                             choices=COLOR_OPTIONS,
                             default=BLACK)

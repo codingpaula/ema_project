@@ -55,14 +55,24 @@ a:active {
 	color: #777;
 }
 
-p {
-
-}
-
 .colorSelection {
 	display: inline-block;
 	width: 30px;
 	height: 30px;
+	margin: 5px;
+	border: 1px solid #eee;
+}
+
+.colorSelection:hover {
+	border: 1px solid #222;
+}
+
+.selectionList {
+	display: inline-block;
+}
+
+.selectionList input[type=radio] {
+	/* display: none; */
 }
 
 .main {
