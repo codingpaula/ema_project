@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 
-from models import Task, Topic
+from .models import Task, Topic
+from .utils import get_user_colors
 
 """
 create new Task
@@ -25,3 +26,11 @@ class TopicForm(ModelForm):
     class Meta:
         model = Topic
         fields = ['topic_name', 'topic_description', 'color']
+
+    def __init__(self, user, *args, **kwargs):
+        super(TopicForm, self).__init__(*args, **kwargs)
+
+        # get different list of choices here
+        topics = Topic.objects.filter(topic_owner=user)
+        choices = get_user_colors(self.fields["color"].choices, topics)
+        self.fields["color"].choices = choices

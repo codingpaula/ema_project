@@ -10,6 +10,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 from .models import Topic, Task
 from .forms import TaskForm, TopicForm
+from .utils import get_user_colors
 
 """
 view for startpage after login - matrix
@@ -60,11 +61,11 @@ class AddTopicView(View):
     template_name = 'matrix/addtopic.html'
 
     def get(self, request):
-        form = self.form_class()
+        form = self.form_class(user=request.user.id)
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        form = self.form_class(request.POST)
+        form = self.form_class(user=request.user.id, data=request.POST)
         if form.is_valid():
             topic_owner = request.user
             topic_name = form.cleaned_data['topic_name']
