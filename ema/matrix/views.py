@@ -32,26 +32,6 @@ def matrix(request):
                     {'all_topics': all_topics, 'all_tasks': all_tasks,
                     'end_data': end_data, 'topic_data': topic_data})
 
-def matrix_test(request):
-    all_topics = Topic.objects.filter(topic_owner=request.user.id)
-    all_tasks = Task.objects.filter(topic__topic_owner=request.user.id)
-    type_prefix = {'_id': '/type/task', 'name': 'tasks', 'properties': {
-            'topic': {'name': 'Topic', 'type': 'string'},
-            'due_date': {'name': 'Due Date', 'type': 'string'},
-            'importance': {'name': 'Importance', 'type': 'number'},
-            'task_description': {'name': 'Task Description', 'type': 'string'},
-            'done': {'name': 'Done', 'type': 'boolean'},
-            'task_name': {'name': 'Task Name', 'type': 'string'},
-            'id': {'name': 'ID', 'type': 'number'} },
-        'indexes': {'by_name': ['id']} }
-    data = [model_to_dict(instance) for instance in all_tasks]
-    response_data = {}
-    response_data['type'] = type_prefix
-    response_data['objects'] = data
-    end_data = json.dumps(response_data, cls=DjangoJSONEncoder)
-    return render(request, 'matrix/matrix_test.html',
-                    {'all_topics': all_topics, 'all_tasks': all_tasks,
-                    'end_data': end_data})
 """
 new topic:
 uses TopicForm
