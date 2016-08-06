@@ -16,6 +16,10 @@
   <button>Edit this task!</button>
 </a>
 
+<a href={% url 'matrix:taskdeleting' task.id %}>
+  <button>Delete this task!</button>
+</a>
+
 <a href={% url 'matrix:adding' %}>
   <button>Add a new task!</button>
 </a>

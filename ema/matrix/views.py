@@ -67,6 +67,7 @@ uses TaskForm
 @params: topic_id
 """
 class AddTaskView(View):
+    login_url = '/account/login/'
     form_class = TaskForm
     template_name = 'matrix/adding.html'
 
@@ -148,7 +149,9 @@ class TaskUpdate(UpdateView):
 
 class TaskDelete(DeleteView):
     model = Task
-    fields = ['task_name', 'task_description', 'importance', 'due_date']
+    success_url = 'matrix/matrix.html'
+    def get_object(self):
+        return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
 
 class TopicUpdate(UpdateView):
     model = Topic
