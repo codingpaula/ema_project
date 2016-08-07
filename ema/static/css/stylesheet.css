@@ -72,7 +72,7 @@ a:active {
 }
 
 .selectionList input[type=radio] {
-	/* display: none; */
+	display: none;
 }
 
 .main {
