@@ -1,13 +1,31 @@
-{% extends 'base.html' %}
-{# startpage #}
-{# TODO: schöner machen #}
-{% block content %}
-  <h1>Herzlich Willkommen bei der Eisenhower Matrix App!</h1>
-  <p>Ein Tool für Ihr Zeitmanagement.</p>
-  <button>
-    <a href={% url 'profiles:login' %}>einloggen</a>
-  </button>
-  <button>
-    <a href={% url 'profiles:register' %}>registrieren</a>
-  </button>
-{% endblock content %}
+{% load staticfiles %}
+<html>
+  <head>
+    <meta charset='UTF-8'/>
+    <title>
+      {% block title %}
+      {# different titles for different tabs, standard: #}
+        Eisenhower Matrix
+      {% endblock title %}
+    </title>
+    {% block stylesheets %}
+    {# change stylesheets per tab #}
+      <link rel="stylesheet" type="text/css"
+            href={% static "css/stylesheet.css" %}>
+    {% endblock stylesheets %}
+  </head>
+  <body class="loginbody">
+    {# startpage #}
+    {# TODO: schöner machen #}
+    <div class="loginpage">
+      <h1>Herzlich Willkommen bei der Eisenhower Matrix App!</h1>
+      <p>Ein Tool für Ihr Zeitmanagement.</p>
+      <button class="emaButton emaLogin">
+        <a href={% url 'profiles:login' %}>einloggen</a>
+      </button>
+      <button class="emaButton emaRegister">
+        <a href={% url 'profiles:register' %}>registrieren</a>
+      </button>
+    </div>
+  </body>
+</html>

@@ -55,6 +55,20 @@ a:active {
 	color: #777;
 }
 
+.loginbody {
+	background-color: #ddd;
+}
+
+.loginpage {
+	background-color: #f1f1f1;
+	margin: 100px auto 100px auto;
+	padding: 20px 30px 25px 30px;
+	width: 25%;
+	text-align: center;
+	border-radius: 10px;
+	font-size: 18px;
+}
+
 .colorSelection {
 	display: inline-block;
 	width: 30px;
@@ -85,7 +99,70 @@ a:active {
   	margin-bottom: 100px; */
 }
 
+.messages {
+	position: absolute;
+	right: 20px;
+	top: 60px;
+	width: 20%;
+	background-color: gold;
+	border-radius: 5px;
+	border: 1px solid gold;
+	z-index: 300;
+	padding: 15px 2px 15px 15px;
+	opacity:0.75;
+}
+
+.messages span {
+	margin: 2px auto;
+}
+
+.messages:hover {
+	border: 1px solid #333;
+}
+
+.text {
+	display: inline-block;
+	width: 80%;
+}
+
+.close {
+	display: inline-block;
+	width: 10%;
+	vertical-align: top;
+	text-align: right;
+	font-size: 16px;
+}
+
+.close:hover {
+	font-weight: 300;
+}
+
 /* buttons */
+.emaButton {
+	border-radius: 4px;
+	padding: 12px 15px;
+	font-size: 14px;
+}
+
+.emaButton a {
+	color: white;
+}
+
+.emaButton:hover {
+	border-color: black;
+}
+
+.emaLogin {
+	border: 1px solid olivedrab;
+	background-color: olivedrab;
+}
+
+.emaRegister {
+	border: 1px solid crimson;
+	background-color: crimson;
+	margin-left: 20px;
+}
+
 .topicButton {
 	border-radius: 4px;
 	color: #fff;
