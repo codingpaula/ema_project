@@ -14,7 +14,18 @@
     <li><a href={% url 'matrix:adding' %}>+</a></li>
   </ul>
 {% else %}
-  <a href={% url 'matrix:adding' %}>add a task to the topic
-        {{ topic.topic_name }}</a>
+  <a href={% url 'matrix:adding' %}>
+    add a task to the topic {{ topic.topic_name }}
+  </a>
 {% endif %}
+<button>
+  <a href={% url 'matrix:topicediting' topic.id %}>
+    edit this topic
+  </a>
+</button>
+<button>
+  <a href={% url 'matrix:topicdeleting' topic.id %}>
+    delete this topic
+  </a>
+</button>
 {% endblock content %}

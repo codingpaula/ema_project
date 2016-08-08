@@ -6,10 +6,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.db import models
 
-# Validators
-
-
-# Create your models here.
 # meta class for the fields created and modified
 class TimeStampedModel(models.Model):
     """

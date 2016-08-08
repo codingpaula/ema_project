@@ -5,26 +5,37 @@ from django.contrib.auth.decorators import login_required
 
 from . import views
 from .views import AddTopicView, AddTaskView, TaskUpdate, TaskCreate
-from .views import TopicUpdate, TaskDelete
+from .views import TopicUpdate, TaskDelete, TopicDelete
 
 urlpatterns = [
     # /matrix/
     url(r'^$', views.matrix, name='matrix'),
     # /matrix/addtopic
-    url(r'^addtopic/$', AddTopicView.as_view(), name='addtopic'),
+    url(r'^addtopic/$',
+            login_required(AddTopicView.as_view()),
+            name='addtopic'),
     # /matrix/5/
     url(r'^(?P<topic_id>[0-9]+)/$', views.topics, name='topics'),
     # /matrix/5/tasks
     url(r'^(?P<task_id>[0-9]+)/tasks/$', views.tasks, name='tasks'),
     # /matrix/5/adding
-    # url(r'^(?P<topic_id>[0-9]+)/adding/$', TaskCreate.as_view(), name='adding'),
-    # url(r'^(?P<topic_id>[0-9]+)/adding/$', AddTaskView.as_view(), name='adding'),
-    url(r'^adding/$', login_required(AddTaskView.as_view()), name='adding'),
+    url(r'^adding/$',
+            login_required(AddTaskView.as_view()),
+            name='adding'),
     # /matrix/5/edittopic
-    url(r'^(?P<topic_id>[0-9]+)/topicediting/$', TopicUpdate.as_view(),
+    url(r'^(?P<topic_id>[0-9]+)/edittopic/$',
+            login_required(TopicUpdate.as_view()),
             name='topicediting'),
+    # /matrix/5/deletetopic
+    url(r'^(?P<topic_id>[0-9]+)/deletetopic/$',
+            login_required(TopicDelete.as_view()),
+            name='topicdeleting'),
     # /matrix/5/tasks/editing
-    url(r'^(?P<task_id>[0-9]+)/taskediting/$', TaskUpdate.as_view(), name='taskediting'),
+    url(r'^(?P<task_id>[0-9]+)/taskediting/$',
+            login_required(TaskUpdate.as_view()),
+            name='taskediting'),
     # /matrix/5/tasks/deleting
-    url(r'^(?P<task_id>[0-9]+)/taskdeleting/$', TaskDelete.as_view(), name='taskdeleting')
+    url(r'^(?P<task_id>[0-9]+)/taskdeleting/$',
+            login_required(TaskDelete.as_view()),
+            name='taskdeleting')
 ]

@@ -56,7 +56,7 @@ class AddTopicView(View):
                                 topic_description = topic_description,
                                 color = color, topic_owner = topic_owner)
             new_topic.save()
-            messages.info(request, 'Topic %s successfully created.' % new_topic.topic_name)
+            messages.info(request, 'Topic "%s" successfully created.' % new_topic.topic_name)
             return HttpResponseRedirect('/matrix/')
 
         return render(request, self.template_name, {'form': form})
@@ -90,7 +90,7 @@ class AddTaskView(View):
                                 due_date = due_date, importance = importance,
                                 topic = topic)
             new_task.save()
-            messages.info(request, 'Task %s successfully created.' % new_task.task_name)
+            messages.info(request, 'Task "%s" successfully created.' % new_task.task_name)
             return HttpResponseRedirect('/matrix/')
 
         return render(request, self.template_name, {'form': form})
@@ -149,7 +149,16 @@ class TaskUpdate(UpdateView):
 
 class TaskDelete(DeleteView):
     model = Task
-    success_url = 'matrix/matrix.html'
+    success_url = '/matrix/matrix.html'
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        objects_topic = Topic.objects.get(pk=self.object.topic)
+        if objects_topic.topic_owner == request.user:
+            context = self.get_context_data(object=self.object)
+            return self.render_to_response(context)
+        else:
+            messages.info(request, 'Permission denied!')
+
     def get_object(self):
         return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
 
@@ -157,5 +166,30 @@ class TopicUpdate(UpdateView):
     model = Topic
     fields = ['topic_name', 'topic_description', 'color']
     template_name = 'matrix/topicediting.html'
+    def get_object(self):
+        return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))
+
+class TopicDelete(DeleteView):
+    model = Topic
+    success_url = '/matrix/'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.topic_owner == request.user:
+            context = self.get_context_data(object=self.object)
+            return self.render_to_response(context)
+        else:
+            messages.info(request, 'Permission denied!')
+            return HttpResponseRedirect('/matrix/')
+
+    def post(self, request, *args, **kwargs):
+        messages.info(request, 'Topic "%s" successfully deleted.' % self.get_object())
+        return self.delete(request, *args, **kwargs)
+
+    # def delete(self, request, *args, **kwargs):
+
+
+    # TODO cancel button
+    # TODO delete all tasks of this Topic
     def get_object(self):
         return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))

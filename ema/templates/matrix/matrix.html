@@ -9,13 +9,16 @@
   var topic_data = {{ topic_data|safe }};
 </script>
   {% if messages %}
-  <div>
-    <ul>
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  </div>
+    {% for message in messages %}
+    <div class="messages">
+      <div class="text">
+        <span>{{ message }}</span>
+      </div>
+      <div class="close">
+        <button class="closeNotification">x</button>
+      </div>
+    </div>
+    {% endfor %}
   {% endif %}
   <div id="MatrixSettings">
     <div id="Topics" class="container">
