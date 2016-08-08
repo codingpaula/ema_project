@@ -1,0 +1,10 @@
+{% extends 'matrix_base.html' %}
+{% load staticfiles %}
+{% block content %}
+<form action="" method="post">
+  {% csrf_token %}
+  <p>Are you sure you want to delete "{{ object }}"?</p>
+  <p>This will delete all the topic's tasks!</p>
+  <input type="submit" value="Confirm" />
+</form>
+{% endblock content %}
