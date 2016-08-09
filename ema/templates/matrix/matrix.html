@@ -1,21 +1,18 @@
 {% extends "matrix_base.html" %}
 {% load staticfiles %}
-{% block js %}
-<script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
-{% endblock js %}
 {% block content %}
 <script>
   var task_data = {{ end_data|safe }};
   var topic_data = {{ topic_data|safe }};
 </script>
   <div id="MatrixSettings">
-    <div id="Topics" class="container">
+    <div id="Topics" class="myContainer">
       <div class="align-left">
         <h3>Topics</h3>
       </div>
       <div class="align-right" class="add">
         <a href={% url 'matrix:addtopic' %}>
-          <button>+</button>
+          <button class="btn btn-default btn-sm">+</button>
         </a>
       </div>
       <div>
@@ -65,7 +62,19 @@
     </canvas>-->
     <div id="dots" style="width: 900px; height:725px; background-image: url({% static "pictures/matrix.png" %});" onclick="location.href={% url 'matrix:adding' %};"></div>
   </div>
-  <div id="Detail" onclick="location.href={% url 'matrix:adding' %};">
+  <div>
+    <table>
+      <tr>
+        <td><strong>due date:</strong></td>
+        <td>Wed, 18 December</td>
+      </tr>
+      <tr>
+        <td><strong>importance:</strong></td>
+        <td>not important</td>
+      </tr>
+    </table>
+  </div>
+  <!--div id="Detail" onclick="location.href={% url 'matrix:adding' %};">
     <h1>Test1</h1>
     <p>Attributs</p>
   </div>
@@ -77,13 +86,18 @@
     </a>
   </div>
   <div id="EditTask">
-    <!--form action="{#% url 'matrix:taskediting' %#}" method="post">
+    <form action="{#% url 'matrix:taskediting' %#}" method="post">
       {% csrf_token %}
       {{ form.as_p }}
       <input type="submit" value="Update" />
     </form-->
   </div>
 {% endblock content %}
+{% block modals %}
+<div class="modal">
+
+</div>
+{% endblock modals %}
 {% block javascript %}
   <script type="text/javascript" src={% static "js/daten.js" %}></script>
   <script type="text/javascript" src={% static "js/matrix.js" %}></script>

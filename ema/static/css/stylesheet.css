@@ -182,6 +182,7 @@ a:active {
 	border: 1px solid #f1f1f1;
 	padding: 8px;
 	width: 90%;
+	font-size: 11px;
 }
 
 .closeNotification {
@@ -194,7 +195,7 @@ a:active {
 	cursor: hand;
 }
 
-.navbar div {
+.emaNavbar div {
 	display: inline-block;
 	padding: 3px 5px 3px 5px;
 	margin: 3px 3%;
@@ -203,7 +204,7 @@ a:active {
 	margin-left: 18%;
 }
 
-.navbar {
+.emaNavbar {
 	width: 99.4%;
 	text-align: center;
 	overflow: hidden;
@@ -213,7 +214,7 @@ a:active {
 	text-transform: uppercase;
 }
 
-.navbar ul {
+.emaNavbar ul {
 	margin: 0 auto;
 }
 
@@ -235,6 +236,7 @@ a:active {
 	text-align: center;
 }
 .noIndentList {
+	margin-top: 14px;
 	list-style: inside;
 	list-style-type: none;
 	padding: 0;
@@ -246,12 +248,12 @@ a:active {
 	margin: 3px 0 10px 3px;
 	padding-left: 0;
 }
-.container:after {
+.myContainer:after {
 	content:"";
 	display: table;
 	clear: both;
 }
-.container {
+.myContainer {
 	width: 100%;
 	position: relative;
 }
@@ -283,7 +285,7 @@ a:active {
 	border: 1px dashed blue;
 	background-color: white;
 }
-.navbar li {
+.emaNavbar li {
 	display: inline;
 }
 
@@ -297,6 +299,7 @@ a:active {
 	padding: 2px 1% 5px 1%;
 }
 #MatrixSettings h3 {
+	font-size: 18px;
 	padding: 3px;
 	border-bottom: 1px solid #777;
 }
