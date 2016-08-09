@@ -8,8 +8,6 @@ from . import views
 urlpatterns = [
     #/account/
     url(r'^$', views.account, name='account'),
-    #/account/index/
-    url(r'^index/$', views.index, name='index'),
     #/account/login/
     url(r'^login/$', login, name='login'),
     #/account/loggedout/

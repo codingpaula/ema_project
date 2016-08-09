@@ -20,9 +20,23 @@
     <div class="loginpage">
       <h1>Herzlich Willkommen bei der Eisenhower Matrix App!</h1>
       <p>Ein Tool für Ihr Zeitmanagement.</p>
-      <button class="emaButton emaLogin">
-        <a href={% url 'profiles:login' %}>einloggen</a>
-      </button>
+      <form method="post" action="{% url 'profiles:index' %}">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="fieldWrapper">
+          {{ form.username.errors }}
+          <label for="{{ form.username.id_for_label }}">Username:</label>
+          {{ form.username }}
+        </div>
+        <div class="fieldWrapper">
+          {{ form.password.errors }}
+          <label for="{{ form.password.id_for_label }}">Password:</label>
+          {{ form.password }}
+        </div>
+        <input class="emaButton emaLogin" type="submit" value="login" />
+        <input type="hidden" name="next" value="{{ next }}" />
+      </form>
+      <p>Don't have an account yet?</p>
       <button class="emaButton emaRegister">
         <a href={% url 'profiles:register' %}>registrieren</a>
       </button>
