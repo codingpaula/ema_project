@@ -38,6 +38,11 @@ input {
 	margin: 5px 10px 15px 10px;
 }
 
+input[type=text],
+input[type=password] {
+	padding: 5px;
+}
+
 /* links */
 a {
 	text-decoration: none;
@@ -133,34 +138,42 @@ a:active {
 	font-size: 16px;
 }
 
-.close:hover {
-	font-weight: 300;
-}
-
 /* buttons */
+/* Grundstruktur */
 .emaButton {
 	border-radius: 4px;
-	padding: 12px 15px;
+	/* padding: 8px 10px; */
 	font-size: 14px;
+	color: white;
 }
 
 .emaButton a {
 	color: white;
+	display: block;
+	padding: 8px 10px;
 }
 
 .emaButton:hover {
 	border-color: black;
 }
 
+/* einzelne Buttons */
 .emaLogin {
 	border: 1px solid olivedrab;
 	background-color: olivedrab;
+	width: 60%;
+	padding: 8px 10px;
 }
 
 .emaRegister {
 	border: 1px solid crimson;
 	background-color: crimson;
-	margin-left: 20px;
+	width: 60%;
+}
+
+.emaNormal {
+	border: 1px solid dodgerblue;
+	background-color: dodgerblue;
 }
 
 .topicButton {
@@ -169,6 +182,16 @@ a:active {
 	border: 1px solid #f1f1f1;
 	padding: 8px;
 	width: 90%;
+}
+
+.closeNotification {
+
+}
+
+.closeNotification:hover {
+	color: grey;
+	cursor: pointer;
+	cursor: hand;
 }
 
 .navbar div {

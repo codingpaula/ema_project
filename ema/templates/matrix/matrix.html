@@ -8,6 +8,7 @@
   var task_data = {{ end_data|safe }};
   var topic_data = {{ topic_data|safe }};
 </script>
+  {% block messages %}
   {% if messages %}
     {% for message in messages %}
     <div class="messages">
@@ -15,11 +16,12 @@
         <span>{{ message }}</span>
       </div>
       <div class="close">
-        <button class="closeNotification">x</button>
+        <span class="closeNotification">x</span>
       </div>
     </div>
     {% endfor %}
   {% endif %}
+  {% endblock messages %}
   <div id="MatrixSettings">
     <div id="Topics" class="container">
       <div class="align-left">
@@ -52,6 +54,14 @@
               -- all --
             </button>
           </li>
+          <li class="topicList">
+            <button class="topicButton"
+                    id="editTopics"
+                    onclick="Sidebar.editTopics();"
+                    sytle="margin-top: 10px;">
+              edit topics
+            </button>
+          </li>
         </ul>
         {% else %}
           <p>No topics are available.</p>
@@ -67,9 +77,9 @@
       The Eisenhower Matrix! If you are seeing this text, your browser does
       not support this website. Please update or download Firefox or Opera.
     </canvas>-->
-    <div id="dots" style="width: 900px; height:725px; background-image: url({% static "pictures/matrix.png" %});"></div>
+    <div id="dots" style="width: 900px; height:725px; background-image: url({% static "pictures/matrix.png" %});" onclick="location.href={% url 'matrix:adding' %};"></div>
   </div>
-  <div id="Detail">
+  <div id="Detail" onclick="location.href={% url 'matrix:adding' %};">
     <h1>Test1</h1>
     <p>Attributs</p>
   </div>
