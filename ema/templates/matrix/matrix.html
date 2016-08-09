@@ -8,20 +8,6 @@
   var task_data = {{ end_data|safe }};
   var topic_data = {{ topic_data|safe }};
 </script>
-  {% block messages %}
-  {% if messages %}
-    {% for message in messages %}
-    <div class="messages">
-      <div class="text">
-        <span>{{ message }}</span>
-      </div>
-      <div class="close">
-        <span class="closeNotification">x</span>
-      </div>
-    </div>
-    {% endfor %}
-  {% endif %}
-  {% endblock messages %}
   <div id="MatrixSettings">
     <div id="Topics" class="container">
       <div class="align-left">
