@@ -193,15 +193,11 @@ class TopicDelete(DeleteView):
             messages.info(request, 'Permission denied!')
             return HttpResponseRedirect('/matrix/')
 
-    # delete cascade
+    # delete cascade in models.py
     def post(self, request, *args, **kwargs):
         messages.info(request, 'Topic "%s" successfully deleted.' % self.get_object())
         return self.delete(request, *args, **kwargs)
 
-    # def delete(self, request, *args, **kwargs):
-
-
     # TODO cancel button
-    # TODO delete all tasks of this Topic
     def get_object(self):
         return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))
