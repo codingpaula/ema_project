@@ -16,6 +16,11 @@
 }
 
 /* Aufgaben-Details (nur angezeigt bei Mouse-hover) */
+.dot .dotName {
+  font-size: 8px;
+  width: 200px;
+}
+
 .dot .label {
   display: none;
   position: absolute;
