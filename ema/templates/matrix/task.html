@@ -10,6 +10,7 @@
   <li><small>Importance:</small> {{ task.get_importance_display }}</li>
   <li><small>Due Date:</small> {{ task.due_date }}</li>
   <li><small>Task was created:</small> {{ task.created }}</li>
+  <li><small>Done?</small> {% if task.done == False %}no{% else %}yes{% endif %}</li>
 </ul>
 
 <a href={% url 'matrix:taskediting' task.id %}>

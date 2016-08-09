@@ -23,11 +23,13 @@ def matrix(request):
     data = [model_to_dict(instance) for instance in all_topics]
     to_data['topics'] = data
     topic_data = json.dumps(to_data, cls=DjangoJSONEncoder)
-    all_tasks = Task.objects.filter(topic__topic_owner=request.user.id)
+    all_tasks = Task.objects.filter(topic__topic_owner=request.user.id, done=False)
     data = [model_to_dict(instance) for instance in all_tasks]
     response_data = {}
     response_data['objects'] = data
     end_data = json.dumps(response_data, cls=DjangoJSONEncoder)
+
+    # locals()
     return render(request, 'matrix/matrix.html',
                     {'all_topics': all_topics, 'all_tasks': all_tasks,
                     'end_data': end_data, 'topic_data': topic_data})
@@ -124,6 +126,15 @@ def tasks(request, task_id):
         return HttpResponseRedirect('/matrix/')
 
 """
+shows all tasks that have been marked done, since they won't show up in matrix
+anymore
+"""
+@login_required(login_url='/account/login')
+def done_tasks(request):
+    dones = Task.objects.filter(topic__topic_owner=request.user.id, done=True)
+    return render(request, 'matrix/done_tasks.html', {'dones': dones})
+
+"""
 TODO: editing
 """
 def edittopic(request, topic_id):
@@ -142,7 +153,7 @@ class TaskCreate(CreateView):
 class TaskUpdate(UpdateView):
     model = Task
     #form_class = TaskForm
-    fields = ['task_name', 'task_description', 'importance', 'due_date']
+    fields = ['task_name', 'task_description', 'importance', 'due_date', 'done']
     template_name = 'matrix/taskediting.html'
     def get_object(self):
         return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
@@ -182,6 +193,7 @@ class TopicDelete(DeleteView):
             messages.info(request, 'Permission denied!')
             return HttpResponseRedirect('/matrix/')
 
+    # delete cascade
     def post(self, request, *args, **kwargs):
         messages.info(request, 'Topic "%s" successfully deleted.' % self.get_object())
         return self.delete(request, *args, **kwargs)
