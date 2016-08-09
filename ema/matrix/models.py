@@ -20,7 +20,7 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 class Topic(TimeStampedModel):
-    topic_owner = models.ForeignKey(settings.AUTH_USER_MODEL)
+    topic_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     topic_name = models.CharField(max_length=30)
     topic_description = models.TextField(blank=True)
     BLACK = 'black'
