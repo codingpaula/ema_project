@@ -11,7 +11,7 @@ used in views.AddTaskView
 class TaskForm(ModelForm):
     class Meta:
         model = Task
-        fields = ['task_name', 'task_description', 'due_date', 'importance', 'topic']
+        fields = ['task_name', 'task_description', 'due_date', 'importance', 'topic', 'done']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs['user']

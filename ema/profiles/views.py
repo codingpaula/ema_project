@@ -1,6 +1,6 @@
 from django import forms
 from django.core.urlresolvers import reverse
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
@@ -13,7 +13,9 @@ redirect, falls schon eingeloggt zur Matrix
 def index(request):
     if request.user.is_authenticated():
         return redirect('/matrix')
-    else: return render(request, 'profiles/index.html')
+    else:
+        form = AuthenticationForm(request)
+        return render(request, 'profiles/index.html', {'form': form})
 
 """
 wird nach Login angezeigt

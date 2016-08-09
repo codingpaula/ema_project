@@ -20,7 +20,7 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 class Topic(TimeStampedModel):
-    topic_owner = models.ForeignKey(settings.AUTH_USER_MODEL)
+    topic_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     topic_name = models.CharField(max_length=30)
     topic_description = models.TextField(blank=True)
     BLACK = 'black'
@@ -80,7 +80,7 @@ class Topic(TimeStampedModel):
 class Task(TimeStampedModel):
     task_name = models.CharField(max_length=200)
     task_description = models.TextField(blank=True)
-    topic = models.ForeignKey(Topic)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     NOT_IMPORTANT = '0'
     LESS_IMPORTANT = '1'
     IMPORTANT = '2'

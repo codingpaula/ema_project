@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block navbar %}
+  {% include "navbar.html" with active_tab='EMA' %}
+{% endblock navbar %}
+{% block content %}
+<div>
+  <h1>These are your accomplished tasks!</h1>
+  <ul>
+  {% for done in dones %}
+    <li><a href={% url 'matrix:tasks' done.id %}>{{ done.task_name }}</a></li>
+  {% endfor %}
+  </ul>
+</div>
+{% endblock content %}
+{% block footer %}
+  {% include "footer.html" %}
+{% endblock footer %}

@@ -66,7 +66,7 @@ ROOT_URLCONF = 'config.urls'
 
 LOGIN_URL = '/account/login/'
 
-LOGIN_REDIRECT_URL = '/account/'
+LOGIN_REDIRECT_URL = '/matrix/'
 
 TEMPLATES = [
     {

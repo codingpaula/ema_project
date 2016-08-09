@@ -37,5 +37,7 @@ urlpatterns = [
     # /matrix/5/tasks/deleting
     url(r'^(?P<task_id>[0-9]+)/taskdeleting/$',
             login_required(TaskDelete.as_view()),
-            name='taskdeleting')
+            name='taskdeleting'),
+    # /matrix/done_tasks
+    url(r'^done_tasks/$', views.done_tasks, name='done_tasks')
 ]

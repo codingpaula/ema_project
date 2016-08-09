@@ -10,6 +10,11 @@
   {% else %}
     <h1>Please <a href="{% url 'profiles:login' %}">log in</a>.</h1>
   {% endif %}
+  <div>
+    <button class="emaButton emaNormal">
+      <a href={% url 'matrix:done_tasks' %}>done tasks</a>
+    </button>
+  </div>
 {% endblock content %}
 {% block footer %}
   {% include "footer.html" %}
