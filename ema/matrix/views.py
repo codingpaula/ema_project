@@ -5,6 +5,7 @@ from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.forms.models import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -28,11 +29,12 @@ def matrix(request):
     response_data = {}
     response_data['objects'] = data
     end_data = json.dumps(response_data, cls=DjangoJSONEncoder)
-
+    task_form = TaskForm(user=request.user.id)
     # locals()
     return render(request, 'matrix/matrix.html',
                     {'all_topics': all_topics, 'all_tasks': all_tasks,
-                    'end_data': end_data, 'topic_data': topic_data})
+                    'end_data': end_data, 'topic_data': topic_data,
+                    'task_form': task_form})
 
 """
 new topic:
@@ -97,6 +99,106 @@ class AddTaskView(View):
 
         return render(request, self.template_name, {'form': form})
 
+
+# source: django docs:
+#https://docs.djangoproject.com/en/1.8/topics/class-based-views/generic-editing/
+class AjaxableResponseMixin(object):
+    """
+    Mixin to add AJAX support to a form.
+    Must be used with an object-based FormView (e.g. CreateView)
+    """
+    def form_invalid(self, form):
+        response = super(AjaxableResponseMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            print "got something"
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+    def form_valid(self, form):
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        response = super(AjaxableResponseMixin, self).form_valid(form)
+        if self.request.is_ajax():
+            print "got something"
+            data = {
+                'task_name': self.object.task_name,
+                'task_description': self.object.task_description,
+                'due_date': self.object.due_date,
+                'importance': self.object.importance,
+                'topic': self.object.topic,
+                'pk': self.object.pk,
+            }
+            return JsonResponse(data)
+        else:
+            return response
+
+class TaskCreate(SuccessMessageMixin, AjaxableResponseMixin, CreateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'matrix/adding.html'
+    success_message = "Task '%(task_name)s' was successfully created!"
+    success_url = '/matrix'
+
+    def get_form_kwargs(self):
+        kwargs = super(TaskCreate, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+class TopicCreate(SuccessMessageMixin, CreateView):
+    model = Topic
+    form_class = TopicForm
+    template_name = 'matrix/addtopic.html'
+    success_message = "Topic '%(topic_name)s' was successfully created!"
+    success_url = '/matrix'
+
+    def get_form_kwargs(self):
+        kwargs = super(TopicCreate, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+def create_task(request):
+    print("in the create_task function")
+    if request.method == 'POST':
+        print("request is POST")
+        form = TaskForm(request.POST, user=request.user)
+        print("form was inited")
+        if form.is_valid():
+            task_name = request.POST.get('task_name')
+            task_description = request.POST.get('task_description')
+            due_date = request.POST.get('due_date')
+            importance = request.POST.get('importance')
+            topic = Topic.objects.get(pk=request.POST.get('topic'))
+
+            new_task = Task(task_name = task_name, task_description =
+                        task_description, topic = topic, due_date =
+                        due_date, importance = importance)
+            new_task.save()
+            task = Task.objects.filter(task_name=task_name)
+            print(task)
+            all_tasks = Task.objects.filter(topic__topic_owner=request.user.id, done=False)
+            data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
+            response_data = {}
+            response_data['objects'] = data
+            print("did do json")
+            messages.info("Task '%(task_name)s' was successfully created!")
+            return HttpResponse(data, content_type="application/json")
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
+
+class AJAXCreateTaskView(View):
+    def post(self, request):
+        form = TaskForm(request.POST, user=request.user.id)
+        # if form.is_valid():
+
+
+    def get(self, request):
+        form = TaskForm(user=request.user.id)
+
 """
 shows all the topics of the logged in owner
 @params: topic_id
@@ -145,14 +247,9 @@ def editing(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     return render(request, 'matrix/taskediting.html', {'task': task})
 
-class TaskCreate(CreateView):
-    model = Task
-    fields = ['task_name', 'task_description', 'importance', 'due_date']
-    template_name = 'matrix/adding.html'
 
 class TaskUpdate(UpdateView):
     model = Task
-    #form_class = TaskForm
     fields = ['task_name', 'task_description', 'importance', 'due_date', 'done']
     template_name = 'matrix/taskediting.html'
     def get_object(self):

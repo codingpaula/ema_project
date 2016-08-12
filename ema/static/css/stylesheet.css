@@ -138,6 +138,10 @@ a:active {
 	font-size: 16px;
 }
 
+.displayForms {
+	display: none;
+}
+
 /* buttons */
 /* Grundstruktur */
 .emaButton {

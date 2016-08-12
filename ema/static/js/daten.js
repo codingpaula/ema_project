@@ -43,8 +43,10 @@ var TaskData = {
   getTasks: function(tasks) {
     // workaround um data zu editieren
     var that = this;
+    var help = "";
+    that.data = [];
     var index = 0;
-    task_data.objects.forEach(function(task) {
+    tasks.forEach(function(task) {
       that.data[index] = {
         // TODO Berechnung?
         'x': dateCoordinate(task.due_date),
@@ -57,7 +59,9 @@ var TaskData = {
         'topic': task.topic
       };
       index += 1;
+      help = task.task_name;
     });
+    console.log("last item is: "+help);
   }
 };
 

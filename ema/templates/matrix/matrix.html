@@ -60,7 +60,7 @@
       The Eisenhower Matrix! If you are seeing this text, your browser does
       not support this website. Please update or download Firefox or Opera.
     </canvas>-->
-    <div id="dots" style="width: 900px; height:725px; background-image: url({% static "pictures/matrix.png" %});" onclick="location.href={% url 'matrix:adding' %};"></div>
+    <div id="dots" style="width: 900px; height:725px; background-image: url({% static "pictures/matrix.png" %});"></div>
   </div>
   <div>
     <table>
@@ -73,6 +73,15 @@
         <td>not important</td>
       </tr>
     </table>
+  </div>
+  <button onclick="$('.displayForms').css('display', 'block');">add task</button>
+  <div class="displayForms">
+    <form action="{% url 'matrix:adding' %}" method="post"
+          class="ajaxFormCreateTask">
+      {% csrf_token %}
+      {{ task_form }}
+      <input type="submit" value="add task" />
+    </form>
   </div>
   <!--div id="Detail" onclick="location.href={% url 'matrix:adding' %};">
     <h1>Test1</h1>
@@ -101,5 +110,6 @@
 {% block javascript %}
   <script type="text/javascript" src={% static "js/daten.js" %}></script>
   <script type="text/javascript" src={% static "js/matrix.js" %}></script>
+  <script type="text/javascript" src={% static "js/ajax_forms.js" %}></script>
   <script type="text/javascript" src={% static "js/display.js" %}></script>
 {% endblock javascript %}
