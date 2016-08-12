@@ -1,0 +1,79 @@
+/* Aufgaben-Kreise */
+.dot {
+  position: absolute;
+  bottom: 0px;
+  opacity: 0.7;
+  border: 2px solid black;
+  border-radius: 5px;
+}
+
+.dot:hover {
+  background: steelblue;
+}
+
+.bar:hover {
+  opacity: 1.0;
+}
+
+/* Aufgaben-Details (nur angezeigt bei Mouse-hover) */
+.dot .dotName {
+  font-size: 8px;
+  width: 40px;
+}
+
+.dot .label {
+  display: none;
+  position: absolute;
+  bottom: -25px;
+  left: 10px;
+  right: 0;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid black;
+  width: 100px;
+  background-color: white;
+}
+
+.dot:hover .label {
+  display: block;
+}
+
+.dot .label h1 {
+  text-align: center;
+  font-size: 1em;
+}
+
+.dot .label p {
+  text-align: left;
+  font-size: 0.8em;
+}
+
+.dot .value {
+  font-weight: bold;
+  text-transform: uppercase;
+  position: absolute;
+  top: -25px;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+/* Matrix-Einstellungen */
+#Matrix {
+  display: inline-block;
+  border: 1px solid #111;
+  margin: 5px 1%;
+  padding: 10px 1%;
+  position: relative;
+  width: 73%;
+  background-size: 850px;
+  /* z-index:0; */
+  vertical-align: top;
+}
+
+/* div mit den Aufgaben-Kreisen */
+#dots {
+  position: relative;
+  display: block;
+  background-size: 900px;
+}

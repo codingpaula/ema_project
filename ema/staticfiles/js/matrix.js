@@ -1,157 +1,64 @@
-// var ema, matrix, canX, canY, mouseIsDown = 0;
-var circleObjects = [];
-var redrawCircle = false;
-// später aus der Datenbank
-var circles = [[850,600,'red'],[100,100,'red'],[200,200,'green'],[400,500,'black'],[700,100,'blue'],[90,300,'pink'],[600,200,'brown']];
-// ema = document.getElementById("ema");
-// matrix = ema.getContext("2d");
-
-// constructor for a task / circle
-function Circle(x,y,topicC) {
-	this.x = x || width-50;
-	this.y = y || height-50;
-	this.topicC = topicC || "black";
-	this.touched = false;
-	this.drawn = false;
-}
-
-// draw that particular circle
-Circle.prototype.drawCircle = function (field) {
-	field.beginPath();
-	field.arc(this.x, this.y, 5, 0, 2*Math.PI);
-	field.lineWidth = 2;
-	field.strokeStyle = this.topicC;
-	field.stroke();
-	this.drawn = true;
-}
-
-// when the mouse cursor howers over a circle, the middle of the circle is filled
-// TODO opens up div with description of the task
-Circle.prototype.howerCircle = function (field) {
-	field.beginPath();
-	field.arc (this.x, this.y, 1, 0, 2*Math.PI);
-	field.Width = 0.1;
-	field.strokeStyle = this.topicC;
-	field.stroke();
-	this.touched = true;
-}
-
-// when the mouse cursor is no longer on the circle, the circle should be unfilled again
-// TODO and the div should disappear
-Circle.prototype.emptyCircle = function (field) {
-	field.clearRect(this.x-7,this.y-7,14,14);
-	this.touched = false;
-	this.drawCircle(field);
-}
-
-// uses the property method drawCircle to draw all circles in the beginning
-function drawCircles(field, array) {
-	for (i = 0; i < array.length; i++) {
-		array[i].drawCircle(field);
-	}
-}
-
-// start
-function init() {
-	ema.addEventListener("mousedown", mouseDown, false);
-	ema.addEventListener("mousemove", mouseXY, false);
-	ema.addEventListener("touchstart", touchDown, false);
-	ema.addEventListener("touchmove", touchXY, true);
-	ema.addEventListener("touchend", touchUp, false);
-
-	document.body.addEventListener("mouseup", mouseUp, false);
-	document.body.addEventListener("touchcancel", touchUp, false);
-
-	var width = ema.width;
-	var height = ema.height;
-
-	for (i=0; i<circles.length; i++) {
-		circleObjects.push(new Circle(circles[i][0], circles[i][1], circles[i][2]));
-	}
-
-	// Matrix Achsen und Tasks zeichnen
-	drawAxes(matrix, width, height);
-	drawCircles(matrix, circleObjects);
-
-}
-
-function mouseUp() {
-	mouseIsDown = 0;
-	mouseXY();
-}
-
-function touchUp() {
-	mouseIsDown = 0;
-	// no touch to track, so just show state
-	showPos();
-}
-
-function mouseDown() {
-	mouseIsDown = 1;
-	mouseXY();
-}
-
-function touchDown() {
-	mouseIsDown = 1;
-	touchXY();
-}
-
-function mouseXY(e) {
-	if (!e)
-		var e = event;
-	canX = e.pageX - ema.offsetLeft;
-	canY = e.pageY - ema.offsetTop;
-	showPos();
-}
-
-function touchXY(e) {
-	if (!e)
-		var e = event;
-	e.preventDefault();
-	canX = e.targetTouches[0].pageX - ema.offsetLeft;
-	canY = e.targetTouches[0].pageY - ema.offsetTop;
-	showPos();
-}
-
-function showPos() {
-	// large, centered, bright green text
-	matrix.font = "12pt Helvetica";
-	matrix.textAlign = "left";
-	matrix.textBaseline = "top";
-	matrix.fillStyle = "black";
-	var str = canX + ", " + canY;
-	if (mouseIsDown)
-		str += " down";
-	if (!mouseIsDown)
-		str += " up";
-	// var touched;
-	for (i=0; i<circleObjects.length; i++) {
-		if (canX >= circleObjects[i].x-5 && canX <= circleObjects[i].x+5 && canY >= circleObjects[i].y-5 && canY <= circleObjects[i].y+5) {
-			if (!circleObjects[i]["touched"]) {
-				circleObjects[i].howerCircle(matrix);
-			}
-		} else {
-			if (circleObjects[i]["touched"]) {
-				circleObjects[i].emptyCircle(matrix);
-			}
+// Helfer-Funktionen
+// Verteilung
+/*
+	@param dots = Array mit schon eingetragenen Punkten (Objekte)
+		dot = {
+			date: x,
+			imp: y
 		}
+	@param newDot_x = x-Koordinate(date) des neuen Punktes
+	@param newDot_y = y-Koordinate(importance) des neuen Punktes
+*/
+function doubles(dots, newDot_x, newDot_y) {
+	dots.forEach(function(oldDot) {
+		if( liesIn(oldDot.date, newDot_x) && liesIn(oldDot.imp, newDot_y) ) {
+			// TODO wie kann erkannt werden dass die neue Stelle nicht auch schon
+			// besetzt ist?
+			newDot_x += 10;
+			newDot_y += 10;
+		}
+	});
+	// Rückgabe von 2 Werten nicht erlaubt, dadurch als Objekt
+	var dot = {
+		'date': newDot_x,
+		'imp': newDot_y
+	};
+	return dot;
+}
+
+// left oder bottom property gegeben, bis wo liegen die Punkte ganz oder
+// teilweise aufeinander
+function liesIn(oldCoo, newCoo) {
+	if (oldCoo - 8 < newCoo && oldCoo + 8 > newCoo) {
+		return true;
+	}	else {
+		return false;
 	}
-	// control to display correct coordinates
-	matrix.clearRect(850,625,50,40);
-	matrix.fillText(str, 850, 625, 50);
 }
 
-function drawAxes(field, width, height) {
-
+// Date in lesbare Zahlen umwandeln
+function formatDate(date) {
+	var datum = new Date(date);
+	return datum.toDateString();
 }
 
+// Wichtigkeit richtig anzeigen
+function formatImp(imp) {
+	if (imp == 0) return "not important";
+	if (imp == 1) return "less important";
+	if (imp == 2) return "important";
+	if (imp == 3) return "very important";
+}
+
+// structure:
+// https://css-tricks.com/how-do-you-structure-javascript-the-module-pattern-edition/
 var s,
 Matrix = {
 	settings: {
-		canvas: $('canvas'),
-		drawing: document.getElementById('ema').getContext("2d"),
-		width: $('canvas').width(),
-		height: $('canvas').height()
+		//canvas: $('canvas'),
+		//drawing: document.getElementById('ema').getContext("2d"),
+		width: $('#dots').width(),
+		height: $('#dots').height()
 	},
 	init: function() {
 		s = this.settings;
@@ -219,9 +126,152 @@ Matrix = {
 
 		field.restore();
 	},
-	drawTasks: function(taskData) {
-
+	drawTasks: function(taskData, topicData, width, height) {
+		// TODO draw everything new or check if it is there?
+		$('#dots').empty();
+		// how to find out if tasks are on the same spot
+		var that = this;
+		var taken = [];
+		// Hilfsvariablen
+		// durch alle übergebenen Aufgaben
+		taskData.forEach(function(task){
+			var colorIndex = task.topic;
+			if(topicData[colorIndex]['displayed'] == false) {
+				// that.deleteDot(task);
+			} else {
+				// check überschneidungen
+				var dot = doubles(taken, task.x, task.y);
+				task.x = dot.date;
+				task.y = dot.imp;
+				var topicColor = topicData[colorIndex]['color'];
+				// eigentlichen Punkt kreieren und zeichnen
+				that.drawDot(task, topicColor);
+				// Array mit bereits gezeichneten Koordinaten
+				taken.push(dot);
+			}
+		});
+	},
+	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
+	drawDot: function(task, color) {
+		// eigentlicher Kreis mit task_id in entsprechender Farbe des Topics
+		var clickHandler = "location.href='/matrix/"+task.id+"/tasks'"
+		var taskItem = $('<div/>', {
+			class: 'dot',
+			id: task.id,
+			css: {
+				left: task.x,
+				bottom: task.y,
+				borderColor: color,
+				width: 7,
+				height: 7
+			},
+			onclick: clickHandler
+		});
+		$('#dots').append(taskItem);
+		// div mit den Aufgaben-Details
+		var name = $('<p/>', {
+			class: 'dotName',
+			css: {
+				color: color
+			},
+			text: task.name
+		})
+		var label = $('<div/>', {
+			class: 'label'
+		});
+		// Titel
+		var title = $('<h1/>', {
+			class: 'dotLabel',
+			text: task.name
+		});
+		// weitere Attribute
+		var attributes = [$('<p/>', {
+			text: 'due: '+formatDate(task.due_date)
+		}),
+		$('<p/>', {
+			text: 'Importance: '+formatImp(task.importance)
+		})];
+		// anfügen, Erkennung des richtigen Kreises über task_id
+		$('#dots').children('#'+task.id).append(name);
+		$('#dots').children('#'+task.id).append(label);
+		$('#dots').children('#'+task.id).children('.label').append(title, attributes);
+	},
+	deleteDot: function(task) {
+		$('#dots').children('#'+task.id).remove();
+		console.log("i removed "+task.id);
 	}
 };
 
-// init();
+var Sidebar = {
+	// Topic-Button steuert Matrix
+	button: function(topic_id) {
+		// Attribut displayed, um zu tracken, was an und was aus ist
+		// nach neu-laden allerdings wieder alles an
+		if(TopicData.data[topic_id].displayed == true) {
+			// falls gerade noch an --> click macht aus
+			// Farbenaenderung, aussen Topic-Color, innen Hintergrund
+			$('button#'+topic_id).css('background-color', '#f1f1f1');
+			$('button#'+topic_id).css('color', TopicData.data[topic_id].color);
+			// update data, um Button-States zu tracken
+			TopicData.data[topic_id].displayed = false;
+			// update die Matrix
+			Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+		} else {
+			// Farben zuruecktauschen
+			$('button#'+topic_id).css('background-color', TopicData.data[topic_id].color);
+			$('button#'+topic_id).css('color', '#fff');
+			// Button-Status updaten
+			TopicData.data[topic_id].displayed = true;
+			// Matrix neu laden
+			Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+		}
+	},
+	// alle Topic-Button ein oder ausschalten
+	allButton: function() {
+		// die Hintergrundfarbe des Buttons entscheidet, welche Aktion vorgenommen
+		// wird, da auch User anhand dieser die eine oder ander Aktion erwartet
+		// Hintergrund grau --> alles ausschalten
+		if($('button#all').css('background-color') == 'rgb(192, 192, 192)') {
+			for(button in TopicData.data) {
+				// jeder Button, der an ist, wird ausgeklickt
+				if(TopicData.data[button].displayed == true) {
+						$('button#'+button).click();
+				}
+			}
+			// die Buttonfarbe des All-Buttons wird geaendert
+			$('button#all').css('background-color', '#eee');
+		} else {
+			for(button in TopicData.data) {
+				// alle Buttons, die aus sind, werden angemacht
+				if(TopicData.data[button].displayed == false) {
+						$('button#'+button).click();
+				}
+			}
+			// Farbe updaten
+			$('button#all').css('background-color', 'rgb(192, 192, 192)');
+		}
+	},
+	// Moeglichkeit die Topics zu editieren
+	editTopics: function() {
+		// wieder Unterscheidung anhand von Hintergrundfarbe des Edit-Buttons
+		if($('button#editTopics').css('background-color') == 'rgb(192, 192, 192)') {
+			for(button in TopicData.data) {
+				// alle onclick-Attribute der Buttons auf die Topic-Anzeige lenken
+				$('button#'+button).attr('onclick', "location.href='/matrix/"+button+"'");
+			}
+			// All-Button ausmachen
+			$('button#all').attr('onclick', '');
+			// Hintergrund anpassen
+			$('button#editTopics').css('background-color', '#eee');
+		} else {
+			for(button in TopicData.data) {
+				// zurueck zu der Button beeinflusst die Matrix
+				$('button#'+button).attr('onclick', 'Sidebar.button(button)');
+			}
+			// All-Button geht wieder
+			$('button#all').attr('onclick', 'Sidebar.allButton()');
+			// Hintergrund anpassen
+			$('button#editTopics').css('background-color', 'rgb(192, 192, 192)');
+		}
+	}
+};

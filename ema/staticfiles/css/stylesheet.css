@@ -38,6 +38,11 @@ input {
 	margin: 5px 10px 15px 10px;
 }
 
+input[type=text],
+input[type=password] {
+	padding: 5px;
+}
+
 /* links */
 a {
 	text-decoration: none;
@@ -55,8 +60,38 @@ a:active {
 	color: #777;
 }
 
-p {
+.loginbody {
+	background-color: #ddd;
+}
 
+.loginpage {
+	background-color: #f1f1f1;
+	margin: 100px auto 100px auto;
+	padding: 20px 30px 25px 30px;
+	width: 25%;
+	text-align: center;
+	border-radius: 10px;
+	font-size: 18px;
+}
+
+.colorSelection {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	margin: 5px;
+	border: 1px solid #eee;
+}
+
+.colorSelection:hover {
+	border: 1px solid #222;
+}
+
+.selectionList {
+	display: inline-block;
+}
+
+.selectionList input[type=radio] {
+	display: none;
 }
 
 .main {
@@ -69,16 +104,102 @@ p {
   	margin-bottom: 100px; */
 }
 
+.messages {
+	position: absolute;
+	right: 20px;
+	top: 60px;
+	width: 20%;
+	background-color: gold;
+	border-radius: 5px;
+	border: 1px solid gold;
+	z-index: 300;
+	padding: 15px 2px 15px 15px;
+	opacity:0.75;
+}
+
+.messages span {
+	margin: 2px auto;
+}
+
+.messages:hover {
+	border: 1px solid #333;
+}
+
+.text {
+	display: inline-block;
+	width: 80%;
+}
+
+.close {
+	display: inline-block;
+	width: 10%;
+	vertical-align: top;
+	text-align: right;
+	font-size: 16px;
+}
+
+.displayForms {
+	display: none;
+}
+
 /* buttons */
+/* Grundstruktur */
+.emaButton {
+	border-radius: 4px;
+	/* padding: 8px 10px; */
+	font-size: 14px;
+	color: white;
+}
+
+.emaButton a {
+	color: white;
+	display: block;
+	padding: 8px 10px;
+}
+
+.emaButton:hover {
+	border-color: black;
+}
+
+/* einzelne Buttons */
+.emaLogin {
+	border: 1px solid olivedrab;
+	background-color: olivedrab;
+	width: 60%;
+	padding: 8px 10px;
+}
+
+.emaRegister {
+	border: 1px solid crimson;
+	background-color: crimson;
+	width: 60%;
+}
+
+.emaNormal {
+	border: 1px solid dodgerblue;
+	background-color: dodgerblue;
+}
+
 .topicButton {
 	border-radius: 4px;
-}
-
-.topicButton a {
 	color: #fff;
+	border: 1px solid #f1f1f1;
+	padding: 8px;
+	width: 90%;
+	font-size: 11px;
 }
 
-.navbar div {
+.closeNotification {
+
+}
+
+.closeNotification:hover {
+	color: grey;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.emaNavbar div {
 	display: inline-block;
 	padding: 3px 5px 3px 5px;
 	margin: 3px 3%;
@@ -87,7 +208,7 @@ p {
 	margin-left: 18%;
 }
 
-.navbar {
+.emaNavbar {
 	width: 99.4%;
 	text-align: center;
 	overflow: hidden;
@@ -97,7 +218,7 @@ p {
 	text-transform: uppercase;
 }
 
-.navbar ul {
+.emaNavbar ul {
 	margin: 0 auto;
 }
 
@@ -119,6 +240,7 @@ p {
 	text-align: center;
 }
 .noIndentList {
+	margin-top: 14px;
 	list-style: inside;
 	list-style-type: none;
 	padding: 0;
@@ -130,18 +252,18 @@ p {
 	margin: 3px 0 10px 3px;
 	padding-left: 0;
 }
-.container:after {
+.myContainer:after {
 	content:"";
 	display: table;
 	clear: both;
 }
-.container {
+.myContainer {
 	width: 100%;
 	position: relative;
 }
 .align-left {
 	display: inline-block;
-	width: 94%;
+	width: 80%;
 }
 .align-right {
 	display: inline-block;
@@ -167,7 +289,7 @@ p {
 	border: 1px dashed blue;
 	background-color: white;
 }
-.navbar li {
+.emaNavbar li {
 	display: inline;
 }
 
@@ -175,24 +297,16 @@ p {
 #MatrixSettings {
 	display: inline-block;
 	vertical-align: top;
-	width: 17%;
+	width: 10%;
 	border: 1px solid #111;
 	margin: 5px 1%;
 	padding: 2px 1% 5px 1%;
 }
 #MatrixSettings h3 {
+	font-size: 18px;
 	padding: 3px;
 	border-bottom: 1px solid #777;
 }
 #Topics {
 	/* border-bottom: 1px solid #777; */
-}
-
-#Matrix {
-	display: inline-block;
-	vertical-align: top;
-	width: 73%;
-	border: 1px solid #111;
-	margin: 5px 1%;
-	padding: 10px 1%;
 }
