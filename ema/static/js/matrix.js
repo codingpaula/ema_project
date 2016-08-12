@@ -127,7 +127,6 @@ Matrix = {
 		field.restore();
 	},
 	drawTasks: function(taskData, topicData, width, height) {
-		// TODO draw everything new or check if it is there?
 		$('#dots').empty();
 		// how to find out if tasks are on the same spot
 		var that = this;
@@ -137,7 +136,7 @@ Matrix = {
 		taskData.forEach(function(task){
 			var colorIndex = task.topic;
 			if(topicData[colorIndex]['displayed'] == false) {
-				// that.deleteDot(task);
+
 			} else {
 				// check überschneidungen
 				var dot = doubles(taken, task.x, task.y);
@@ -154,7 +153,7 @@ Matrix = {
 	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
 	drawDot: function(task, color) {
 		// eigentlicher Kreis mit task_id in entsprechender Farbe des Topics
-		var clickHandler = "location.href='/matrix/"+task.id+"/tasks'"
+		var clickHandler = "location.href='/matrix/"+task.id+"/taskediting/'"
 		var taskItem = $('<div/>', {
 			class: 'dot',
 			id: task.id,
