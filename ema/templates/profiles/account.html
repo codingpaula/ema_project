@@ -15,6 +15,12 @@
       <a href={% url 'matrix:done_tasks' %}>done tasks</a>
     </button>
   </div>
+  <div>
+    <form action="" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="save" />
+    </form>
 {% endblock content %}
 {% block footer %}
   {% include "footer.html" %}

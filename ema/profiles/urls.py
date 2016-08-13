@@ -2,12 +2,14 @@ from __future__ import absolute_import
 
 from django.contrib.auth.views import login, logout
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 
 from . import views
+from .views import AccountSettings
 
 urlpatterns = [
     #/account/
-    url(r'^$', views.account, name='account'),
+    url(r'^$', login_required(AccountSettings.as_view()), name='account'),
     #/account/login/
     url(r'^login/$', login, name='login'),
     #/account/loggedout/

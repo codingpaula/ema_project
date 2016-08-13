@@ -27,7 +27,9 @@
     <li class="gap">
       {% if user.is_anonymous %}
       {% else %}
-        {{ user }}
+      <a href={% url 'profiles:account' %}>
+        <div>{{ user }}</div>
+      </a>
       {% endif %}
       {% if user.is_anonymous %}
       <a href={% url 'profiles:register' %}>

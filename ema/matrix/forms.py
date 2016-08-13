@@ -3,6 +3,7 @@ from django import forms
 
 from .models import Task, Topic
 from .utils import get_user_colors
+from orga.models import UserOrga
 
 """
 create new Task
@@ -12,28 +13,23 @@ class TaskForm(ModelForm):
     class Meta:
         model = Task
         fields = ['task_name', 'task_description', 'due_date', 'importance', 'topic', 'done']
-        """
         widgets = {
             'task_name': forms.TextInput(
-                attrs={'id': 'taskName', 'required': True, 'placeholder': 'Name'}
+                attrs={'placeholder': 'Name'}
             ),
             'task_description': forms.Textarea(
-                attrs={'id': 'taskDescription', 'placeholder': 'What is this task about?'}
-            ),
-            'due_date': forms.DateTimeInput(
-                attrs={'id': 'taskDate', 'required': True}
-            ),
-            'importance': forms.Select(
-                attrs={'id': 'importance', 'required': True}
+                attrs={'placeholder': 'What is this task about?'}
             )
         }
-        """
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs['user']
         kwargs.pop('user')
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['topic'].queryset = Topic.objects.filter(topic_owner=self.user)
+        user_settings = UserOrga.objects.get(owner=self.user)
+        self.initial['topic'] = user_settings.default_topic
+
 
 """
 create new Topic
@@ -53,4 +49,5 @@ class TopicForm(ModelForm):
         topics = Topic.objects.filter(topic_owner=user)
         choices = get_user_colors(self.fields["color"].choices, topics)
         self.fields["color"].choices = choices
+        # set the topic_owner to the request.user by default
         self.instance.topic_owner = user

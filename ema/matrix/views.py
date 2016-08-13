@@ -9,6 +9,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.forms.models import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
 
+from orga.models import UserOrga
+
 from .models import Topic, Task
 from .forms import TaskForm, TopicForm
 from .utils import get_user_colors
@@ -146,6 +148,17 @@ class TaskCreate(SuccessMessageMixin, AjaxableResponseMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    #def get_initial(self):
+    #    initial = super(TaskCreate, self).get_initial()
+    #    if (UserOrga.objects.get(owner=self.request.user)!= None):
+    #        user_settings = UserOrga.objects.get(owner=self.request.user)
+            # Copy the dictionary so we don't accidentally change a mutable dict
+    #        initial = initial.copy()
+    #        initial['topic'] = user_settings.default_topic
+    #        return initial
+    #    else:
+    #        return initial
+
 class TopicCreate(SuccessMessageMixin, CreateView):
     model = Topic
     form_class = TopicForm
@@ -159,11 +172,8 @@ class TopicCreate(SuccessMessageMixin, CreateView):
         return kwargs
 
 def create_task(request):
-    print("in the create_task function")
     if request.method == 'POST':
-        print("request is POST")
         form = TaskForm(request.POST, user=request.user)
-        print("form was inited")
         if form.is_valid():
             task_name = request.POST.get('task_name')
             task_description = request.POST.get('task_description')
@@ -176,13 +186,12 @@ def create_task(request):
                         due_date, importance = importance)
             new_task.save()
             task = Task.objects.filter(task_name=task_name)
-            print(task)
             all_tasks = Task.objects.filter(topic__topic_owner=request.user.id, done=False)
             data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
             response_data = {}
             response_data['objects'] = data
             print("did do json")
-            messages.info("Task '%(task_name)s' was successfully created!")
+            # messages.info("Task '%(task_name)s' was successfully created!")
             return HttpResponse(data, content_type="application/json")
     else:
         return HttpResponse(

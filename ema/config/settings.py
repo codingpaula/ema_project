@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'matrix',
     'profiles',
+    'orga'
 ]
 
 MIDDLEWARE_CLASSES = [

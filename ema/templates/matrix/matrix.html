@@ -41,8 +41,14 @@
             <button class="topicButton"
                     id="editTopics"
                     onclick="Sidebar.editTopics();"
-                    sytle="margin-top: 10px;">
+                    style="margin-top: 15px;">
               edit topics
+            </button>
+          </li>
+          <li class="topicList">
+            <button class="topicButton"
+                  onclick="$('.displayForms').css('display', 'block');">
+              add task
             </button>
           </li>
         </ul>
@@ -62,19 +68,6 @@
     </canvas>-->
     <div id="dots" style="width: 900px; height:725px; background-image: url({% static "pictures/matrix.png" %});"></div>
   </div>
-  <div>
-    <table>
-      <tr>
-        <td><strong>due date:</strong></td>
-        <td>Wed, 18 December</td>
-      </tr>
-      <tr>
-        <td><strong>importance:</strong></td>
-        <td>not important</td>
-      </tr>
-    </table>
-  </div>
-  <button onclick="$('.displayForms').css('display', 'block');">add task</button>
   <div class="displayForms">
     <form action="{% url 'matrix:adding' %}" method="post"
           class="ajaxFormCreateTask">
