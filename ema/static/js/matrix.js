@@ -10,28 +10,31 @@
 	@param newDot_y = y-Koordinate(importance) des neuen Punktes
 */
 function doubles(dots, newDot_x, newDot_y) {
+	var newDot = {x: newDot_x, y: newDot_y};
 	dots.forEach(function(oldDot) {
-		if( liesIn(oldDot.date, newDot_x) && liesIn(oldDot.imp, newDot_y) ) {
+		if(liesIn(oldDot, newDot)) {
 			// TODO wie kann erkannt werden dass die neue Stelle nicht auch schon
 			// besetzt ist?
-			newDot_x += 10;
-			newDot_y += 10;
+			newDot.x += 10;
+			newDot.y += 10;
 		}
 	});
 	// Rückgabe von 2 Werten nicht erlaubt, dadurch als Objekt
-	var dot = {
-		'date': newDot_x,
-		'imp': newDot_y
-	};
-	return dot;
+	//var dot = {
+	//	'date': newDot_x,
+	//	'imp': newDot_y
+	//};
+	return newDot;
 }
 
 // left oder bottom property gegeben, bis wo liegen die Punkte ganz oder
 // teilweise aufeinander
-function liesIn(oldCoo, newCoo) {
-	if (oldCoo - 8 < newCoo && oldCoo + 8 > newCoo) {
-		return true;
-	}	else {
+function liesIn(takenDot, newDot) {
+	if (takenDot.x - 42 < newDot.x && takenDot.x + 42 > newDot.x) {
+		if (takenDot.y - 32 < newDot.y && takenDot.y + 32 > newDot.y) {
+			return true;
+		}
+	} else {
 		return false;
 	}
 }
@@ -127,6 +130,9 @@ Matrix = {
 		field.restore();
 	},
 	drawTasks: function(taskData, topicData, width, height) {
+		// gets correct data
+		// console.log(taskData);
+		// console.log(topicData);
 		$('#dots').empty();
 		// how to find out if tasks are on the same spot
 		var that = this;
@@ -134,14 +140,18 @@ Matrix = {
 		// Hilfsvariablen
 		// durch alle übergebenen Aufgaben
 		taskData.forEach(function(task){
+			console.log("start dot");
 			var colorIndex = task.topic;
 			if(topicData[colorIndex]['displayed'] == false) {
 
 			} else {
 				// check überschneidungen
-				var dot = doubles(taken, task.x, task.y);
-				task.x = dot.date;
-				task.y = dot.imp;
+				var dot = {x: task.x, y: task.y};
+				//console.log("x vor doubles: "+task.x);
+				//var dot = doubles(taken, task.x, task.y);
+				//task.x = dot.x;
+				//task.y = dot.y;
+				//console.log("coordinates are: x - "+task.x+", y - "+task.y);
 				var topicColor = topicData[colorIndex]['color'];
 				// eigentlichen Punkt kreieren und zeichnen
 				that.drawDot(task, topicColor);
@@ -176,7 +186,7 @@ Matrix = {
 			text: task.name
 		})
 		var label = $('<div/>', {
-			class: 'label'
+			class: 'hoverField'
 		});
 		// Titel
 		var title = $('<h1/>', {
@@ -193,7 +203,7 @@ Matrix = {
 		// anfügen, Erkennung des richtigen Kreises über task_id
 		$('#dots').children('#'+task.id).append(name);
 		$('#dots').children('#'+task.id).append(label);
-		$('#dots').children('#'+task.id).children('.label').append(title, attributes);
+		$('#dots').children('#'+task.id).children('.hoverField').append(title, attributes);
 	},
 	deleteDot: function(task) {
 		$('#dots').children('#'+task.id).remove();
