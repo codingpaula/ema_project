@@ -55,6 +55,7 @@ a:visited {
 }
 a:hover {
 	color: #777;
+	text-decoration: none;
 }
 a:active {
 	color: #777;

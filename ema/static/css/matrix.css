@@ -6,6 +6,13 @@
   border: 2px solid black;
   border-radius: 5px;
   cursor: pointer;
+  box-sizing: content-box;
+}
+
+.dot .dotName {
+  font-size: 8px;
+  width: 40px;
+  margin: 8px auto 0px auto;
 }
 
 .dot:hover {
@@ -17,12 +24,7 @@
 }
 
 /* Aufgaben-Details (nur angezeigt bei Mouse-hover) */
-.dot .dotName {
-  font-size: 8px;
-  width: 40px;
-}
-
-.dot .label {
+.dot .hoverField {
   display: none;
   position: absolute;
   bottom: -25px;
@@ -35,18 +37,20 @@
   background-color: white;
 }
 
-.dot:hover .label {
+.dot:hover .hoverField {
   display: block;
 }
 
-.dot .label h1 {
+.dot .hoverField h1 {
   text-align: center;
   font-size: 1em;
+  color: #222;
 }
 
-.dot .label p {
+.dot .hoverField p {
   text-align: left;
   font-size: 0.8em;
+  color: #222;
 }
 
 .dot .value {
@@ -77,4 +81,5 @@
   position: relative;
   display: block;
   background-size: 900px;
+  box-sizing: content-box;
 }
