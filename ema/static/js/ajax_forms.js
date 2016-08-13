@@ -12,11 +12,9 @@ $('.ajaxFormCreateTask').submit(function(e) {
       'topic': $('#id_topic').val()
     },
     success: function(data) {
-      console.log("server responded ok!");
-      console.log(data);
       TaskData.getTasks(data);
       Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
-      console.log("did draw!");
+      $('.ajaxFormCreateTask')[0].reset();
     },
     error: function(data) {
       console.log("an error occurred!");
