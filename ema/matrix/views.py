@@ -31,12 +31,15 @@ def matrix(request):
     response_data = {}
     response_data['objects'] = data
     end_data = json.dumps(response_data, cls=DjangoJSONEncoder)
-    task_form = TaskForm(user=request.user.id)
+    task_form = TaskForm(user=request.user)
+    settings_file = UserOrga.objects.get(owner=request.user)
+    if (settings_file == None):
+        settings_file.urgent_axis = '1'
     # locals()
     return render(request, 'matrix/matrix.html',
                     {'all_topics': all_topics, 'all_tasks': all_tasks,
                     'end_data': end_data, 'topic_data': topic_data,
-                    'task_form': task_form})
+                    'task_form': task_form, 'settings_file': settings_file  })
 
 """
 new topic:

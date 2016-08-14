@@ -10,17 +10,68 @@
   {% else %}
     <h1>Please <a href="{% url 'profiles:login' %}">log in</a>.</h1>
   {% endif %}
-  <div>
-    <button class="emaButton emaNormal">
-      <a href={% url 'matrix:done_tasks' %}>done tasks</a>
-    </button>
+  <div class="container-fluid">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+        <a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+          User
+        </a>
+      </li>
+      <li role="presentation">
+        <a href="#matrix" aria-controls="matrix" role="tab" data-toggle="tab">
+          Matrix
+        </a>
+      </li>
+      <li role="presentation">
+        <a href="#donetasks" aria-controls="donetasks" role="tab" data-toggle="tab">
+          Done Tasks
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content panel">
+      <div role="tabpanel" class="tab-pane active" id="home">
+        <div class="panel-body">
+
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="matrix">
+        <div class="panel-body">
+          <p>
+            Some people plan for the next months, others have the next four
+            months in their mind. The "urgent axis" settings gives you <thead>
+            possibility to adjust the time that is displayed on the entire
+            urgent-axis of your matrix.
+          </p>
+        </div>
+        <form action="" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input class="btn btn-default" type="submit" value="save" />
+        </form>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="donetasks">
+        <div class="panel-body">
+        <button class="emaButton emaNormal">
+          <a href={% url 'matrix:done_tasks' %}>done tasks</a>
+        </button>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    <form action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="save" />
-    </form>
+  <script>
+    $(document).ready(function() {
+      if(location.hash) {
+        $('a[href=' + location.hash + ']').tab('show');
+      }
+      $(document.body).on("click", "a[data-toggle]", function(event) {
+        location.hash = this.getAttribute("href");
+      });
+    });
+    $(window).on('popstate', function() {
+      var anchor = location.hash || $("a[data-toggle=tab]").first().attr("href");
+      $('a[href=' + anchor + ']').tab('show');
+    });
+  </script>
 {% endblock content %}
 {% block footer %}
   {% include "footer.html" %}

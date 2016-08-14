@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 from django import forms
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Task, Topic
 from .utils import get_user_colors
@@ -27,7 +28,11 @@ class TaskForm(ModelForm):
         kwargs.pop('user')
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['topic'].queryset = Topic.objects.filter(topic_owner=self.user)
-        user_settings = UserOrga.objects.get(owner=self.user)
+        try:
+            user_settings = UserOrga.objects.get(owner=self.user)
+        except ObjectDoesNotExist:
+            user_settings = UserOrga(owner=self.user)
+            user_settings.save()
         self.initial['topic'] = user_settings.default_topic
 
 
