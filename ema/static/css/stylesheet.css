@@ -65,6 +65,14 @@ a:active {
 	background-color: #ddd;
 }
 
+.abstandU {
+	margin-bottom: 10px;
+}
+
+.abstandO {
+	margin-top: 10px;
+}
+
 .loginpage {
 	background-color: #f1f1f1;
 	margin: 100px auto 100px auto;
