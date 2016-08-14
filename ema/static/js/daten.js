@@ -40,7 +40,7 @@ var TaskData = {
       'topic': Topic ID
     }
   */
-  getTasks: function(tasks) {
+  getTasks: function(tasks, urgent_axis) {
     // workaround um data zu editieren
     var that = this;
     that.data = [];
@@ -49,7 +49,7 @@ var TaskData = {
       console.log("daten.js-Schleife");
       that.data[index] = {
         // TODO Berechnung?
-        'x': newDateCoordinate(task.due_date),
+        'x': newDateCoordinate(task.due_date, urgent_axis),
         'y': importanceCoordinate(task.importance),
         'due_date': task.due_date,
         'importance': task.importance,
@@ -84,47 +84,55 @@ function dateCoordinate(date) {
   }
 }
 
-function newDateCoordinate(date) {
+function newDateCoordinate(date, urgent_axis) {
+  TWOMONTHS = [2, 7, 15, 60];
+  ONEMONTH = [1, 4, 7, 30];
+  FOURMONTHS = [4, 14, 30, 120];
+  var abstand = [];
+  switch(urgent_axis) {
+    case 0:
+      abstand = ONEMONTH;
+      break;
+    case 1:
+      abstand = TWOMONTHS;
+      break;
+    case 2:
+      abstand = FOURMONTHS;
+      break;
+    default:
+      abstand = TWOMONTHS;
+  }
   // millisecond from task due date to this moment
   // 12.08.16 bis 24.09.16
   var distance2today = Date.parse(date) - Date.parse(today)
-  // whole x-axis = 1 with 1 at the cross with the y-axis
-  // 1----------------------------------0
-  // 2M---------------------------------0
-  // 2M----------------2W---------------0
-  // 2M---6W---1M--3W--2W---1W---2d--1d-0
-  // 1----------------0,5---------------0
-  // millisekunden auf 1 bis 0 runtergekuerzt
-  var one2zero = distance2today/2*30*24*60*60*1000;
-  var matrixDimension = 2*30*24*60*60*1000;
   var oneDay = 24*60*60*1000;
   // weiter weg als 2 Monate (matrix maximum) --> linke seite
-  if (distance2today > 60*oneDay) return 50;
+  if (distance2today > abstand[3]*oneDay) return 50;
   // ueberfaellige aufgaben verschwinden nicht, sondern am rechten rand
   if (distance2today <= 0) return s.width-10;
   // assure: everything is between 2 months and today!
-  if (distance2today <= 2*oneDay) {
+  if (distance2today <= abstand[0]*oneDay) {
     // ein viertel der Achse
     // beinhaltet 2 tage
-    var coordinate = (((1-(distance2today/(2*oneDay)))/4)+0.75)*(s.width-70)+50;
+    var coordinate = (((1-(distance2today/(abstand[0]*oneDay)))/4)+0.75)*(s.width-70)+50;
     return coordinate;
   }
-  if (distance2today <= 7*oneDay) {
-    var bet0and1 = 1-(distance2today - (2*oneDay))/(5*oneDay);
+  if (distance2today <= abstand[1]*oneDay) {
+    var bet0and1 = 1-(distance2today - (abstand[0]*oneDay))/((abstand[1]-abstand[0])*oneDay);
     var axespart = bet0and1/4;
     var verschieben = axespart+0.5;
     var coordinate = (verschieben*(s.width-70))+50;
     return coordinate;
   }
-  if (distance2today <= 15*oneDay) {
-    var bet0and1 = 1-(distance2today - (7*oneDay))/(8*oneDay);
+  if (distance2today <= abstand[2]*oneDay) {
+    var bet0and1 = 1-(distance2today - (abstand[1]*oneDay))/((abstand[2]-abstand[1])*oneDay);
     var axespart = bet0and1/8;
     var verschieben = axespart+0.375;
     var coordinate = (verschieben*(s.width-70))+50;
     return coordinate;
   }
-  if (distance2today <= 60*oneDay) {
-    var bet0and1 = 1-(distance2today - (15*oneDay))/(45*oneDay);
+  if (distance2today <= abstand[3]*oneDay) {
+    var bet0and1 = 1-(distance2today - (abstand[2]*oneDay))/((abstand[3]-abstand[2])*oneDay);
     var axespart = bet0and1/8*3;
     var verschieben = axespart;
     var coordinate = (verschieben*(s.width-70))+50;

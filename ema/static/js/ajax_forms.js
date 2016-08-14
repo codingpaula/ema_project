@@ -12,7 +12,8 @@ $('.ajaxFormCreateTask').submit(function(e) {
       'topic': $('#id_topic').val()
     },
     success: function(data) {
-      TaskData.getTasks(data);
+      TaskData.getTasks(data, settings);
+      console.log(settings);
       Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
       $('.ajaxFormCreateTask')[0].reset();
     },

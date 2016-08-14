@@ -6,7 +6,7 @@ $(function() {
   // Topic-Daten behandeln
   TopicData.getTopics(topic_data);
   // Task-Daten behandlen
-  TaskData.getTasks(task_data.objects);
+  TaskData.getTasks(task_data.objects, settings);
   // Aufgaben in die Matrix zeichnen
   Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
   $('.closeNotification').click(function(){
