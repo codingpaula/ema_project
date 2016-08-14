@@ -266,6 +266,10 @@ var Sidebar = {
 		if($('button#editTopics').css('background-color') == 'rgb(192, 192, 192)') {
 			for(button in TopicData.data) {
 				// alle onclick-Attribute der Buttons auf die Topic-Anzeige lenken
+				var glyphi = $('<span/>', {
+					class: 'glyphicon glyphicon-pencil pull-right'
+				});
+				$('button#'+button).append(glyphi);
 				$('button#'+button).attr('onclick', "location.href='/matrix/"+button+"'");
 			}
 			// All-Button ausmachen
@@ -275,6 +279,7 @@ var Sidebar = {
 		} else {
 			for(button in TopicData.data) {
 				// zurueck zu der Button beeinflusst die Matrix
+				$('button#'+button).find('span').remove();
 				$('button#'+button).attr('onclick', 'Sidebar.button(button)');
 			}
 			// All-Button geht wieder

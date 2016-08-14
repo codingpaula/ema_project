@@ -21,7 +21,7 @@
         <ul class="noIndentList">
           {% for topic in all_topics %}
           <li class="topicList">
-            <button class="topicButton"
+            <button role="button" class="btn topicButton topicButtonShow"
                     id="{{ topic.id }}"
                     onclick="Sidebar.button({{ topic.id }});"
                     style="background-color: {{ topic.color }};
@@ -31,7 +31,7 @@
           </li>
           {% endfor %}
           <li class="topicList">
-            <button class="topicButton"
+            <button class="btn topicButton topicButtonShow"
                     id="all"
                     onclick="Sidebar.allButton();"
                     style="margin-top: 15px;">
@@ -39,7 +39,7 @@
             </button>
           </li>
           <li class="topicList">
-            <button class="topicButton"
+            <button class="btn topicButton topicButtonShow"
                     id="editTopics"
                     onclick="Sidebar.editTopics();"
                     style="margin-top: 15px;">
@@ -47,13 +47,9 @@
             </button>
           </li>
           <li class="topicList">
-            <button type="button" class="topicButton" data-toggle="modal" data-target="#addTask">
+            <button type="button" class="btn topicButton topicButtonShow" data-toggle="modal" data-target="#addTask">
               add task
             </button>
-            <!--button class="topicButton"
-                  onclick="$('.displayForms').css('display', 'block');">
-              add task
-            </button-->
           </li>
         </ul>
         {% else %}
