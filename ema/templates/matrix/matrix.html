@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% block content %}
 <script>
+  var settings = {{ settings_file.urgent_axis }}
   var task_data = {{ end_data|safe }};
   var topic_data = {{ topic_data|safe }};
 </script>
@@ -46,10 +47,13 @@
             </button>
           </li>
           <li class="topicList">
-            <button class="topicButton"
-                  onclick="$('.displayForms').css('display', 'block');">
+            <button type="button" class="topicButton" data-toggle="modal" data-target="#addTask">
               add task
             </button>
+            <!--button class="topicButton"
+                  onclick="$('.displayForms').css('display', 'block');">
+              add task
+            </button-->
           </li>
         </ul>
         {% else %}
@@ -68,14 +72,31 @@
     </canvas>-->
     <div id="dots" style="width: 900px; height:725px; background-image: url({% static "pictures/matrix.png" %});"></div>
   </div>
-  <div class="displayForms">
-    <form action="{% url 'matrix:adding' %}" method="post"
-          class="ajaxFormCreateTask">
-      {% csrf_token %}
-      {{ task_form }}
-      <input type="submit" value="add task" />
-    </form>
+  <div class="modal fade" id="addTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Add a task</h4>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'matrix:adding' %}" method="post"
+              class="ajaxFormCreateTask">
+              {% csrf_token %}
+              {{ task_form.as_p }}
+            <input class="btn btn-default" type="submit" value="add task" />
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
+  <script>
+  $('#addTask').on('shown.bs.modal', function () {
+    $('#myInput').focus()
+  });
+  </script>
   <!--div id="Detail" onclick="location.href={% url 'matrix:adding' %};">
     <h1>Test1</h1>
     <p>Attributs</p>
