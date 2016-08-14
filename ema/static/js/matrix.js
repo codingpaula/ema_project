@@ -39,18 +39,92 @@ function liesIn(takenDot, newDot) {
 	}
 }
 
-// Date in lesbare Zahlen umwandeln
+// Date in lesbares Format umwandeln
 function formatDate(date) {
 	var datum = new Date(date);
-	return datum.toDateString();
+	var jahr = datum.getFullYear();
+	var month_number = datum.getMonth();
+	var monat = "";
+	switch(month_number) {
+		case 0:
+			monat = "Januar"; break;
+		case 1:
+			monat = "Februar"; break;
+		case 2:
+			monat = "März"; break;
+		case 3:
+			monat = "April"; break;
+		case 4:
+			monat = "Mai"; break;
+		case 5:
+			monat = "Juni"; break;
+		case 6:
+			monat = "Juli"; break;
+		case 7:
+			monat = "August"; break;
+		case 8:
+			monat = "September"; break;
+		case 9:
+			monat = "Oktober"; break;
+		case 10:
+			monat = "November"; break;
+		case 11:
+			monat = "Dezember"; break;
+	}
+	var tag = datum.getDate();
+	var stunden = datum.getHours();
+	var min = datum.getMinutes();
+	// bei den Minuten und Stunden fehlt wenn sie einstellig sind die erste 0
+	if (stunden < 10) {
+		if (min < 10) {
+			return tag+". "+monat+" "+jahr+", 0"+stunden+":0"+min;
+		}
+		return tag+". "+monat+" "+jahr+", 0"+stunden+":"+min;
+	} else if (min < 10) {
+		return tag+". "+monat+" "+jahr+", "+stunden+":0"+min;
+	}
+	return tag+". "+monat+" "+jahr+", "+stunden+":"+min;
 }
 
 // Wichtigkeit richtig anzeigen
 function formatImp(imp) {
-	if (imp == 0) return "not important";
-	if (imp == 1) return "less important";
-	if (imp == 2) return "important";
-	if (imp == 3) return "very important";
+	var stars = $('<div/>', {
+		class: 'starDiv'
+	});
+	var full_star = $('<span/>', {
+		class: 'glyphicon glyphicon-star'
+	});
+	var empty_star = $('<span/>', {
+		class: 'glyphicon glyphicon-star-empty'
+	});
+	if (imp == 0) {
+		stars.append(full_star.clone());
+		stars.append(empty_star.clone());
+		stars.append(empty_star.clone());
+		stars.append(empty_star.clone());
+		return stars;
+	}
+	if (imp == 1) {
+		stars.append(full_star.clone());
+		stars.append(full_star.clone());
+		stars.append(empty_star.clone());
+		stars.append(empty_star.clone());
+		return stars;
+	}
+	if (imp == 2) {
+		stars.append(full_star.clone());
+		stars.append(full_star.clone());
+		stars.append(full_star.clone());
+		stars.append(empty_star.clone());
+		return stars;
+	}
+	if (imp == 3) {
+		stars.append(full_star.clone());
+		stars.append(full_star.clone());
+		stars.append(full_star.clone());
+		stars.append(full_star.clone());
+		return stars;
+	}
 }
 
 // structure:
@@ -140,7 +214,6 @@ Matrix = {
 		// Hilfsvariablen
 		// durch alle übergebenen Aufgaben
 		taskData.forEach(function(task){
-			console.log("start dot");
 			var colorIndex = task.topic;
 			if(topicData[colorIndex]['displayed'] == false) {
 
@@ -194,20 +267,27 @@ Matrix = {
 			text: task.name
 		});
 		// weitere Attribute
-		var attributes = [$('<p/>', {
-			text: 'due: '+formatDate(task.due_date)
-		}),
-		$('<p/>', {
-			text: 'Importance: '+formatImp(task.importance)
-		})];
+		var trimmed_description = "";
+		if (task.description.length > 40) {
+			trimmed_description = task.description.substring(0, 40)+"...";
+		} else {
+			trimmed_description = task.description;
+		}
+		var attributes = [
+			$('<p/>', {
+				text: trimmed_description,
+				css: {
+					fontStyle: 'italic'
+				}
+			}),
+			$('<p/>', {
+				text: formatDate(task.due_date)
+			})
+		];
 		// anfügen, Erkennung des richtigen Kreises über task_id
 		$('#dots').children('#'+task.id).append(name);
 		$('#dots').children('#'+task.id).append(label);
-		$('#dots').children('#'+task.id).children('.hoverField').append(title, attributes);
-	},
-	deleteDot: function(task) {
-		$('#dots').children('#'+task.id).remove();
-		console.log("i removed "+task.id);
+		$('#dots').children('#'+task.id).children('.hoverField').append(title, attributes, formatImp(task.importance));
 	}
 };
 
