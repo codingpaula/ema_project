@@ -126,16 +126,11 @@ class AjaxableResponseMixin(object):
         # call form.save() for example).
         response = super(AjaxableResponseMixin, self).form_valid(form)
         if self.request.is_ajax():
-            print "got something"
-            data = {
-                'task_name': self.object.task_name,
-                'task_description': self.object.task_description,
-                'due_date': self.object.due_date,
-                'importance': self.object.importance,
-                'topic': self.object.topic,
-                'pk': self.object.pk,
-            }
-            return JsonResponse(data)
+            all_tasks = Task.objects.filter(topic__topic_owner=self.request.user.id, done=False)
+            data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
+            response_data = {}
+            response_data['objects'] = data
+            return HttpResponse(data, content_type="application/json")
         else:
             return response
 
@@ -151,16 +146,6 @@ class TaskCreate(SuccessMessageMixin, AjaxableResponseMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-    #def get_initial(self):
-    #    initial = super(TaskCreate, self).get_initial()
-    #    if (UserOrga.objects.get(owner=self.request.user)!= None):
-    #        user_settings = UserOrga.objects.get(owner=self.request.user)
-            # Copy the dictionary so we don't accidentally change a mutable dict
-    #        initial = initial.copy()
-    #        initial['topic'] = user_settings.default_topic
-    #        return initial
-    #    else:
-    #        return initial
 
 class TopicCreate(SuccessMessageMixin, CreateView):
     model = Topic
@@ -201,15 +186,6 @@ def create_task(request):
             json.dumps({"nothing to see": "this isn't happening"}),
             content_type="application/json"
         )
-
-class AJAXCreateTaskView(View):
-    def post(self, request):
-        form = TaskForm(request.POST, user=request.user.id)
-        # if form.is_valid():
-
-
-    def get(self, request):
-        form = TaskForm(user=request.user.id)
 
 """
 shows all the topics of the logged in owner
@@ -259,13 +235,18 @@ def editing(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     return render(request, 'matrix/taskediting.html', {'task': task})
 
-
-class TaskUpdate(UpdateView):
+class TaskUpdate(AjaxableResponseMixin, UpdateView):
     model = Task
-    fields = ['task_name', 'task_description', 'importance', 'due_date', 'done']
+    form_class = TaskForm
     template_name = 'matrix/taskediting.html'
+
     def get_object(self):
         return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
+
+    def get_form_kwargs(self):
+        kwargs = super(TaskUpdate, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 class TaskDelete(DeleteView):
     model = Task

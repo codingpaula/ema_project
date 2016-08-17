@@ -97,15 +97,14 @@ function formatImp(imp) {
 	var empty_star = $('<span/>', {
 		class: 'glyphicon glyphicon-star-empty'
 	});
+	stars.append(full_star.clone());
 	if (imp == 0) {
-		stars.append(full_star.clone());
 		stars.append(empty_star.clone());
 		stars.append(empty_star.clone());
 		stars.append(empty_star.clone());
 		return stars;
 	}
 	if (imp == 1) {
-		stars.append(full_star.clone());
 		stars.append(full_star.clone());
 		stars.append(empty_star.clone());
 		stars.append(empty_star.clone());
@@ -114,12 +113,10 @@ function formatImp(imp) {
 	if (imp == 2) {
 		stars.append(full_star.clone());
 		stars.append(full_star.clone());
-		stars.append(full_star.clone());
 		stars.append(empty_star.clone());
 		return stars;
 	}
 	if (imp == 3) {
-		stars.append(full_star.clone());
 		stars.append(full_star.clone());
 		stars.append(full_star.clone());
 		stars.append(full_star.clone());
@@ -236,7 +233,9 @@ Matrix = {
 	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
 	drawDot: function(task, color) {
 		// eigentlicher Kreis mit task_id in entsprechender Farbe des Topics
-		var clickHandler = "location.href='/matrix/"+task.id+"/taskediting/'"
+		var clickHandler = function(){
+			$('#ajaxEditTask').data = $(this).attr('id');
+		};
 		var taskItem = $('<div/>', {
 			class: 'dot',
 			id: task.id,
@@ -249,6 +248,9 @@ Matrix = {
 			},
 			onclick: clickHandler
 		});
+		taskItem.attr('data-toggle', 'modal');
+		taskItem.attr('data-target', '#editTask');
+		taskItem.attr('data-task', task.id);
 		$('#dots').append(taskItem);
 		// div mit den Aufgaben-Details
 		var name = $('<p/>', {

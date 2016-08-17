@@ -46,7 +46,7 @@ var TaskData = {
     that.data = [];
     var index = 0;
     tasks.forEach(function(task) {
-      console.log("daten.js-Schleife");
+      index = task.id;
       that.data[index] = {
         // TODO Berechnung?
         'x': newDateCoordinate(task.due_date, urgent_axis),
