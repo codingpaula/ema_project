@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'datetimewidget',
+    'bootstrap3_datetime',
     'matrix',
     'profiles',
     'orga'
@@ -129,12 +131,19 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = True
 
 USE_TZ = True
 
+DATETIME_INPUT_FORMATS = [
+                            '%d/%m/%Y %H:%M',
+                            '%d/%m/%Y',
+                            '%Y-%m-%d %H:%M:%S',
+                            '%Y-%m-%d',
+                            '%Y-%m-%d %H:%M'
+                         ]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/

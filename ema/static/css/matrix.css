@@ -68,6 +68,19 @@
 
 }
 
+.pickerInTheMiddle {
+  padding: 0px 30%;
+}
+
+.pickerInTheMiddle div.datetimepicker {
+  border: 1px solid #555;
+  border-radius: 5px;
+}
+
+textarea.form-control {
+  height: 20%;
+}
+
 /* Matrix-Einstellungen */
 #Matrix {
   display: inline-block;

@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 
 from .models import Task, Topic
 from .utils import get_user_colors
@@ -11,15 +12,27 @@ create new Task
 used in views.AddTaskView
 """
 class TaskForm(ModelForm):
+    due_date = forms.DateTimeField(
+                input_formats=settings.DATETIME_INPUT_FORMATS,
+                widget=forms.TextInput(attrs={'class': 'form-control'}))
     class Meta:
         model = Task
         fields = ['task_name', 'task_description', 'due_date', 'importance', 'topic', 'done']
         widgets = {
             'task_name': forms.TextInput(
-                attrs={'placeholder': 'Name'}
+                attrs={'placeholder': 'Name', 'class': 'form-control'}
             ),
             'task_description': forms.Textarea(
-                attrs={'placeholder': 'What is this task about?'}
+                attrs={
+                        'placeholder': 'What is this task about?',
+                        'class': 'form-control',
+                        'rows': 5}
+            ),
+            'importance': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'topic': forms.Select(
+                attrs={'class': 'form-control'}
             )
         }
 
@@ -34,6 +47,7 @@ class TaskForm(ModelForm):
             user_settings = UserOrga(owner=self.user)
             user_settings.save()
         self.initial['topic'] = user_settings.default_topic
+        print(settings.DATETIME_INPUT_FORMATS)
 
 
 """
