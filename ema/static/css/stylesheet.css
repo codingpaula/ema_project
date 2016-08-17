@@ -31,9 +31,18 @@ footer p {
 }
 
 /* forms */
-form {
+.formContainer {
+	padding: 8px 15px 20px 15px;
+}
+
+.formSaveButton {
+	margin: 0 auto 0 auto;
+}
+
+/* form {
 	text-align: center;
 }
+
 input {
 	margin: 5px 10px 15px 10px;
 }
@@ -42,7 +51,7 @@ input[type=text],
 input[type=password] {
 	padding: 5px;
 }
-
+*/
 /* links */
 a {
 	text-decoration: none;
@@ -190,6 +199,7 @@ a:active {
 }
 
 .topicButton {
+	background-color: #C0C0C0;
 	white-space: normal;
 	border-radius: 4px;
 	color: #fff;

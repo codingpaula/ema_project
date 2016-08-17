@@ -9,8 +9,11 @@ class OrgaForm(ModelForm):
         model = UserOrga
         fields = ['urgent_axis', 'default_topic']
         widgets = {
+            'urgent_axis': forms.Select(
+                attrs = {'class': 'form-control'}
+            ),
             'default_topic': forms.Select(
-                attrs = {'required': False}
+                attrs = {'required': False, 'class': 'form-control'}
             )
         }
 
@@ -19,4 +22,3 @@ class OrgaForm(ModelForm):
         # get different list of choices here
         topics = Topic.objects.filter(topic_owner=user)
         self.fields['default_topic'].queryset = topics
-        

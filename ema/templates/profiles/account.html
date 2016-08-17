@@ -43,10 +43,10 @@
             urgent-axis of your matrix.
           </p>
         </div>
-        <form action="" method="post" class="abstandU">
+        <form class="formContainer" action="" method="post" class="abstandU">
           {% csrf_token %}
           {{ form.as_p }}
-          <input class="btn btn-default" type="submit" value="save" />
+          <input class="btn btn-default center-block" type="submit" value="save" />
         </form>
       </div>
       <div role="tabpanel" class="tab-pane" id="donetasks">
