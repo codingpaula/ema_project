@@ -249,7 +249,7 @@ Matrix = {
 			onclick: clickHandler
 		});
 		taskItem.attr('data-toggle', 'modal');
-		taskItem.attr('data-target', '#editTask');
+		taskItem.attr('data-target', '#ajaxModal');
 		taskItem.attr('data-task', task.id);
 		$('#dots').append(taskItem);
 		// div mit den Aufgaben-Details
