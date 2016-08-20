@@ -44,11 +44,9 @@ var TaskData = {
     // workaround um data zu editieren
     var that = this;
     that.data = [];
-    var index = 0;
     tasks.forEach(function(task) {
       index = task.id;
       that.data[index] = {
-        // TODO Berechnung?
         'x': newDateCoordinate(task.due_date, urgent_axis),
         'y': importanceCoordinate(task.importance),
         'due_date': task.due_date,
@@ -58,7 +56,6 @@ var TaskData = {
         'description': task.task_description,
         'topic': task.topic
       };
-      index += 1;
       help = task.task_name;
     });
   }
