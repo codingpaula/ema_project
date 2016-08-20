@@ -28,9 +28,7 @@ def matrix(request):
     topic_data = json.dumps(to_data, cls=DjangoJSONEncoder)
     all_tasks = Task.objects.filter(topic__topic_owner=request.user.id, done=False)
     data = [model_to_dict(instance) for instance in all_tasks]
-    response_data = {}
-    response_data['objects'] = data
-    end_data = json.dumps(response_data, cls=DjangoJSONEncoder)
+    end_data = json.dumps(data, cls=DjangoJSONEncoder)
     task_form = TaskForm(user=request.user)
     settings_file = UserOrga.objects.get(owner=request.user)
     if (settings_file == None):
@@ -40,70 +38,6 @@ def matrix(request):
                     {'all_topics': all_topics, 'all_tasks': all_tasks,
                     'end_data': end_data, 'topic_data': topic_data,
                     'task_form': task_form, 'settings_file': settings_file  })
-
-"""
-new topic:
-uses TopicForm
-"""
-class AddTopicView(View):
-    form_class = TopicForm
-    template_name = 'matrix/addtopic.html'
-
-    def get(self, request):
-        form = self.form_class(user=request.user.id)
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        form = self.form_class(user=request.user.id, data=request.POST)
-        if form.is_valid():
-            topic_owner = request.user
-            topic_name = form.cleaned_data['topic_name']
-            topic_description = form.cleaned_data['topic_description']
-            color = form.cleaned_data['color']
-
-            new_topic = Topic(topic_name = topic_name,
-                                topic_description = topic_description,
-                                color = color, topic_owner = topic_owner)
-            new_topic.save()
-            messages.info(request, 'Topic "%s" successfully created.' % new_topic.topic_name)
-            return HttpResponseRedirect('/matrix/')
-
-        return render(request, self.template_name, {'form': form})
-
-"""
-new task:
-uses TaskForm
-@params: topic_id
-"""
-class AddTaskView(View):
-    login_url = '/account/login/'
-    form_class = TaskForm
-    template_name = 'matrix/adding.html'
-
-    def get(self, request):
-        form = TaskForm(user=request.user.id)
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        # topic = get_object_or_404(Topic, pk=topic_id)
-        form = TaskForm(request.POST, user=request.user.id)
-        if form.is_valid():
-            task_name = form.cleaned_data['task_name']
-            task_description = form.cleaned_data['task_description']
-            due_date = form.cleaned_data['due_date']
-            importance = form.cleaned_data['importance']
-            topic = form.cleaned_data['topic']
-
-            new_task = Task(task_name = task_name,
-                                task_description = task_description,
-                                due_date = due_date, importance = importance,
-                                topic = topic)
-            new_task.save()
-            messages.info(request, 'Task "%s" successfully created.' % new_task.task_name)
-            return HttpResponseRedirect('/matrix/')
-
-        return render(request, self.template_name, {'form': form})
-
 
 # source: django docs:
 #https://docs.djangoproject.com/en/1.8/topics/class-based-views/generic-editing/
@@ -115,7 +49,6 @@ class AjaxableResponseMixin(object):
     def form_invalid(self, form):
         response = super(AjaxableResponseMixin, self).form_invalid(form)
         if self.request.is_ajax():
-            print "got something"
             return JsonResponse(form.errors, status=400)
         else:
             return response
@@ -127,25 +60,31 @@ class AjaxableResponseMixin(object):
         response = super(AjaxableResponseMixin, self).form_valid(form)
         if self.request.is_ajax():
             all_tasks = Task.objects.filter(topic__topic_owner=self.request.user.id, done=False)
-            data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
-            response_data = {}
-            response_data['objects'] = data
-            return HttpResponse(data, content_type="application/json")
+            response_data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
+            data = {}
+            data['objects'] = response_data
+            return HttpResponse(response_data, content_type="application/json")
         else:
             return response
 
-class TaskCreate(SuccessMessageMixin, AjaxableResponseMixin, CreateView):
+class TaskCreate(AjaxableResponseMixin, SuccessMessageMixin, CreateView):
     model = Task
     form_class = TaskForm
     template_name = 'matrix/adding.html'
     success_message = "Task '%(task_name)s' was successfully created!"
     success_url = '/matrix'
 
+    # display no success message on reload when created with ajax
+    def get_success_message(self, cleaned_data):
+        if self.request.is_ajax():
+            return None
+        else:
+            return self.success_message % cleaned_data
+
     def get_form_kwargs(self):
         kwargs = super(TaskCreate, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
-
 
 class TopicCreate(SuccessMessageMixin, CreateView):
     model = Topic
@@ -248,12 +187,23 @@ class TaskUpdate(AjaxableResponseMixin, UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-class TaskDelete(DeleteView):
+    # display no success message on reload when created with ajax
+    def get_success_message(self, cleaned_data):
+        if self.request.is_ajax():
+            return None
+        else:
+            return self.success_message % cleaned_data
+
+class TaskDelete(AjaxableResponseMixin, DeleteView):
     model = Task
     success_url = '/matrix/matrix.html'
     def get(self, request, *args, **kwargs):
+        print("inside get")
         self.object = self.get_object()
+        print("found object")
+        print(self.object)
         objects_topic = Topic.objects.get(pk=self.object.topic)
+        print("found the objects topic")
         if objects_topic.topic_owner == request.user:
             context = self.get_context_data(object=self.object)
             return self.render_to_response(context)
