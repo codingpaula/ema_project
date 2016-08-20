@@ -6,12 +6,10 @@ $(function() {
   // Topic-Daten behandeln
   TopicData.getTopics(topic_data);
   // Task-Daten behandlen
-  TaskData.getTasks(task_data.objects, settings);
+  TaskData.getTasks(task_data, settings);
   // Aufgaben in die Matrix zeichnen
   Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
-  $('.closeNotification').click(function(){
-    $('.messages').remove();
-  });
+  console.log(TaskData.data);
   // csrf token for javascript/ajax
   function getCookie(name) {
     var cookieValue = null;
