@@ -8,6 +8,7 @@
 {% block js %}
   {{ block.super }}
   {{ task_form.media }}
+  <script src={% static "js/moment.min.js" %} type="text/javascript"></script>
   <script src={% static "js/bootstrap-datetimepicker.min.js" %} type="text/javascript"></script>
 {% endblock js %}
 {% block content %}
@@ -57,7 +58,9 @@
             </button>
           </li>
           <li class="topicList">
-            <button type="button" class="btn topicButton topicButtonShow" data-toggle="modal" data-target="#addTask">
+            <button type="button" class="btn topicButton topicButtonShow"
+                    data-toggle="modal" data-target="#ajaxModal"
+                    data-task="0">
               add task
             </button>
           </li>
@@ -78,52 +81,45 @@
     </canvas>-->
     <div id="dots" style="width: 900px; height:725px; background-image: url({% static "pictures/matrix.png" %});"></div>
   </div>
-  <!-- Modal um Aufgaben zu adden -->
-  <div class="modal fade" id="addTask" tabindex="-1" role="dialog" aria-labelledby="myModalCreate">
+  <!-- Modal um Aufgaben zu adden und zu editieren -->
+  <div class="modal fade" id="ajaxModal"
+        tabindex="-1" role="dialog" aria-labelledby="taskModal">
     <div class="modal-dialog" role="document">
-          <form action="" method="post" id="ajaxCreateTask"
+          <form action="" method="post" id="ajaxTask"
               class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" id="closeTaskModal"
+                      data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
-              <h4 class="modal-title" id="myModalCreate">Add a task</h4>
+              <h4 class="modal-title" id="taskModalHeader">Add a task</h4>
             </div>
             <div class="modal-body">
               {% csrf_token %}
               {% for field in task_form.visible_fields %}
                 {% if field.html_name == "due_date" %}
-                <div id="add_{{ field.html_name }}"
-                    class="form-group">
-                  {{ field.label_tag }}
-                  {{ field }}
-                </div>
-                <div id="datetimepickerAdd" class="pickerInTheMiddle"></div>
+                {{ field.label_tag }}
+                <div id="datetimepicker" class=""></div>
                 <script>
-                  $('#datetimepickerAdd').datetimepicker({
-                    format: 'dd/mm/yyyy hh:ii'
-                  });
-                  $('#datetimepickerAdd').on("changeDate", function() {
-                    $('div#add_due_date input#id_due_date').val(
-                      $('#datetimepickerAdd').datetimepicker('getFormattedDate')
-                    );
-                    $('#datetimepickerAdd').datetimepicker('remove');
-                    $('#datetimepickerAdd').datetimepicker({
-                      format: 'dd/mm/yyyy hh:ii'
+                  $(function () {
+                    $('#datetimepicker').datetimepicker({
+                      inline: true,
+                      sideBySide: true,
+                      format: 'DD/MM/YYYY hh:mm'
                     });
                   });
                 </script>
               {% else %}
                 <div id="{{ field.html_name }}"
-                      class="form-group{% if field.errors %} has-error{% endif %}">
+                  class="form-group">
                   {{ field.label_tag }}
                   {{ field }}
                   <div class="text-muted pull-right">
                     <small>{{ field.help_text }}</small>
                   </div>
-                  <div class="help-block">
+                  <span class="help-block">
                     {{ field.errors }}
-                  </div>
+                  </span>
                 </div>
               {% endif %}
               {% endfor %}
@@ -132,81 +128,17 @@
               {% endfor %}
             </div>
             <div class="modal-footer">
-              <input class="btn btn-default center-block" type="submit" value="add task" />
+              <input class="btn btn-default" type="submit"
+                     id="submitAjax" value="add task" />
+              <input class="btn btn-danger" type="submit" id="ajaxDeleteConfirm"
+                      value="delete task" style="display: none;" />
             </div>
           </form>
         </div>
       </div>
     </div>
   </div>
-  <!-- Modal um Aufgaben zu editieren -->
-  <div class="modal fade" id="editTask" tabindex="-1" role="dialog" aria-labelledby="myModalEdit">
-    <div class="modal-dialog" role="document">
-      <form action="" method="post" id="ajaxEditTask"
-            class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h4 class="modal-title" id="myModalEdit"></h4>
-        </div>
-        <div class="modal-body">
-          {% csrf_token %}
-          {% for field in task_form.visible_fields %}
-            {% if field.html_name == "due_date" %}
-              <div id="edit_{{ field.html_name }}"
-                    class="form-group">
-                {{ field.label_tag }}
-                {{ field }}
-              </div>
-              <div id="datetimepicker" class="pickerInTheMiddle"></div>
-              <script>
-                $('#datetimepicker').datetimepicker({
-                  format: 'dd/mm/yyyy hh:ii'
-                });
-                $('#datetimepicker').on("changeDate", function() {
-                  $('div#edit_due_date input#id_due_date').val(
-                      $('#datetimepicker').datetimepicker('getFormattedDate')
-                  );
-                  $('#datetimepicker').datetimepicker('remove');
-                  $('#datetimepicker').datetimepicker({
-                    format: 'dd/mm/yyyy hh:ii'
-                  });
-                });
-              </script>
-            {% else %}
-              <div id="{{ field.html_name }}"
-                   class="form-group{% if field.errors %} has-error{% endif %}">
-                {{ field.label_tag }}
-                {{ field }}
-                <div class="text-muted pull-right">
-                  <small>{{ field.help_text }}</small>
-                </div>
-                <div class="help-block">
-                  {{ field.errors }}
-                </div>
-              </div>
-            {% endif %}
-          {% endfor %}
-          {% for hidden in task_form.hidden_fields %}
-            {{ hidden }}
-          {% endfor %}
-        </div>
-        <div class="modal-footer">
-          <input class="btn btn-default" id="ajaxEditSubmit" type="submit" value="save task" />
-          <input class="btn btn-danger" id="ajaxDeleteSubmit" type="submit" value="delete task" />
-        </div>
-      </form>
-    </div>
-  </div>
-
-
 {% endblock content %}
-{% block modals %}
-<div class="modal">
-
-</div>
-{% endblock modals %}
 {% block javascript %}
   <script type="text/javascript" src={% static "js/daten.js" %}></script>
   <script type="text/javascript" src={% static "js/matrix.js" %}></script>
