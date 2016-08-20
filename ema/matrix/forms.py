@@ -47,7 +47,6 @@ class TaskForm(ModelForm):
             user_settings = UserOrga(owner=self.user)
             user_settings.save()
         self.initial['topic'] = user_settings.default_topic
-        print(settings.DATETIME_INPUT_FORMATS)
 
 
 """
