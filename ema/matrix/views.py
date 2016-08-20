@@ -98,34 +98,6 @@ class TopicCreate(SuccessMessageMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-def create_task(request):
-    if request.method == 'POST':
-        form = TaskForm(request.POST, user=request.user)
-        if form.is_valid():
-            task_name = request.POST.get('task_name')
-            task_description = request.POST.get('task_description')
-            due_date = request.POST.get('due_date')
-            importance = request.POST.get('importance')
-            topic = Topic.objects.get(pk=request.POST.get('topic'))
-
-            new_task = Task(task_name = task_name, task_description =
-                        task_description, topic = topic, due_date =
-                        due_date, importance = importance)
-            new_task.save()
-            task = Task.objects.filter(task_name=task_name)
-            all_tasks = Task.objects.filter(topic__topic_owner=request.user.id, done=False)
-            data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
-            response_data = {}
-            response_data['objects'] = data
-            print("did do json")
-            # messages.info("Task '%(task_name)s' was successfully created!")
-            return HttpResponse(data, content_type="application/json")
-    else:
-        return HttpResponse(
-            json.dumps({"nothing to see": "this isn't happening"}),
-            content_type="application/json"
-        )
-
 """
 shows all the topics of the logged in owner
 @params: topic_id
@@ -162,17 +134,6 @@ anymore
 def done_tasks(request):
     dones = Task.objects.filter(topic__topic_owner=request.user.id, done=True)
     return render(request, 'matrix/done_tasks.html', {'dones': dones})
-
-"""
-TODO: editing
-"""
-def edittopic(request, topic_id):
-    topic = get_object_or_404(Topic, pk=topic_id)
-    return render(request, 'matrix/topicediting.html', {'topic': topic})
-
-def editing(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    return render(request, 'matrix/taskediting.html', {'task': task})
 
 class TaskUpdate(AjaxableResponseMixin, UpdateView):
     model = Task
