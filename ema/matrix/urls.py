@@ -4,7 +4,7 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
 from . import views
-from .views import TopicCreate, TaskCreate, TaskUpdate
+from .views import TopicCreate, TaskCreate, TaskUpdate, AjaxTaskDelete
 from .views import TopicUpdate, TaskDelete, TopicDelete
 
 urlpatterns = [
@@ -30,17 +30,21 @@ urlpatterns = [
     url(r'^(?P<topic_id>[0-9]+)/deletetopic/$',
             login_required(TopicDelete.as_view()),
             name='topicdeleting'),
-    # /matrix/5/tasks/editing
+    # /matrix/5/taskediting
     url(r'^(?P<task_id>[0-9]+)/taskediting/$',
             login_required(TaskUpdate.as_view()),
             name='taskediting'),
-    # /matrix/5/tasks/deleting
+    # /matrix/5/taskdeleting
     url(r'^(?P<task_id>[0-9]+)/taskdeleting/$',
             login_required(TaskDelete.as_view()),
             name='taskdeleting'),
     # /matrix/done_tasks
     url(r'^done_tasks/$', views.done_tasks, name='done_tasks'),
     # ajax-urls
-    # create task: /matrix/create_task
-    url(r'^create_task/$', views.create_task, name='create_task')
+    # no ajax-urls anymore because of AjaxableResponseMixin
+    # just for delete task
+    # /matrix/5/taskdelete
+    url(r'^(?P<task_id>[0-9]+)/taskdelete/$',
+            login_required(AjaxTaskDelete.as_view()),
+            name='taskdelete'),
 ]

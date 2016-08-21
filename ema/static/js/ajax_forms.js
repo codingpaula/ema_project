@@ -5,12 +5,15 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
   // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
   var modal = $(this);
+  // empty error fields
+  $('.help-block').empty();
+  $('.form-group.has-error').attr('class', 'form-group');
   if(task_id == "0") {
     $('#taskModalHeader').text('Add a new task');
     $('#ajaxTask')[0].reset();
     var submitInput = $('#submitAjax');
     submitInput.val('add task');
-    submitInput.attr('class', 'btn btn-default center-block');
+    submitInput.attr('class', 'btn btn-success center-block');
     submitInput.data('task_id', task_id);
     $('#ajaxDeleteConfirm').css('display', 'none');
   } else {
@@ -18,7 +21,7 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
     $('#submitAjax').val('save task');
     var modal_body = modal.find('form#ajaxTask').children('.modal-body');
     var submit_footer = modal.find('.modal-footer');
-    submit_footer.children('#submitAjax').attr('class', 'btn btn-default');
+    submit_footer.children('#submitAjax').attr('class', 'btn btn-success gap');
     submit_footer.children('#ajaxDeleteConfirm').css('display', 'inline-block');
     prefillForm(task_id, modal_body, submit_footer);
   }
@@ -63,18 +66,34 @@ $('#submitAjax').on('click', function(e) {
 
 $('#ajaxDeleteConfirm').on('click', function(e) {
   e.preventDefault();
-  var task_id = $('#ajaxDeleteConfirm').data('task_id');
+  showDeleteQuestion();
+});
+
+$('#ajaxDeleteCancel').on('click', function(e) {
+  e.preventDefault();
+  hideDeleteQuestion();
+});
+
+$('#ajaxDeleteSubmit').on('click', function(e) {
+  e.preventDefault();
+  var task_id = $('#ajaxDeleteSubmit').data('task_id');
   $.ajax({
-    url: "/matrix/"+task_id+"/taskdeleting/",
-    type: "GET",
+    url: "/matrix/"+task_id+"/taskdelete/",
+    type: "POST",
     success: function(data) {
-      console.log("got something");
+      Matrix.updateMatrixAjax(data);
+      displayMessage("delete");
+      $('#ajaxTask')[0].reset();
+      $('#ajaxModal').find('button[data-dismiss="modal"]').click();
     },
     error: function(data) {
-      console.log("error before confirm");
+      // TODO display error message
+      console.log('error');
     }
   });
 });
+
+
 
 function prefillForm(task_id, editForm, submit_footer) {
   var task = TaskData.data[task_id];
@@ -84,7 +103,7 @@ function prefillForm(task_id, editForm, submit_footer) {
   editForm.find('select#id_importance').val(task.importance).attr('selected', 'selected');
   editForm.find('select#id_topic').val(task.topic).attr('selected', 'selected');
   submit_footer.find('input[type="submit"]#submitAjax').data('task_id', task_id);
-  submit_footer.find('input[type="submit"]#ajaxDeleteConfirm').data('task_id', task_id);
+  submit_footer.find('input[type="submit"]#ajaxDeleteSubmit').data('task_id', task_id);
 }
 
 function formatDate2Form(date) {
@@ -122,6 +141,10 @@ function displayMessage(task_id) {
     var text_span = $('<span/>', {
       text: 'Successfully created task "' +  '"'
     });
+  } else if (task_id == "delete"){
+    var text_span = $('<span/>', {
+      text: 'Deleted!'
+    });
   } else {
   // edited
     var text_span = $('<span/>', {
@@ -130,4 +153,16 @@ function displayMessage(task_id) {
   }
   $('.messages').css('display', 'block');
   $('.messages .text').prepend(text_span);
+}
+
+function showDeleteQuestion() {
+  $('.deleteConfirmDialog').css('display', 'inline-block');
+  $('#ajaxDeleteConfirm').attr('disabled', 'disabled');
+  $('#submitAjax').attr('disabled', 'disabled');
+}
+
+function hideDeleteQuestion() {
+  $('.deleteConfirmDialog').css('display', 'none');
+  $('#ajaxDeleteConfirm').removeAttr('disabled');
+  $('#submitAjax').removeAttr('disabled');
 }

@@ -128,10 +128,23 @@
               {% endfor %}
             </div>
             <div class="modal-footer">
-              <input class="btn btn-default" type="submit"
+              <!-- create or edit task -->
+              <input class="btn btn-success gap" type="submit"
                      id="submitAjax" value="add task" />
-              <input class="btn btn-danger" type="submit" id="ajaxDeleteConfirm"
-                      value="delete task" style="display: none;" />
+              <!-- delete task? -->
+              <button class="btn btn-danger" id="ajaxDeleteConfirm"
+                        style="display: none;">
+                <i class="glyphicon glyphicon-trash"></i>
+              </button>
+              <div class="deleteConfirmDialog" style="display: none;">
+                <span>are you sure you want to delete this task?</span>
+                <!-- cancel delete -->
+                <input class="btn btn-default" type="submit" id="ajaxDeleteCancel"
+                        value="cancel" />
+                <!-- delete! -->
+                <input class="btn btn-danger" type="submit" id="ajaxDeleteSubmit"
+                        value="delete task" />
+              </div>
             </div>
           </form>
         </div>

@@ -39,6 +39,9 @@ footer p {
 	margin: 0 auto 0 auto;
 }
 
+.deleteConfirmDialog {
+	margin-top: 15px;
+}
 /* form {
 	text-align: center;
 }

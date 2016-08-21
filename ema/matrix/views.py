@@ -2,7 +2,8 @@ import json
 from django.shortcuts import get_object_or_404, render, render_to_response
 from django.views.generic import View
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.views.generic.detail import SingleObjectMixin
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -61,8 +62,6 @@ class AjaxableResponseMixin(object):
         if self.request.is_ajax():
             all_tasks = Task.objects.filter(topic__topic_owner=self.request.user.id, done=False)
             response_data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
-            data = {}
-            data['objects'] = response_data
             return HttpResponse(response_data, content_type="application/json")
         else:
             return response
@@ -85,6 +84,66 @@ class TaskCreate(AjaxableResponseMixin, SuccessMessageMixin, CreateView):
         kwargs = super(TaskCreate, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+class TaskUpdate(AjaxableResponseMixin, SuccessMessageMixin, UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'matrix/taskediting.html'
+    success_message = "Task '%(task_name)s' was successfully modified!"
+    success_url = '/matrix'
+
+    def get_object(self):
+        return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
+
+    def get_form_kwargs(self):
+        kwargs = super(TaskUpdate, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    # display no success message on reload when created with ajax
+    def get_success_message(self, cleaned_data):
+        if self.request.is_ajax():
+            return None
+        else:
+            return self.success_message % cleaned_data
+
+class TaskDelete(DeleteView):
+    model = Task
+    success_url = '/matrix'
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        objects_topic = Topic.objects.get(pk=self.object.topic_id)
+        if objects_topic.topic_owner == request.user:
+            context = self.get_context_data(object=self.object)
+            return self.render_to_response(context)
+        else:
+            messages.info(request, 'Permission denied!')
+
+    def get_object(self):
+        task = get_object_or_404(Task, pk=self.kwargs.get('task_id'))
+        if(task.topic__topic_owner == self.request.user.id):
+            return task
+        else: return Http404
+
+class AjaxTaskDelete(SingleObjectMixin, View):
+    model = Task
+
+    def get_object(self):
+        task = Task.objects.get(pk=self.kwargs.get('task_id'))
+        # do i really have to check this?
+        tasks_topic = Topic.objects.get(pk=task.topic_id)
+        if (tasks_topic.topic_owner == self.request.user):
+            return task
+        else:
+            messages.info(request, 'Permission denied')
+            return Http404
+
+    def post(self, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        all_tasks = Task.objects.filter(topic__topic_owner=self.request.user.id, done=False)
+        response_data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
+        return HttpResponse(response_data, content_type="application/json")
 
 class TopicCreate(SuccessMessageMixin, CreateView):
     model = Topic
@@ -134,45 +193,6 @@ anymore
 def done_tasks(request):
     dones = Task.objects.filter(topic__topic_owner=request.user.id, done=True)
     return render(request, 'matrix/done_tasks.html', {'dones': dones})
-
-class TaskUpdate(AjaxableResponseMixin, UpdateView):
-    model = Task
-    form_class = TaskForm
-    template_name = 'matrix/taskediting.html'
-
-    def get_object(self):
-        return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
-
-    def get_form_kwargs(self):
-        kwargs = super(TaskUpdate, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-
-    # display no success message on reload when created with ajax
-    def get_success_message(self, cleaned_data):
-        if self.request.is_ajax():
-            return None
-        else:
-            return self.success_message % cleaned_data
-
-class TaskDelete(AjaxableResponseMixin, DeleteView):
-    model = Task
-    success_url = '/matrix/matrix.html'
-    def get(self, request, *args, **kwargs):
-        print("inside get")
-        self.object = self.get_object()
-        print("found object")
-        print(self.object)
-        objects_topic = Topic.objects.get(pk=self.object.topic)
-        print("found the objects topic")
-        if objects_topic.topic_owner == request.user:
-            context = self.get_context_data(object=self.object)
-            return self.render_to_response(context)
-        else:
-            messages.info(request, 'Permission denied!')
-
-    def get_object(self):
-        return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
 
 class TopicUpdate(UpdateView):
     model = Topic
