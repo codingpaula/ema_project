@@ -290,6 +290,10 @@ Matrix = {
 		$('#dots').children('#'+task.id).append(name);
 		$('#dots').children('#'+task.id).append(label);
 		$('#dots').children('#'+task.id).children('.hoverField').append(title, attributes, formatImp(task.importance));
+	},
+	updateMatrixAjax: function(data) {
+		TaskData.getTasks(data, settings);
+		Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
 	}
 };
 
