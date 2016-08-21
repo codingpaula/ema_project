@@ -10,44 +10,118 @@
 	@param newDot_y = y-Koordinate(importance) des neuen Punktes
 */
 function doubles(dots, newDot_x, newDot_y) {
+	var newDot = {x: newDot_x, y: newDot_y};
 	dots.forEach(function(oldDot) {
-		if( liesIn(oldDot.date, newDot_x) && liesIn(oldDot.imp, newDot_y) ) {
+		if(liesIn(oldDot, newDot)) {
 			// TODO wie kann erkannt werden dass die neue Stelle nicht auch schon
 			// besetzt ist?
-			newDot_x += 10;
-			newDot_y += 10;
+			newDot.x += 10;
+			newDot.y += 10;
 		}
 	});
 	// Rückgabe von 2 Werten nicht erlaubt, dadurch als Objekt
-	var dot = {
-		'date': newDot_x,
-		'imp': newDot_y
-	};
-	return dot;
+	//var dot = {
+	//	'date': newDot_x,
+	//	'imp': newDot_y
+	//};
+	return newDot;
 }
 
 // left oder bottom property gegeben, bis wo liegen die Punkte ganz oder
 // teilweise aufeinander
-function liesIn(oldCoo, newCoo) {
-	if (oldCoo - 8 < newCoo && oldCoo + 8 > newCoo) {
-		return true;
-	}	else {
+function liesIn(takenDot, newDot) {
+	if (takenDot.x - 42 < newDot.x && takenDot.x + 42 > newDot.x) {
+		if (takenDot.y - 32 < newDot.y && takenDot.y + 32 > newDot.y) {
+			return true;
+		}
+	} else {
 		return false;
 	}
 }
 
-// Date in lesbare Zahlen umwandeln
+// Date in lesbares Format umwandeln
 function formatDate(date) {
 	var datum = new Date(date);
-	return datum.toDateString();
+	var jahr = datum.getFullYear();
+	var month_number = datum.getMonth();
+	var monat = "";
+	switch(month_number) {
+		case 0:
+			monat = "Januar"; break;
+		case 1:
+			monat = "Februar"; break;
+		case 2:
+			monat = "März"; break;
+		case 3:
+			monat = "April"; break;
+		case 4:
+			monat = "Mai"; break;
+		case 5:
+			monat = "Juni"; break;
+		case 6:
+			monat = "Juli"; break;
+		case 7:
+			monat = "August"; break;
+		case 8:
+			monat = "September"; break;
+		case 9:
+			monat = "Oktober"; break;
+		case 10:
+			monat = "November"; break;
+		case 11:
+			monat = "Dezember"; break;
+	}
+	var tag = datum.getDate();
+	var stunden = datum.getHours();
+	var min = datum.getMinutes();
+	// bei den Minuten und Stunden fehlt wenn sie einstellig sind die erste 0
+	if (stunden < 10) {
+		if (min < 10) {
+			return tag+". "+monat+" "+jahr+", 0"+stunden+":0"+min;
+		}
+		return tag+". "+monat+" "+jahr+", 0"+stunden+":"+min;
+	} else if (min < 10) {
+		return tag+". "+monat+" "+jahr+", "+stunden+":0"+min;
+	}
+	return tag+". "+monat+" "+jahr+", "+stunden+":"+min;
 }
 
 // Wichtigkeit richtig anzeigen
 function formatImp(imp) {
-	if (imp == 0) return "not important";
-	if (imp == 1) return "less important";
-	if (imp == 2) return "important";
-	if (imp == 3) return "very important";
+	var stars = $('<div/>', {
+		class: 'starDiv'
+	});
+	var full_star = $('<span/>', {
+		class: 'glyphicon glyphicon-star'
+	});
+	var empty_star = $('<span/>', {
+		class: 'glyphicon glyphicon-star-empty'
+	});
+	stars.append(full_star.clone());
+	if (imp == 0) {
+		stars.append(empty_star.clone());
+		stars.append(empty_star.clone());
+		stars.append(empty_star.clone());
+		return stars;
+	}
+	if (imp == 1) {
+		stars.append(full_star.clone());
+		stars.append(empty_star.clone());
+		stars.append(empty_star.clone());
+		return stars;
+	}
+	if (imp == 2) {
+		stars.append(full_star.clone());
+		stars.append(full_star.clone());
+		stars.append(empty_star.clone());
+		return stars;
+	}
+	if (imp == 3) {
+		stars.append(full_star.clone());
+		stars.append(full_star.clone());
+		stars.append(full_star.clone());
+		return stars;
+	}
 }
 
 // structure:
@@ -127,7 +201,9 @@ Matrix = {
 		field.restore();
 	},
 	drawTasks: function(taskData, topicData, width, height) {
-		// TODO draw everything new or check if it is there?
+		// gets correct data
+		// console.log(taskData);
+		// console.log(topicData);
 		$('#dots').empty();
 		// how to find out if tasks are on the same spot
 		var that = this;
@@ -137,12 +213,15 @@ Matrix = {
 		taskData.forEach(function(task){
 			var colorIndex = task.topic;
 			if(topicData[colorIndex]['displayed'] == false) {
-				// that.deleteDot(task);
+
 			} else {
 				// check überschneidungen
-				var dot = doubles(taken, task.x, task.y);
-				task.x = dot.date;
-				task.y = dot.imp;
+				var dot = {x: task.x, y: task.y};
+				//console.log("x vor doubles: "+task.x);
+				//var dot = doubles(taken, task.x, task.y);
+				//task.x = dot.x;
+				//task.y = dot.y;
+				//console.log("coordinates are: x - "+task.x+", y - "+task.y);
 				var topicColor = topicData[colorIndex]['color'];
 				// eigentlichen Punkt kreieren und zeichnen
 				that.drawDot(task, topicColor);
@@ -154,7 +233,9 @@ Matrix = {
 	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
 	drawDot: function(task, color) {
 		// eigentlicher Kreis mit task_id in entsprechender Farbe des Topics
-		var clickHandler = "location.href='/matrix/"+task.id+"/tasks'"
+		var clickHandler = function(){
+			$('#ajaxEditTask').data = $(this).attr('id');
+		};
 		var taskItem = $('<div/>', {
 			class: 'dot',
 			id: task.id,
@@ -167,6 +248,9 @@ Matrix = {
 			},
 			onclick: clickHandler
 		});
+		taskItem.attr('data-toggle', 'modal');
+		taskItem.attr('data-target', '#ajaxModal');
+		taskItem.attr('data-task', task.id);
 		$('#dots').append(taskItem);
 		// div mit den Aufgaben-Details
 		var name = $('<p/>', {
@@ -177,7 +261,7 @@ Matrix = {
 			text: task.name
 		})
 		var label = $('<div/>', {
-			class: 'label'
+			class: 'hoverField'
 		});
 		// Titel
 		var title = $('<h1/>', {
@@ -185,20 +269,27 @@ Matrix = {
 			text: task.name
 		});
 		// weitere Attribute
-		var attributes = [$('<p/>', {
-			text: 'due: '+formatDate(task.due_date)
-		}),
-		$('<p/>', {
-			text: 'Importance: '+formatImp(task.importance)
-		})];
+		var trimmed_description = "";
+		if (task.description.length > 40) {
+			trimmed_description = task.description.substring(0, 40)+"...";
+		} else {
+			trimmed_description = task.description;
+		}
+		var attributes = [
+			$('<p/>', {
+				text: trimmed_description,
+				css: {
+					fontStyle: 'italic'
+				}
+			}),
+			$('<p/>', {
+				text: formatDate(task.due_date)
+			})
+		];
 		// anfügen, Erkennung des richtigen Kreises über task_id
 		$('#dots').children('#'+task.id).append(name);
 		$('#dots').children('#'+task.id).append(label);
-		$('#dots').children('#'+task.id).children('.label').append(title, attributes);
-	},
-	deleteDot: function(task) {
-		$('#dots').children('#'+task.id).remove();
-		console.log("i removed "+task.id);
+		$('#dots').children('#'+task.id).children('.hoverField').append(title, attributes, formatImp(task.importance));
 	}
 };
 
@@ -257,6 +348,10 @@ var Sidebar = {
 		if($('button#editTopics').css('background-color') == 'rgb(192, 192, 192)') {
 			for(button in TopicData.data) {
 				// alle onclick-Attribute der Buttons auf die Topic-Anzeige lenken
+				var glyphi = $('<span/>', {
+					class: 'glyphicon glyphicon-pencil pull-right'
+				});
+				$('button#'+button).append(glyphi);
 				$('button#'+button).attr('onclick', "location.href='/matrix/"+button+"'");
 			}
 			// All-Button ausmachen
@@ -266,6 +361,7 @@ var Sidebar = {
 		} else {
 			for(button in TopicData.data) {
 				// zurueck zu der Button beeinflusst die Matrix
+				$('button#'+button).find('span').remove();
 				$('button#'+button).attr('onclick', 'Sidebar.button(button)');
 			}
 			// All-Button geht wieder
