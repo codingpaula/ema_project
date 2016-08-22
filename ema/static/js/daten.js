@@ -54,9 +54,8 @@ var TaskData = {
         'id': task.id,
         'name': task.task_name,
         'description': task.task_description,
-        'topic': task.topic
+        'topic': task.topic,
       };
-      help = task.task_name;
     });
   }
 };
@@ -141,7 +140,3 @@ function newDateCoordinate(date, urgent_axis) {
 function importanceCoordinate(imp) {
 	return imp/4*s.height + 60;
 }
-
-// -----------------------------------------------------------------------------
-// default settings that can be changed per user
-var SettingsData = {};
