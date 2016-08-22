@@ -44,11 +44,11 @@ $('#submitAjax').on('click', function(e) {
       'task_description': form.find('#id_task_description').val(),
       'due_date': formatDate2Form($('#datetimepicker').data("DateTimePicker").date()),
       'importance': form.find('#id_importance').val(),
-      'topic': form.find('#id_topic').val()
+      'topic': form.find('#id_topic').val(),
+      'done': form.find('#id_done').prop('checked')
     },
     success: function(data) {
-      TaskData.getTasks(data, settings);
-      Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+      Matrix.updateMatrixAjax(data);
       displayMessage(task_id);
       $('#ajaxTask')[0].reset();
       $('#ajaxModal').find('button[data-dismiss="modal"]').click();
@@ -84,6 +84,7 @@ $('#ajaxDeleteSubmit').on('click', function(e) {
       Matrix.updateMatrixAjax(data);
       displayMessage("delete");
       $('#ajaxTask')[0].reset();
+      hideDeleteQuestion();
       $('#ajaxModal').find('button[data-dismiss="modal"]').click();
     },
     error: function(data) {
@@ -102,6 +103,7 @@ function prefillForm(task_id, editForm, submit_footer) {
   editForm.find('#datetimepicker').data('DateTimePicker').date(formatDate2Form(task.due_date));
   editForm.find('select#id_importance').val(task.importance).attr('selected', 'selected');
   editForm.find('select#id_topic').val(task.topic).attr('selected', 'selected');
+  // don't need to fill in done, because all displayed tasks are not done!
   submit_footer.find('input[type="submit"]#submitAjax').data('task_id', task_id);
   submit_footer.find('input[type="submit"]#ajaxDeleteSubmit').data('task_id', task_id);
 }
@@ -141,9 +143,13 @@ function displayMessage(task_id) {
     var text_span = $('<span/>', {
       text: 'Successfully created task "' +  '"'
     });
-  } else if (task_id == "delete"){
+  } else if (task_id == "delete") {
     var text_span = $('<span/>', {
       text: 'Deleted!'
+    });
+  } else if (TaskData.data[task_id] == undefined) {
+    var text_span = $('<span/>', {
+      text: 'Great Job!'
     });
   } else {
   // edited
