@@ -9,34 +9,45 @@
 	@param newDot_x = x-Koordinate(date) des neuen Punktes
 	@param newDot_y = y-Koordinate(importance) des neuen Punktes
 */
-function doubles(dots, newDot_x, newDot_y) {
-	var newDot = {x: newDot_x, y: newDot_y};
+function doubles(dots, newDot) {
+	var versorgt = false;
 	dots.forEach(function(oldDot) {
 		if(liesIn(oldDot, newDot)) {
+			console.log('newDot: '+newDot.id+', oldDot: '+oldDot.id);
 			// TODO wie kann erkannt werden dass die neue Stelle nicht auch schon
 			// besetzt ist?
-			newDot.x += 10;
-			newDot.y += 10;
+			var cluster_id = oldDot.id;
+			if (Matrix.clusters.hasOwnProperty(cluster_id) && versorgt == false) {
+				console.log('add to old cluster');
+				Matrix.clusters[cluster_id]['included'].push(newDot.id);
+				versorgt = true;
+			} else if (versorgt == false){
+				console.log('new cluster');
+				var newCluster = {
+					'id': oldDot.id,
+					'x': oldDot.x,
+					'y': oldDot.y,
+				 	'included': [oldDot.id, newDot.id]
+				}
+				Matrix.clusters[cluster_id] = newCluster;
+				versorgt = true;
+			}
 		}
 	});
-	// Rückgabe von 2 Werten nicht erlaubt, dadurch als Objekt
-	//var dot = {
-	//	'date': newDot_x,
-	//	'imp': newDot_y
-	//};
-	return newDot;
+	return versorgt;
 }
 
 // left oder bottom property gegeben, bis wo liegen die Punkte ganz oder
 // teilweise aufeinander
 function liesIn(takenDot, newDot) {
-	if (takenDot.x - 42 < newDot.x && takenDot.x + 42 > newDot.x) {
-		if (takenDot.y - 32 < newDot.y && takenDot.y + 32 > newDot.y) {
+	if (takenDot.x - 10 < newDot.x && takenDot.x + 10 > newDot.x) {
+		if (takenDot.y - 10 < newDot.y && takenDot.y + 10 > newDot.y) {
 			return true;
 		}
 	} else {
 		return false;
 	}
+	return false;
 }
 
 // Date in lesbares Format umwandeln
@@ -134,6 +145,15 @@ Matrix = {
 		width: $('#dots').width(),
 		height: $('#dots').height()
 	},
+	// has an x and an y value, created when two dots are drawn at the same spot
+	clusters: [],
+	/*
+	cluster-index = task_id
+		'id': same id as the first task
+		'x': x value of cluster,
+		'y': y value of cluster,
+		'included': list of included dots
+	*/
 	init: function() {
 		s = this.settings;
 	},
@@ -202,8 +222,6 @@ Matrix = {
 	},
 	drawTasks: function(taskData, topicData, width, height) {
 		// gets correct data
-		// console.log(taskData);
-		// console.log(topicData);
 		$('#dots').empty();
 		// how to find out if tasks are on the same spot
 		var that = this;
@@ -213,22 +231,23 @@ Matrix = {
 		taskData.forEach(function(task){
 			var colorIndex = task.topic;
 			if(topicData[colorIndex]['displayed'] == false) {
-
+				// don't display dot when sidebar setting says so
 			} else {
 				// check überschneidungen
-				var dot = {x: task.x, y: task.y};
-				//console.log("x vor doubles: "+task.x);
-				//var dot = doubles(taken, task.x, task.y);
-				//task.x = dot.x;
-				//task.y = dot.y;
-				//console.log("coordinates are: x - "+task.x+", y - "+task.y);
-				var topicColor = topicData[colorIndex]['color'];
-				// eigentlichen Punkt kreieren und zeichnen
-				that.drawDot(task, topicColor);
-				// Array mit bereits gezeichneten Koordinaten
+				var dot = {id: task.id, x: task.x, y: task.y};
+				//if (doubles(taken, dot)) {
+				//	console.log('should draw cluster');
+				//} else {
+					var topicColor = topicData[colorIndex]['color'];
+					// eigentlichen Punkt kreieren und zeichnen
+					that.drawDot(task, topicColor);
+					// Array mit bereits gezeichneten Koordinaten
+				//}
 				taken.push(dot);
 			}
 		});
+		console.log(taken);
+		that.drawCluster();
 	},
 	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
 	drawDot: function(task, color) {
@@ -291,9 +310,41 @@ Matrix = {
 		$('#dots').children('#'+task.id).append(label);
 		$('#dots').children('#'+task.id).children('.hoverField').append(title, attributes, formatImp(task.importance));
 	},
+	drawCluster: function() {
+		var that = this;
+		console.log(that.clusters);
+		that.clusters.forEach(function(cluster) {
+			console.log('x: '+cluster.x);
+			console.log('y: '+cluster.y);
+			console.log('drawing '+cluster.id);
+			var taskItem = $('<div/>', {
+				class: 'dot',
+				id: cluster.id,
+				css: {
+					left: cluster.x,
+					bottom: cluster.y,
+					borderColor: 'black',
+					backgroundColor: 'grey',
+					width: 7,
+					height: 7
+				}
+			});
+			var clusterDot = $('#dots').children('#'+cluster.id);
+			clusterDot.css('bottom', cluster.y+12);
+			// clusterDot.css('display', 'none');
+			$('#dots').append(taskItem);
+			// TODO append die restlichen dots
+			for(var i = 1; i < cluster['included'].length; i++) {
+				console.log(cluster['included'][i]);
+			}
+		});
+	},
 	updateMatrixAjax: function(data) {
+		var that = this;
 		TaskData.getTasks(data, settings);
-		Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+		that.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+		console.log(TaskData.data);
+		console.log(Matrix.clusters);
 	}
 };
 
