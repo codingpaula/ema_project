@@ -294,11 +294,12 @@ a:active {
 }
 .align-left {
 	display: inline-block;
-	width: 80%;
+	width: 60%;
 }
 .align-right {
 	display: inline-block;
-	width: 4%;
+	width: 30%;
+	text-align: right;
 }
 .clear {
 	clear: both;
