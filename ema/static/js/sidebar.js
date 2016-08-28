@@ -30,19 +30,25 @@ var Sidebar = {
 		if($('button#all').css('background-color') == 'rgb(192, 192, 192)') {
 			for(button in TopicData.data) {
 				// jeder Button, der an ist, wird ausgeklickt
-				if(TopicData.data[button].displayed == true) {
-						$('button#'+button).click();
-				}
+        var toggle = $('button#'+button);
+        toggle.css('background-color', '#f1f1f1');
+        toggle.css('color', TopicData.data[button].color);
+        TopicData.data[button].displayed = false;
 			}
+      // update Matrix
+      $('#dots').empty();
 			// die Buttonfarbe des All-Buttons wird geaendert
 			$('button#all').css('background-color', '#eee');
 		} else {
 			for(button in TopicData.data) {
 				// alle Buttons, die aus sind, werden angemacht
-				if(TopicData.data[button].displayed == false) {
-						$('button#'+button).click();
-				}
+        var toggle = $('button#'+button);
+        toggle.css('background-color', TopicData.data[button].color);
+        toggle.css('color', '#fff');
+        TopicData.data[button].displayed = true;
 			}
+      // update Matrix
+      Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
 			// Farbe updaten
 			$('button#all').css('background-color', 'rgb(192, 192, 192)');
 		}
