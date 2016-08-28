@@ -13,21 +13,24 @@ function doubles(dots, newDot) {
 	var versorgt = false;
 	dots.forEach(function(oldDot) {
 		if(liesIn(oldDot, newDot)) {
-			console.log('newDot: '+newDot.id+', oldDot: '+oldDot.id);
+			//console.log('newDot: '+newDot.id+', oldDot: '+oldDot.id);
 			// TODO wie kann erkannt werden dass die neue Stelle nicht auch schon
 			// besetzt ist?
 			var cluster_id = oldDot.id;
 			if (Matrix.clusters.hasOwnProperty(cluster_id) && versorgt == false) {
-				console.log('add to old cluster');
+				//console.log('add to old cluster');
+				TaskData.data[newDot.id]['cluster'] = cluster_id;
 				Matrix.clusters[cluster_id]['included'].push(newDot.id);
 				versorgt = true;
 			} else if (versorgt == false){
-				console.log('new cluster');
+				//console.log('new cluster');
+				TaskData.data[newDot.id]['cluster'] = cluster_id;
+				TaskData.data[cluster_id]['cluster'] = cluster_id;
 				var newCluster = {
-					'id': oldDot.id,
+					'id': cluster_id,
 					'x': oldDot.x,
 					'y': oldDot.y,
-				 	'included': [oldDot.id, newDot.id]
+				 	'included': [cluster_id, newDot.id]
 				}
 				Matrix.clusters[cluster_id] = newCluster;
 				versorgt = true;
@@ -40,8 +43,8 @@ function doubles(dots, newDot) {
 // left oder bottom property gegeben, bis wo liegen die Punkte ganz oder
 // teilweise aufeinander
 function liesIn(takenDot, newDot) {
-	if (takenDot.x - 10 < newDot.x && takenDot.x + 10 > newDot.x) {
-		if (takenDot.y - 10 < newDot.y && takenDot.y + 10 > newDot.y) {
+	if (takenDot.x - 20 < newDot.x && takenDot.x + 20 > newDot.x) {
+		if (takenDot.y - 20 < newDot.y && takenDot.y + 20 > newDot.y) {
 			return true;
 		}
 	} else {
@@ -49,6 +52,27 @@ function liesIn(takenDot, newDot) {
 	}
 	return false;
 }
+
+// calculate cluster included coordinates so that they are in the Matrix
+function coordinates(cluster, radius, bogen, runde) {
+	// berechne Koordinaten
+	var xC = cluster.x + (radius * Math.cos(bogen));
+	var yC = cluster.y + (radius * Math.sin(bogen));
+  var coordinate = {'x': xC, 'y': yC};
+	if (xC < s.width && xC > 20 && yC > 60 && yC < s.height) {
+		console.log("true: xC: "+xC+" ,yC: "+yC);
+		paket = {'x': xC, 'y': yC, 'radius': radius, 'bogen': bogen};
+		return paket;
+	} else {
+		console.log("false: xC: "+xC+" ,yC: "+yC);
+		radius += 1.5;
+		bogen += Math.PI/4;
+		// rekursiver Aufruf, um mit neuen Parametern neuen Punkt zu berechnen
+    coordinates(cluster, radius, bogen, runde+1);
+	}
+  return paket;
+}
+
 
 // Date in lesbares Format umwandeln
 function formatDate(date) {
@@ -109,29 +133,29 @@ function formatImp(imp) {
 		class: 'glyphicon glyphicon-star-empty'
 	});
 	stars.append(full_star.clone());
-	if (imp == 0) {
-		stars.append(empty_star.clone());
-		stars.append(empty_star.clone());
-		stars.append(empty_star.clone());
-		return stars;
-	}
-	if (imp == 1) {
-		stars.append(full_star.clone());
-		stars.append(empty_star.clone());
-		stars.append(empty_star.clone());
-		return stars;
-	}
-	if (imp == 2) {
-		stars.append(full_star.clone());
-		stars.append(full_star.clone());
-		stars.append(empty_star.clone());
-		return stars;
-	}
-	if (imp == 3) {
-		stars.append(full_star.clone());
-		stars.append(full_star.clone());
-		stars.append(full_star.clone());
-		return stars;
+	switch(imp) {
+		case '0':
+			stars.append(empty_star.clone());
+			stars.append(empty_star.clone());
+			stars.append(empty_star.clone());
+			return stars;
+		case '1':
+			stars.append(full_star.clone());
+			stars.append(empty_star.clone());
+			stars.append(empty_star.clone());
+			return stars;
+		case '2':
+			stars.append(full_star.clone());
+			stars.append(full_star.clone());
+			stars.append(empty_star.clone());
+			return stars;
+		case '3':
+			stars.append(full_star.clone());
+			stars.append(full_star.clone());
+			stars.append(full_star.clone());
+			return stars;
+		default:
+			return stars;
 	}
 }
 
@@ -226,6 +250,8 @@ Matrix = {
 		// how to find out if tasks are on the same spot
 		var that = this;
 		var taken = [];
+		that.clusters = [];
+		var count = 1;
 		// Hilfsvariablen
 		// durch alle übergebenen Aufgaben
 		taskData.forEach(function(task){
@@ -235,22 +261,23 @@ Matrix = {
 			} else {
 				// check überschneidungen
 				var dot = {id: task.id, x: task.x, y: task.y};
-				//if (doubles(taken, dot)) {
-				//	console.log('should draw cluster');
-				//} else {
+				if (doubles(taken, dot)) {
+					// cluster is made in doubles
+				} else {
 					var topicColor = topicData[colorIndex]['color'];
 					// eigentlichen Punkt kreieren und zeichnen
-					that.drawDot(task, topicColor);
+					that.drawDot(task, task.x, task.y, topicColor, "");
 					// Array mit bereits gezeichneten Koordinaten
-				//}
-				taken.push(dot);
+					taken.push(dot);
+					count++;
+				}
 			}
 		});
-		console.log(taken);
-		that.drawCluster();
+		//console.log(taken);
+		that.drawCluster(count);
 	},
 	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
-	drawDot: function(task, color) {
+	drawDot: function(task, xC, yC, color, mode) {
 		// eigentlicher Kreis mit task_id in entsprechender Farbe des Topics
 		var clickHandler = function(){
 			$('#ajaxEditTask').data = $(this).attr('id');
@@ -259,28 +286,31 @@ Matrix = {
 			class: 'dot',
 			id: task.id,
 			css: {
-				left: task.x,
-				bottom: task.y,
+				left: xC,
+				bottom: yC,
 				borderColor: color,
 				width: 7,
-				height: 7
+				height: 7,
+				zIndex: -1
 			},
 			onclick: clickHandler
 		});
 		taskItem.attr('data-toggle', 'modal');
 		taskItem.attr('data-target', '#ajaxModal');
 		taskItem.attr('data-task', task.id);
-		$('#dots').append(taskItem);
-		// div mit den Aufgaben-Details
 		var name = $('<p/>', {
-			class: 'dotName',
+			class: 'dotSchrift dotName',
 			css: {
 				color: color
 			},
 			text: task.name
-		})
+		});
+		// div mit den Aufgaben-Details
 		var label = $('<div/>', {
-			class: 'hoverField'
+			class: 'hoverField',
+			css: {
+				zIndex: 1
+			}
 		});
 		// Titel
 		var title = $('<h1/>', {
@@ -306,19 +336,23 @@ Matrix = {
 			})
 		];
 		// anfügen, Erkennung des richtigen Kreises über task_id
-		$('#dots').children('#'+task.id).append(name);
-		$('#dots').children('#'+task.id).append(label);
-		$('#dots').children('#'+task.id).children('.hoverField').append(title, attributes, formatImp(task.importance));
+		label.append(title, attributes, formatImp(task.importance));
+		if (mode == "noName") {
+			taskItem.attr('class', 'dot cluster'+task.cluster);
+			taskItem.append(label);
+			taskItem.css('display', 'none');
+		} else {
+			taskItem.append(name, label);
+		}
+		$('#dots').append(taskItem);
 	},
-	drawCluster: function() {
+	drawCluster: function(count) {
 		var that = this;
-		console.log(that.clusters);
 		that.clusters.forEach(function(cluster) {
-			console.log('x: '+cluster.x);
-			console.log('y: '+cluster.y);
-			console.log('drawing '+cluster.id);
+			$('#dots').children('#'+cluster.id).remove();
+			// zeichnet das cluster
 			var taskItem = $('<div/>', {
-				class: 'dot',
+				class: 'dot cluster',
 				id: cluster.id,
 				css: {
 					left: cluster.x,
@@ -329,13 +363,42 @@ Matrix = {
 					height: 7
 				}
 			});
-			var clusterDot = $('#dots').children('#'+cluster.id);
-			clusterDot.css('bottom', cluster.y+12);
-			// clusterDot.css('display', 'none');
+			var number = $('<p/>', {
+				class: 'dotSchrift dotNumber',
+				css: {
+					color: 'black'
+				},
+				text: cluster['included'].length
+			});
+			taskItem.append(number);
+			taskItem.click(function() {
+				console.log("clicked cluster: "+cluster.id);
+				var query = $('#dots').find('.dot.cluster'+cluster.id);
+				console.log(query);
+				query.toggle();
+				// query.css('display', 'block');
+				console.log("displayed");
+			});
 			$('#dots').append(taskItem);
 			// TODO append die restlichen dots
-			for(var i = 1; i < cluster['included'].length; i++) {
-				console.log(cluster['included'][i]);
+			// startabstand (r)
+			var radius = 12;
+			// eine Runde = 2*pi, start = 0
+			var bogen = 0;
+			console.log("CLUSTER: "+cluster.id);
+			for(var i = 0; i < cluster['included'].length; i++) {
+				var task_id = cluster['included'][i];
+				var task = TaskData.data[task_id];
+				var color = TopicData.data[task.topic].color;
+				console.log("Task: "+task.name);
+				// Koordinaten rausfinden, damit Spirale um cluster entsteht
+				var paket = coordinates(cluster, radius, bogen, 1);
+				// Punkt zeichnen mit Modus "noName"
+				that.drawDot(task, paket.x, paket.y, color, "noName");
+				// pro Runde um 1.5 mehr fuer r, damit eine Spirale entsteht
+				radius = paket.radius + 1.5;
+				// pro Runde ein viertel pi mehr
+				bogen = paket.bogen + Math.PI/4;
 			}
 		});
 	},
@@ -343,7 +406,7 @@ Matrix = {
 		var that = this;
 		TaskData.getTasks(data, settings);
 		that.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
-		console.log(TaskData.data);
-		console.log(Matrix.clusters);
+		//console.log(TaskData.data);
+		//console.log(Matrix.clusters);
 	}
 };

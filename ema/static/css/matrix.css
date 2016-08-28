@@ -9,10 +9,17 @@
   box-sizing: content-box;
 }
 
-.dot .dotName {
+.dot .dotSchrift {
   font-size: 8px;
-  width: 40px;
   margin: 8px auto 0px auto;
+}
+
+.dot .dotName {
+  width: 40px;
+}
+
+.dot .dotNumber {
+  width: 10px;
 }
 
 .dot:hover {

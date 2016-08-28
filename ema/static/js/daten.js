@@ -55,6 +55,7 @@ var TaskData = {
         'name': task.task_name,
         'description': task.task_description,
         'topic': task.topic,
+        'cluster': undefined
       };
     });
   }
