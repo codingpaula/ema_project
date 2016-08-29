@@ -11,3 +11,9 @@ das Impressum
 """
 def impressum(request):
     return render(request, 'orga/impressum.html')
+
+"""
+Hilfe-Seite = Anleitung zur Benutzung
+"""
+def help(request):
+    return render(request, 'orga/help.html')
