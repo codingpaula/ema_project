@@ -63,7 +63,7 @@ var Sidebar = {
 					class: 'glyphicon glyphicon-pencil pull-right'
 				});
 				$('button#'+button).append(glyphi);
-				$('button#'+button).attr('onclick', "location.href='/matrix/"+button+"'");
+				$('button#'+button).attr('onclick', "location.href='/matrix/"+button+"/edittopic'");
 			}
 			// All-Button ausmachen
 			$('button#all').attr('onclick', '');

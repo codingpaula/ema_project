@@ -4,7 +4,7 @@
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<ul>
+<ul class="noListStyle">
   <li><small>Task Description:</small> {{ task.task_description }}</li>
   <li><small>Topic:</small> {{ task.topic }}</li>
   <li><small>Importance:</small> {{ task.get_importance_display }}</li>
@@ -13,15 +13,13 @@
   <li><small>Done?</small> {% if task.done == False %}no{% else %}yes{% endif %}</li>
 </ul>
 
-<a href={% url 'matrix:taskediting' task.id %}>
-  <button>Edit this task!</button>
+<a class="btn emaButton btn-success"
+    href={% url 'matrix:taskediting' task.id %}>
+  edit this task
 </a>
 
-<a href={% url 'matrix:taskdeleting' task.id %}>
-  <button>Delete this task!</button>
-</a>
-
-<a href={% url 'matrix:adding' %}>
-  <button>Add a new task!</button>
+<a class="btn emaButton btn-danger"
+    href={% url 'matrix:taskdeleting' task.id %}>
+  delete this task
 </a>
 {% endblock content %}

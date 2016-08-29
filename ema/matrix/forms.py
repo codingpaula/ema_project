@@ -14,7 +14,7 @@ used in views.AddTaskView
 class TaskForm(ModelForm):
     due_date = forms.DateTimeField(
                 input_formats=settings.DATETIME_INPUT_FORMATS,
-                widget=forms.TextInput(attrs={'class': 'form-control'}))
+                widget=forms.TextInput(attrs={'class': 'dueDateInput'}))
     class Meta:
         model = Task
         fields = ['task_name', 'task_description', 'due_date', 'importance', 'topic', 'done']
@@ -59,6 +59,16 @@ class TopicForm(ModelForm):
         fields = ['topic_name', 'topic_description', 'color']
         widgets = {
             'color': forms.RadioSelect(choices=Topic.COLOR_OPTIONS),
+            'topic_name': forms.TextInput(
+                attrs={'placeholder': 'Name', 'class': 'form-control'}
+            ),
+            'topic_description': forms.Textarea(
+                attrs={
+                        'placeholder': 'What ist this topic about?',
+                        'class': 'form-control',
+                        'rows': 5
+                        }
+            )
         }
 
     def __init__(self, user, *args, **kwargs):

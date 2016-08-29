@@ -20,7 +20,7 @@ from .utils import get_user_colors
 view for startpage after login - matrix
 hands over all topics of the current user
 """
-@login_required(login_url='/account/login')
+@login_required()
 def matrix(request):
     all_topics = Topic.objects.filter(topic_owner=request.user.id)
     to_data = {}
@@ -71,7 +71,7 @@ class TaskCreate(AjaxableResponseMixin, SuccessMessageMixin, CreateView):
     form_class = TaskForm
     template_name = 'matrix/adding.html'
     success_message = "Task '%(task_name)s' was successfully created!"
-    success_url = '/matrix'
+    success_url = '/matrix/'
 
     # display no success message on reload when created with ajax
     def get_success_message(self, cleaned_data):
@@ -90,7 +90,7 @@ class TaskUpdate(AjaxableResponseMixin, SuccessMessageMixin, UpdateView):
     form_class = TaskForm
     template_name = 'matrix/taskediting.html'
     success_message = "Task '%(task_name)s' was successfully modified!"
-    success_url = '/matrix'
+    success_url = '/matrix/'
 
     def get_object(self):
         return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
@@ -109,7 +109,7 @@ class TaskUpdate(AjaxableResponseMixin, SuccessMessageMixin, UpdateView):
 
 class TaskDelete(DeleteView):
     model = Task
-    success_url = '/matrix'
+    success_url = '/matrix/'
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         objects_topic = Topic.objects.get(pk=self.object.topic_id)
@@ -150,19 +150,34 @@ class TopicCreate(SuccessMessageMixin, CreateView):
     form_class = TopicForm
     template_name = 'matrix/addtopic.html'
     success_message = "Topic '%(topic_name)s' was successfully created!"
-    success_url = '/matrix'
+    success_url = '/matrix/'
 
     def get_form_kwargs(self):
         kwargs = super(TopicCreate, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
+class TopicUpdate(SuccessMessageMixin, UpdateView):
+    model = Topic
+    form_class = TopicForm
+    template_name = 'matrix/topicediting.html'
+    success_message = "Topic '%(topic_name)s' was successfully edited!"
+    success_url = '/matrix/'
+
+    def get_form_kwargs(self):
+        kwargs = super(TopicUpdate, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_object(self):
+        return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))
+
 """
 shows all the topics of the logged in owner
 @params: topic_id
 Permission denied message if unsuccessful
 """
-@login_required(login_url='/account/login')
+@login_required()
 def topics(request, topic_id):
     topic = get_object_or_404(Topic, pk=topic_id)
     if topic.topic_owner == request.user:
@@ -176,7 +191,7 @@ shows requested task details
 @params: task_id
 Permission denied message if unsuccessful
 """
-@login_required(login_url='/account/login')
+@login_required()
 def tasks(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     if task.topic.topic_owner == request.user:
@@ -189,17 +204,10 @@ def tasks(request, task_id):
 shows all tasks that have been marked done, since they won't show up in matrix
 anymore
 """
-@login_required(login_url='/account/login')
+@login_required()
 def done_tasks(request):
     dones = Task.objects.filter(topic__topic_owner=request.user.id, done=True)
     return render(request, 'matrix/done_tasks.html', {'dones': dones})
-
-class TopicUpdate(UpdateView):
-    model = Topic
-    fields = ['topic_name', 'topic_description', 'color']
-    template_name = 'matrix/topicediting.html'
-    def get_object(self):
-        return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))
 
 class TopicDelete(DeleteView):
     model = Topic

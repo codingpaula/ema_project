@@ -2,30 +2,24 @@
 {% block content %}
 <h1 style="color: {{ topic.color }};">{{ topic.topic_name }}</h1>
 
-<button><a href={% url 'matrix:topicediting' topic.id %}>edit</button>
-
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 {% if topic.task_set.count > 0 %}
   <ul>
     {% for task in topic.task_set.all %}
-      <li><a href={% url 'matrix:tasks' task.id %}>{{ task.task_name }}</a></li>
+      <li class="task_list"><a href={% url 'matrix:tasks' task.id %}>{{ task.task_name }}</a></li>
     {% endfor %}
-    <li><a href={% url 'matrix:adding' %}>+</a></li>
   </ul>
-{% else %}
-  <a href={% url 'matrix:adding' %}>
-    add a task to the topic {{ topic.topic_name }}
-  </a>
 {% endif %}
-<button>
-  <a href={% url 'matrix:topicediting' topic.id %}>
-    edit this topic
-  </a>
-</button>
-<button>
-  <a href={% url 'matrix:topicdeleting' topic.id %}>
-    delete this topic
-  </a>
-</button>
+<a class="btn emaButton btn-primary" href={% url 'matrix:adding' %}>
+  add a task
+</a>
+<a class="btn emaButton btn-success"
+    href={% url 'matrix:topicediting' topic.id %}>
+  edit this topic
+</a>
+<a class="btn emaButton btn-danger"
+    href={% url 'matrix:topicdeleting' topic.id %}>
+  delete this topic
+</a>
 {% endblock content %}

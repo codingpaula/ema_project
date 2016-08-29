@@ -2,36 +2,28 @@
 {% load staticfiles %}
 {% block js %}
 <script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
-<script>
-  $(function(){
-    $('form input').on('change', function(){
-
-    });
-  });
-</script>
 {% endblock js %}
 {% block content %}
 <h1>Add a new topic:</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="{% url 'matrix:addtopic' %}" method="post">
+<form class="emaForm" action="{% url 'matrix:addtopic' %}" method="post">
   {% csrf_token %}
   {{ form.non_field_errors }}
-  <div class="fieldWrapper">
-    {{ form.topic_name.errors }}
+  <div class="fieldWrapper form-group">
     <label for="{{ form.topic_name.id_for_label }}">Topic Name:</label>
     {{ form.topic_name }}
+    {{ form.topic_name.errors }}
   </div>
-  <div class="fieldWrapper">
-    {{ form.topic_description.errors }}
+  <div class="fieldWrapper form-group">
     <label for="{{ form.topic_description.id_for_label }}">Topic Description:</label>
     {{ form.topic_description }}
+    {{ form.topic_description.errors }}
   </div>
-  <div class="fieldWrapper">
-    {{ form.color.errors }}
+  <div class="fieldWrapper form-group">
     <label for="{{ form.color.id_for_label }}">Topic Color:</label>
-    <ul>
+    <ul class="noBottomMargList noListStyle">
       {% for choice in form.color.field.choices %}
         <li class="selectionList">
           <label for="id_{{ form.color.html_name }}_{{ forloop.counter0 }}">
@@ -46,7 +38,8 @@
         </li>
       {% endfor %}
     </ul>
+    {{ form.color.errors }}
   </div>
-  <input type="submit" value="add topic" />
+  <input class="btn emaButton emaNormal" type="submit" value="add topic" />
 </form>
 {% endblock content %}
