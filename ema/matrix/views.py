@@ -2,11 +2,15 @@ import json
 from django.shortcuts import get_object_or_404, render, render_to_response
 from django.views.generic import View
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.views.generic.detail import SingleObjectMixin
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.forms.models import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
+
+from orga.models import UserOrga
 
 from .models import Topic, Task
 from .forms import TaskForm, TopicForm
@@ -25,77 +29,133 @@ def matrix(request):
     topic_data = json.dumps(to_data, cls=DjangoJSONEncoder)
     all_tasks = Task.objects.filter(topic__topic_owner=request.user.id, done=False)
     data = [model_to_dict(instance) for instance in all_tasks]
-    response_data = {}
-    response_data['objects'] = data
-    end_data = json.dumps(response_data, cls=DjangoJSONEncoder)
-
+    end_data = json.dumps(data, cls=DjangoJSONEncoder)
+    task_form = TaskForm(user=request.user)
+    settings_file = UserOrga.objects.get(owner=request.user)
+    if (settings_file == None):
+        settings_file.urgent_axis = '1'
     # locals()
     return render(request, 'matrix/matrix.html',
                     {'all_topics': all_topics, 'all_tasks': all_tasks,
-                    'end_data': end_data, 'topic_data': topic_data})
+                    'end_data': end_data, 'topic_data': topic_data,
+                    'task_form': task_form, 'settings_file': settings_file  })
 
-"""
-new topic:
-uses TopicForm
-"""
-class AddTopicView(View):
-    form_class = TopicForm
-    template_name = 'matrix/addtopic.html'
+# source: django docs:
+#https://docs.djangoproject.com/en/1.8/topics/class-based-views/generic-editing/
+class AjaxableResponseMixin(object):
+    """
+    Mixin to add AJAX support to a form.
+    Must be used with an object-based FormView (e.g. CreateView)
+    """
+    def form_invalid(self, form):
+        response = super(AjaxableResponseMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
 
-    def get(self, request):
-        form = self.form_class(user=request.user.id)
-        return render(request, self.template_name, {'form': form})
+    def form_valid(self, form):
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        response = super(AjaxableResponseMixin, self).form_valid(form)
+        if self.request.is_ajax():
+            all_tasks = Task.objects.filter(topic__topic_owner=self.request.user.id, done=False)
+            response_data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
+            return HttpResponse(response_data, content_type="application/json")
+        else:
+            return response
 
-    def post(self, request):
-        form = self.form_class(user=request.user.id, data=request.POST)
-        if form.is_valid():
-            topic_owner = request.user
-            topic_name = form.cleaned_data['topic_name']
-            topic_description = form.cleaned_data['topic_description']
-            color = form.cleaned_data['color']
-
-            new_topic = Topic(topic_name = topic_name,
-                                topic_description = topic_description,
-                                color = color, topic_owner = topic_owner)
-            new_topic.save()
-            messages.info(request, 'Topic "%s" successfully created.' % new_topic.topic_name)
-            return HttpResponseRedirect('/matrix/')
-
-        return render(request, self.template_name, {'form': form})
-
-"""
-new task:
-uses TaskForm
-@params: topic_id
-"""
-class AddTaskView(View):
-    login_url = '/account/login/'
+class TaskCreate(AjaxableResponseMixin, SuccessMessageMixin, CreateView):
+    model = Task
     form_class = TaskForm
     template_name = 'matrix/adding.html'
+    success_message = "Task '%(task_name)s' was successfully created!"
+    success_url = '/matrix'
 
-    def get(self, request):
-        form = TaskForm(user=request.user.id)
-        return render(request, self.template_name, {'form': form})
+    # display no success message on reload when created with ajax
+    def get_success_message(self, cleaned_data):
+        if self.request.is_ajax():
+            return None
+        else:
+            return self.success_message % cleaned_data
 
-    def post(self, request):
-        # topic = get_object_or_404(Topic, pk=topic_id)
-        form = TaskForm(request.POST, user=request.user.id)
-        if form.is_valid():
-            task_name = form.cleaned_data['task_name']
-            task_description = form.cleaned_data['task_description']
-            due_date = form.cleaned_data['due_date']
-            importance = form.cleaned_data['importance']
-            topic = form.cleaned_data['topic']
+    def get_form_kwargs(self):
+        kwargs = super(TaskCreate, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
-            new_task = Task(task_name = task_name,
-                                task_description = task_description,
-                                due_date = due_date, importance = importance,
-                                topic = topic)
-            new_task.save()
-            messages.info(request, 'Task "%s" successfully created.' % new_task.task_name)
-            return HttpResponseRedirect('/matrix/')
+class TaskUpdate(AjaxableResponseMixin, SuccessMessageMixin, UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'matrix/taskediting.html'
+    success_message = "Task '%(task_name)s' was successfully modified!"
+    success_url = '/matrix'
 
-        return render(request, self.template_name, {'form': form})
+    def get_object(self):
+        return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
+
+    def get_form_kwargs(self):
+        kwargs = super(TaskUpdate, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    # display no success message on reload when created with ajax
+    def get_success_message(self, cleaned_data):
+        if self.request.is_ajax():
+            return None
+        else:
+            return self.success_message % cleaned_data
+
+class TaskDelete(DeleteView):
+    model = Task
+    success_url = '/matrix'
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        objects_topic = Topic.objects.get(pk=self.object.topic_id)
+        if objects_topic.topic_owner == request.user:
+            context = self.get_context_data(object=self.object)
+            return self.render_to_response(context)
+        else:
+            messages.info(request, 'Permission denied!')
+
+    def get_object(self):
+        task = get_object_or_404(Task, pk=self.kwargs.get('task_id'))
+        if(task.topic__topic_owner == self.request.user.id):
+            return task
+        else: return Http404
+
+class AjaxTaskDelete(SingleObjectMixin, View):
+    model = Task
+
+    def get_object(self):
+        task = Task.objects.get(pk=self.kwargs.get('task_id'))
+        # do i really have to check this?
+        tasks_topic = Topic.objects.get(pk=task.topic_id)
+        if (tasks_topic.topic_owner == self.request.user):
+            return task
+        else:
+            messages.info(request, 'Permission denied')
+            return Http404
+
+    def post(self, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        all_tasks = Task.objects.filter(topic__topic_owner=self.request.user.id, done=False)
+        response_data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
+        return HttpResponse(response_data, content_type="application/json")
+
+class TopicCreate(SuccessMessageMixin, CreateView):
+    model = Topic
+    form_class = TopicForm
+    template_name = 'matrix/addtopic.html'
+    success_message = "Topic '%(topic_name)s' was successfully created!"
+    success_url = '/matrix'
+
+    def get_form_kwargs(self):
+        kwargs = super(TopicCreate, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 """
 shows all the topics of the logged in owner
@@ -133,45 +193,6 @@ anymore
 def done_tasks(request):
     dones = Task.objects.filter(topic__topic_owner=request.user.id, done=True)
     return render(request, 'matrix/done_tasks.html', {'dones': dones})
-
-"""
-TODO: editing
-"""
-def edittopic(request, topic_id):
-    topic = get_object_or_404(Topic, pk=topic_id)
-    return render(request, 'matrix/topicediting.html', {'topic': topic})
-
-def editing(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    return render(request, 'matrix/taskediting.html', {'task': task})
-
-class TaskCreate(CreateView):
-    model = Task
-    fields = ['task_name', 'task_description', 'importance', 'due_date']
-    template_name = 'matrix/adding.html'
-
-class TaskUpdate(UpdateView):
-    model = Task
-    #form_class = TaskForm
-    fields = ['task_name', 'task_description', 'importance', 'due_date', 'done']
-    template_name = 'matrix/taskediting.html'
-    def get_object(self):
-        return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
-
-class TaskDelete(DeleteView):
-    model = Task
-    success_url = '/matrix/matrix.html'
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        objects_topic = Topic.objects.get(pk=self.object.topic)
-        if objects_topic.topic_owner == request.user:
-            context = self.get_context_data(object=self.object)
-            return self.render_to_response(context)
-        else:
-            messages.info(request, 'Permission denied!')
-
-    def get_object(self):
-        return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
 
 class TopicUpdate(UpdateView):
     model = Topic

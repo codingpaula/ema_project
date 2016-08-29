@@ -20,7 +20,7 @@
     <div class="loginpage">
       <h1>Herzlich Willkommen bei der Eisenhower Matrix App!</h1>
       <p>Ein Tool für Ihr Zeitmanagement.</p>
-      <form method="post" action="{% url 'profiles:index' %}">
+      <form method="post" action="{% url 'profiles:login' %}">
         {% csrf_token %}
         {{ form.non_field_errors }}
         <div class="fieldWrapper">

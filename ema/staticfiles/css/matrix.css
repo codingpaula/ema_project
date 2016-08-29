@@ -1,0 +1,103 @@
+/* Aufgaben-Kreise */
+.dot {
+  position: absolute;
+  bottom: 0px;
+  opacity: 0.7;
+  border: 2px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+  box-sizing: content-box;
+}
+
+.dot .dotName {
+  font-size: 8px;
+  width: 40px;
+  margin: 8px auto 0px auto;
+}
+
+.dot:hover {
+  background: steelblue;
+}
+
+.bar:hover {
+  opacity: 1.0;
+}
+
+/* Aufgaben-Details (nur angezeigt bei Mouse-hover) */
+.dot .hoverField {
+  display: none;
+  position: absolute;
+  bottom: -25px;
+  left: 10px;
+  right: 0;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid black;
+  width: 150px;
+  background-color: white;
+}
+
+.dot:hover .hoverField {
+  display: block;
+}
+
+.dot .hoverField h1 {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 1em;
+  color: #222;
+}
+
+.dot .hoverField p {
+  text-align: left;
+  font-size: 0.8em;
+  color: #222;
+}
+
+.dot .value {
+  font-weight: bold;
+  text-transform: uppercase;
+  position: absolute;
+  top: -25px;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.dot .dotLabel {
+
+}
+
+.pickerInTheMiddle {
+  padding: 0px 30%;
+}
+
+.pickerInTheMiddle div.datetimepicker {
+  border: 1px solid #555;
+  border-radius: 5px;
+}
+
+textarea.form-control {
+  height: 20%;
+}
+
+/* Matrix-Einstellungen */
+#Matrix {
+  display: inline-block;
+  border: 1px solid #111;
+  margin: 5px 1%;
+  padding: 10px 1%;
+  position: relative;
+  width: 73%;
+  background-size: 850px;
+  /* z-index:0; */
+  vertical-align: top;
+}
+
+/* div mit den Aufgaben-Kreisen */
+#dots {
+  position: relative;
+  display: block;
+  background-size: 900px;
+  box-sizing: content-box;
+}

@@ -78,7 +78,7 @@ class Topic(TimeStampedModel):
 
 
 class Task(TimeStampedModel):
-    task_name = models.CharField(max_length=200)
+    task_name = models.CharField(max_length=50)
     task_description = models.TextField(blank=True)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     NOT_IMPORTANT = '0'
