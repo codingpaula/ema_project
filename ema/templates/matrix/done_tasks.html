@@ -6,9 +6,9 @@
 {% block content %}
 <div>
   <h1>These are your accomplished tasks!</h1>
-  <ul>
+  <ul class="noListStyle">
   {% for done in dones %}
-    <li><a href={% url 'matrix:tasks' done.id %}>{{ done.task_name }}</a></li>
+    <li><a href={% url 'matrix:taskediting' done.id %}>{{ done.task_name }}</a></li>
   {% endfor %}
   </ul>
 </div>

@@ -16,10 +16,10 @@ redirect, falls schon eingeloggt zur Matrix
 """
 def index(request):
     if request.user.is_authenticated():
-        return redirect('/matrix')
+        return redirect('/matrix/')
     else:
         form = AuthenticationForm(request)
-        return render(request, 'profiles/index.html', {'form': form})
+        return render(request, 'registration/login.html', {'form': form})
 
 """
 wird nach Login angezeigt

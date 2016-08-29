@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}EMA Help{% endblock title %}
+{% block navbar %}
+  {% include "navbar.html" with active_tab='Help' %}
+{% endblock navbar %}
+{% block content %}
+<h1>FAQ</h1>
+{% endblock content %}

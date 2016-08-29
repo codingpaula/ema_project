@@ -58,19 +58,15 @@ function coordinates(cluster, radius, bogen, runde) {
 	// berechne Koordinaten
 	var xC = cluster.x + (radius * Math.cos(bogen));
 	var yC = cluster.y + (radius * Math.sin(bogen));
-  var coordinate = {'x': xC, 'y': yC};
-	if (xC < s.width && xC > 20 && yC > 60 && yC < s.height) {
-		console.log("true: xC: "+xC+" ,yC: "+yC);
+  var paket = {};
+	if (xC < s.width && xC > 40 && yC > 50 && yC < s.height) {
 		paket = {'x': xC, 'y': yC, 'radius': radius, 'bogen': bogen};
 		return paket;
 	} else {
-		console.log("false: xC: "+xC+" ,yC: "+yC);
-		radius += 1.5;
-		bogen += Math.PI/4;
 		// rekursiver Aufruf, um mit neuen Parametern neuen Punkt zu berechnen
-    coordinates(cluster, radius, bogen, runde+1);
+    paket = coordinates(cluster, radius+1.5, bogen+(Math.PI/4), runde+1);
+		return paket;
 	}
-  return paket;
 }
 
 
@@ -290,8 +286,7 @@ Matrix = {
 				bottom: yC,
 				borderColor: color,
 				width: 7,
-				height: 7,
-				zIndex: -1
+				height: 7
 			},
 			onclick: clickHandler
 		});
@@ -372,12 +367,8 @@ Matrix = {
 			});
 			taskItem.append(number);
 			taskItem.click(function() {
-				console.log("clicked cluster: "+cluster.id);
 				var query = $('#dots').find('.dot.cluster'+cluster.id);
-				console.log(query);
 				query.toggle();
-				// query.css('display', 'block');
-				console.log("displayed");
 			});
 			$('#dots').append(taskItem);
 			// TODO append die restlichen dots
@@ -385,12 +376,10 @@ Matrix = {
 			var radius = 12;
 			// eine Runde = 2*pi, start = 0
 			var bogen = 0;
-			console.log("CLUSTER: "+cluster.id);
 			for(var i = 0; i < cluster['included'].length; i++) {
 				var task_id = cluster['included'][i];
 				var task = TaskData.data[task_id];
 				var color = TopicData.data[task.topic].color;
-				console.log("Task: "+task.name);
 				// Koordinaten rausfinden, damit Spirale um cluster entsteht
 				var paket = coordinates(cluster, radius, bogen, 1);
 				// Punkt zeichnen mit Modus "noName"

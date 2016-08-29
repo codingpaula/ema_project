@@ -47,11 +47,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'datetimewidget',
-    'bootstrap3_datetime',
     'matrix',
     'profiles',
-    'orga'
+    'orga',
+    'telegram_bot'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -67,9 +66,9 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'config.urls'
 
-LOGIN_URL = '/account/login/'
+LOGIN_URL = '/'
 
-LOGIN_REDIRECT_URL = '/matrix/'
+LOGIN_REDIRECT_URL = '/'
 
 TEMPLATES = [
     {
