@@ -5,43 +5,38 @@
   <ul>
     <li>
       <!-- https://djangosnippets.org/snippets/2421/ navbar DRY method -->
-      <a href={% url 'matrix:matrix' %}>
+      <a class="navLink" href={% url 'matrix:matrix' %}>
         <div class="{% if active_tab == 'EMA' %}now{% endif %}">EMa</div>
       </a>
     </li>
     <li>
-      <a href={% url 'profiles:account' %}>
+      <a class="navLink" href={% url 'profiles:account' %}>
         <div class="{% if active_tab == 'Account' %}now{% endif %}">Account</div>
       </a>
     </li>
-    <!--li>
-      <a href="preferences.html">
-        <div class="{% if active_tab == 'Preferences' %}now{% endif %}">Preferences</div>
-      </a>
-    </li-->
     <li>
-      <a href="help.html">
+      <a class="navLink" href={% url 'orga:help' %}>
         <div class="{% if active_tab == 'Help' %}now{% endif %}">Help</div>
       </a>
     </li>
     <li class="gap">
       {% if user.is_anonymous %}
       {% else %}
-      <a href={% url 'profiles:account' %}>
+      <a class="navLink" href={% url 'profiles:account' %}>
         <div>{{ user }}</div>
       </a>
       {% endif %}
       {% if user.is_anonymous %}
-      <a href={% url 'profiles:register' %}>
+      <a class="navLink" href={% url 'profiles:register' %}>
         <div class="{% if active_tab == 'Signup' %}now{% endif %}">Sign Up</div>
       </a>
     </li>
     <li>
-      <a href={% url 'profiles:login' %}>
+      <a class="navLink" href={% url 'profiles:login' %}>
         <div class="{% if active_tab == 'Login' %}now{% endif %}">Log In</div>
       </a>
       {% else %}
-      <a href={% url 'profiles:loggedout' %}>
+      <a class="navLink" href={% url 'profiles:loggedout' %}>
         <div class="{% if active_tab == 'Logout' %}now{% endif %}">Log Out</div>
       </a>
       {% endif %}

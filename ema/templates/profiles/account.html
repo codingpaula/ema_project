@@ -46,14 +46,14 @@
         <form class="formContainer" action="" method="post" class="abstandU">
           {% csrf_token %}
           {{ form.as_p }}
-          <input class="btn btn-default center-block" type="submit" value="save" />
+          <input class="btn emaButton emaNormal center-block" type="submit" value="save" />
         </form>
       </div>
       <div role="tabpanel" class="tab-pane" id="donetasks">
         <div class="panel-body">
-        <button class="emaButton emaNormal">
-          <a href={% url 'matrix:done_tasks' %}>done tasks</a>
-        </button>
+          <a class="btn emaButton emaNormal" href={% url 'matrix:done_tasks' %}>
+            done tasks
+          </a>
         </div>
       </div>
     </div>
