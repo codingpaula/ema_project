@@ -138,5 +138,5 @@ function newDateCoordinate(date, urgent_axis) {
 
 // Wichtigkeitskoordinate
 function importanceCoordinate(imp) {
-	return imp/4*s.height + 60;
+	return imp/4*s.height + 100;
 }

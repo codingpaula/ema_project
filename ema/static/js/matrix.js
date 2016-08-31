@@ -59,7 +59,7 @@ function coordinates(cluster, radius, bogen, runde) {
 	var xC = cluster.x + (radius * Math.cos(bogen));
 	var yC = cluster.y + (radius * Math.sin(bogen));
   var paket = {};
-	if (xC < s.width && xC > 40 && yC > 50 && yC < s.height) {
+	if (xC < s.width-8 && xC > 40 && yC > 50 && yC < s.height) {
 		paket = {'x': xC, 'y': yC, 'radius': radius, 'bogen': bogen};
 		return paket;
 	} else {
@@ -293,12 +293,15 @@ Matrix = {
 		taskItem.attr('data-toggle', 'modal');
 		taskItem.attr('data-target', '#ajaxModal');
 		taskItem.attr('data-task', task.id);
+		var shortened_name = "";
+		if (task.name.length > 20) shortened_name = task.name.substring(0, 20)+"...";
+		else shortened_name = task.name;
 		var name = $('<p/>', {
 			class: 'dotSchrift dotName',
 			css: {
 				color: color
 			},
-			text: task.name
+			text: shortened_name
 		});
 		// div mit den Aufgaben-Details
 		var label = $('<div/>', {

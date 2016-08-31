@@ -142,7 +142,7 @@ function displayMessage(task_id) {
   // created
   if (task_id == "0") {
     var text_span = $('<span/>', {
-      text: 'Successfully created task "' +  '"'
+      text: 'Successfully created new task!'
     });
   } else if (task_id == "delete") {
     var text_span = $('<span/>', {
