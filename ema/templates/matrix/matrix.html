@@ -158,6 +158,7 @@
   </div>
 {% endblock content %}
 {% block javascript %}
+  {{ block.super }}
   <script type="text/javascript" src={% static "js/daten.js" %}></script>
   <script type="text/javascript" src={% static "js/sidebar.js" %}></script>
   <script type="text/javascript" src={% static "js/matrix.js" %}></script>

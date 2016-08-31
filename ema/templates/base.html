@@ -19,9 +19,6 @@
     {% block js %}
       <script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}>
       </script>
-      <script type="text/javascript" src={% static "js/bootstrap.min.js" %}>
-      </script>
-      <script type="text/javascript" src={% static "js/ema.js" %}></script>
     {% endblock js %}
   </head>
   <body>
@@ -49,6 +46,9 @@
     </div>
     {% block javascript %}
     {# javascript only where needed -> matrix #}
+      <script type="text/javascript" src={% static "js/bootstrap.min.js" %}>
+      </script>
+      <script type="text/javascript" src={% static "js/ema.js" %}></script>
     {% endblock javascript %}
   </body>
   {% block footer %}
