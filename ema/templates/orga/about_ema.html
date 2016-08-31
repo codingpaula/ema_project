@@ -1,7 +1,22 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% block navbar %}
   {% include "navbar.html" %}
 {% endblock navbar %}
+{% block content %}
+<h1>About EMA</h1>
+<p class="aboutEMAtext">
+  This is a Bachelor Thesis project in Cognitive Science at the University of
+  Osnabrück.
+  <br />
+  My name is Manuela Paula Ritter and I hope you enjoy using the EMApp and get
+  stuff done ;)
+</p>
+<p>
+  If you have any problems, questions or remarks, please don't hesitate to
+  contact me at 'manritter(at)uos(dot)de'!
+</p>
+{% endblock content %}
 {% block footer %}
   {% include "footer.html" with active_footer='About' %}
 {% endblock footer %}
