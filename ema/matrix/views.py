@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.forms.models import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.views import redirect_to_login
 
 from orga.models import UserOrga
 
@@ -66,7 +67,25 @@ class AjaxableResponseMixin(object):
         else:
             return response
 
-class TaskCreate(AjaxableResponseMixin, SuccessMessageMixin, CreateView):
+class PermissionDeniedMixin(object):
+    def users_object_test(self, request):
+        self.object = self.get_object()
+        if isinstance(self.object, Topic):
+            return self.object.topic_owner == request.user
+        if isinstance(self.object, Task):
+            return self.object.topic.topic_owner == request.user
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.users_object_test(request):
+            messages.info(request, "Permission Denied!")
+            return redirect_to_login(request.get_full_path())
+        return super(PermissionDeniedMixin, self).dispatch(
+            request, *args, **kwargs)
+
+class TaskCreate(
+        AjaxableResponseMixin,
+        SuccessMessageMixin,
+        CreateView):
     model = Task
     form_class = TaskForm
     template_name = 'matrix/adding.html'
@@ -85,7 +104,11 @@ class TaskCreate(AjaxableResponseMixin, SuccessMessageMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-class TaskUpdate(AjaxableResponseMixin, SuccessMessageMixin, UpdateView):
+class TaskUpdate(
+        AjaxableResponseMixin,
+        SuccessMessageMixin,
+        PermissionDeniedMixin,
+        UpdateView):
     model = Task
     form_class = TaskForm
     template_name = 'matrix/taskediting.html'
@@ -107,36 +130,20 @@ class TaskUpdate(AjaxableResponseMixin, SuccessMessageMixin, UpdateView):
         else:
             return self.success_message % cleaned_data
 
-class TaskDelete(DeleteView):
+class TaskDelete(SuccessMessageMixin, PermissionDeniedMixin, DeleteView):
     model = Task
+    success_message = "Task '%(task_name)s' was successfully deleted!"
     success_url = '/matrix/'
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        objects_topic = Topic.objects.get(pk=self.object.topic_id)
-        if objects_topic.topic_owner == request.user:
-            context = self.get_context_data(object=self.object)
-            return self.render_to_response(context)
-        else:
-            messages.info(request, 'Permission denied!')
 
     def get_object(self):
-        task = get_object_or_404(Task, pk=self.kwargs.get('task_id'))
-        if(task.topic__topic_owner == self.request.user.id):
-            return task
-        else: return Http404
+        return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
 
-class AjaxTaskDelete(SingleObjectMixin, View):
+class AjaxTaskDelete(PermissionDeniedMixin, SingleObjectMixin, View):
     model = Task
 
     def get_object(self):
-        task = Task.objects.get(pk=self.kwargs.get('task_id'))
+        return Task.objects.get(pk=self.kwargs.get('task_id'))
         # do i really have to check this?
-        tasks_topic = Topic.objects.get(pk=task.topic_id)
-        if (tasks_topic.topic_owner == self.request.user):
-            return task
-        else:
-            messages.info(request, 'Permission denied')
-            return Http404
 
     def post(self, *args, **kwargs):
         self.object = self.get_object()
@@ -157,7 +164,7 @@ class TopicCreate(SuccessMessageMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-class TopicUpdate(SuccessMessageMixin, UpdateView):
+class TopicUpdate(SuccessMessageMixin, PermissionDeniedMixin, UpdateView):
     model = Topic
     form_class = TopicForm
     template_name = 'matrix/topicediting.html'
@@ -168,6 +175,19 @@ class TopicUpdate(SuccessMessageMixin, UpdateView):
         kwargs = super(TopicUpdate, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+    def get_object(self):
+        return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))
+
+class TopicDelete(SuccessMessageMixin, PermissionDeniedMixin, DeleteView):
+    model = Topic
+    success_message = "Topic '%(topic_name)s' was successfully deleted!"
+    success_url = '/matrix/'
+
+    # delete cascade in models.py
+    def post(self, request, *args, **kwargs):
+        messages.info(request, 'Topic "%s" successfully deleted.' % self.get_object())
+        return self.delete(request, *args, **kwargs)
 
     def get_object(self):
         return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))
@@ -208,25 +228,3 @@ anymore
 def done_tasks(request):
     dones = Task.objects.filter(topic__topic_owner=request.user.id, done=True)
     return render(request, 'matrix/done_tasks.html', {'dones': dones})
-
-class TopicDelete(DeleteView):
-    model = Topic
-    success_url = '/matrix/'
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.topic_owner == request.user:
-            context = self.get_context_data(object=self.object)
-            return self.render_to_response(context)
-        else:
-            messages.info(request, 'Permission denied!')
-            return HttpResponseRedirect('/matrix/')
-
-    # delete cascade in models.py
-    def post(self, request, *args, **kwargs):
-        messages.info(request, 'Topic "%s" successfully deleted.' % self.get_object())
-        return self.delete(request, *args, **kwargs)
-
-    # TODO cancel button
-    def get_object(self):
-        return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))
