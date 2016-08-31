@@ -5,6 +5,7 @@
   {% csrf_token %}
   <p>Are you sure you want to delete "{{ object }}"?</p>
   <p>This will delete all the topic's tasks!</p>
-  <input type="submit" value="Confirm" />
+  <input class="btn emaButton btn-danger" type="submit" value="Confirm" />
+  <a class="btn emaButton emaNormal" href={% url 'matrix:topics' object.id %}>cancel</a>
 </form>
 {% endblock content %}
