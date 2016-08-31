@@ -1,38 +1,70 @@
 {% extends "matrix_base.html" %}
 {% block content %}
-<h1>You are editing topic {{ topic.topic_name }}</h1>
-<form class="emaForm" action="" method="post">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  <div class="form-group">
-    <label for="{{ form.topic_name.id_for_label }}">Topic Name:</label>
-    {{ form.topic_name }}
-    {{ form.topic_name.errors }}
+<div class="row">
+  <div class="col-lg-8">
+    <h1>You are editing topic "{{ topic.topic_name }}"</h1>
+    <form class="emaForm emaFormTopic" action="" method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="form-group">
+        <label for="{{ form.topic_name.id_for_label }}">Topic Name:</label>
+        {{ form.topic_name }}
+        {{ form.topic_name.errors }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.topic_description.id_for_label }}">Topic Description:</label>
+        {{ form.topic_description }}
+        {{ form.topic_description.errors }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.color.id_for_label }}">Topic Color:</label>
+        <ul class="noBottomMargList noListStyle">
+          {% for choice in form.color.field.choices %}
+            <li class="selectionList">
+              <label for="id_{{ form.color.html_name }}_{{ forloop.counter0 }}">
+                {% if choice.0 == form.color.value %}
+                <div class="colorSelection" style="background-color: {{ form.color.value }}; border: 2px solid black"
+                      onclick="$('.colorSelection').css('border', '2px solid #eee'); $('#id_{{ form.color.html_name }}_{{ forloop.counter0 }}').parent('div').css('border', '2px solid black');">
+                  <input type="radio"
+                    id="id_{{ form.color.html_name }}_{{ forloop.counter0 }}"
+                    value="{{ choice.0 }}"
+                    name="{{ form.color.html_name }}" />
+                </div>
+                {% else %}
+                <div class="colorSelection" style="background-color: {{ choice.0 }}"
+                      onclick="$('.colorSelection').css('border', '2px solid #eee'); $('#id_{{ form.color.html_name }}_{{ forloop.counter0 }}').parent('div').css('border', '2px solid black');">
+                  <input type="radio"
+                    id="id_{{ form.color.html_name }}_{{ forloop.counter0 }}"
+                    value="{{ choice.0 }}"
+                    name="{{ form.color.html_name }}" />
+                </div>
+                {% endif %}
+              </label>
+            </li>
+          {% endfor %}
+        </ul>
+        {{ form.color.errors }}
+      </div>
+      <input class="btn emaButton emaNormal" type="submit" value="edit topic" />
+      <a class="btn emaButton btn-danger" href={% url 'matrix:topicdeleting' topic.id %}>
+        delete topic
+      </a>
+    </form>
   </div>
-  <div class="form-group">
-    <label for="{{ form.topic_description.id_for_label }}">Topic Description:</label>
-    {{ form.topic_description }}
-    {{ form.topic_description.errors }}
+  <div class="col-lg-4">
+    <h2>Tasks for this topic:</h2>
+    {% if topic.task_set.count > 0 %}
+      <ul class="noListStyle">
+        {% for task in topic.task_set.all %}
+          <li class="task_list">
+            <a href={% url 'matrix:tasks' task.id %}>{{ task.task_name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>no tasks yet</p>
+      <a class="btn emaButton emaNormal" href={% url 'matrix:adding' %}>add a task</a>
+    {% endif %}
   </div>
-  <div class="form-group">
-    <label for="{{ form.color.id_for_label }}">Topic Color:</label>
-    <ul class="noBottomMargList noListStyle">
-      {% for choice in form.color.field.choices %}
-        <li class="selectionList">
-          <label for="id_{{ form.color.html_name }}_{{ forloop.counter0 }}">
-            <div class="colorSelection" style="background-color: {{ choice.0 }}"
-                  onclick="$('.colorSelection').css('border', '1px solid #eee'); $('#id_{{ form.color.html_name }}_{{ forloop.counter0 }}').parent('div').css('border', '1px solid black');">
-              <input type="radio"
-                id="id_{{ form.color.html_name }}_{{ forloop.counter0 }}"
-                value="{{ choice.0 }}"
-                name="{{ form.color.html_name }}" />
-            </div>
-          </label>
-        </li>
-      {% endfor %}
-    </ul>
-    {{ form.color.errors }}
-  </div>
-  <input class="btn emaButton emaNormal" type="submit" value="edit topic" />
-</form>
+</div>
 {% endblock content %}

@@ -75,7 +75,7 @@ class TopicForm(ModelForm):
         super(TopicForm, self).__init__(*args, **kwargs)
         # get different list of choices here
         topics = Topic.objects.filter(topic_owner=user)
-        choices = get_user_colors(self.fields["color"].choices, topics)
+        choices = get_user_colors(self.instance, self.fields["color"].choices, topics)
         self.fields["color"].choices = choices
         # set the topic_owner to the request.user by default
         self.instance.topic_owner = user

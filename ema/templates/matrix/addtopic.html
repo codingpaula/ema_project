@@ -27,13 +27,23 @@
       {% for choice in form.color.field.choices %}
         <li class="selectionList">
           <label for="id_{{ form.color.html_name }}_{{ forloop.counter0 }}">
-            <div class="colorSelection" style="background-color: {{ choice.0 }}"
-                  onclick="$('.colorSelection').css('border', '1px solid #eee'); $('#id_{{ form.color.html_name }}_{{ forloop.counter0 }}').parent('div').css('border', '1px solid black');">
+            {% if choice.0 == form.color.value %}
+            <div class="colorSelection" style="background-color: {{ form.color.value }}; border: 2px solid black"
+                  onclick="$('.colorSelection').css('border', '2px solid #eee'); $('#id_{{ form.color.html_name }}_{{ forloop.counter0 }}').parent('div').css('border', '2px solid black');">
               <input type="radio"
                 id="id_{{ form.color.html_name }}_{{ forloop.counter0 }}"
                 value="{{ choice.0 }}"
                 name="{{ form.color.html_name }}" />
             </div>
+            {% else %}
+            <div class="colorSelection" style="background-color: {{ choice.0 }}"
+                  onclick="$('.colorSelection').css('border', '2px solid #eee'); $('#id_{{ form.color.html_name }}_{{ forloop.counter0 }}').parent('div').css('border', '2px solid black');">
+              <input type="radio"
+                id="id_{{ form.color.html_name }}_{{ forloop.counter0 }}"
+                value="{{ choice.0 }}"
+                name="{{ form.color.html_name }}" />
+            </div>
+            {% endif %}
           </label>
         </li>
       {% endfor %}
