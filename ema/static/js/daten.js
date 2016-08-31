@@ -1,4 +1,3 @@
-// TODO displayed?
 var TopicData = {
   data: {},
   /*

@@ -9,8 +9,6 @@ $(function() {
   TaskData.getTasks(task_data, settings);
   // Aufgaben in die Matrix zeichnen
   Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
-  console.log(TaskData.data);
-  console.log(Matrix.clusters);
   // csrf token for javascript/ajax
   function getCookie(name) {
     var cookieValue = null;

@@ -106,11 +106,11 @@ input[type=password] {
 	width: 30px;
 	height: 30px;
 	margin: 5px;
-	border: 1px solid #eee;
+	border: 2px solid #eee;
 }
 
 .colorSelection:hover {
-	border: 1px solid #222;
+	border: 2px solid #222;
 }
 
 .selectionList {
@@ -197,6 +197,14 @@ input[type=password] {
 	margin-bottom: 5px;
 }
 
+.FAQtitle {
+	color: #69995D;
+}
+
+.aboutEMAtext {
+	font-size: 16px;
+}
+
 /* buttons */
 /* Grundstruktur */
 .emaButton {
@@ -214,7 +222,7 @@ input[type=password] {
 
 /* einzelne Buttons */
 .emaLogin {
-	margin-top: 15px;
+	margin-top: 4px;
 	border: 1px solid olivedrab;
 	background-color: olivedrab;
 	width: 100%;
@@ -225,6 +233,7 @@ input[type=password] {
 	border: 1px solid crimson;
 	background-color: crimson;
 	width: 100%;
+	padding: 8px 10px;
 }
 
 .emaNormal {
@@ -290,6 +299,10 @@ input[type=password] {
 .emaForm {
 	margin: 25px 20px 10px 20px;
 	width: 60%;
+}
+
+.emaFormTopic {
+	width: 95%;
 }
 
 /* stuff to decorate */
