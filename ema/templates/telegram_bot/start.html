@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+<a href="https://telegram.me/{{ bot.user_api.username }}?start={{ token }}">@{{ bot.user_api.username }}</a>
+{% endblock content %}

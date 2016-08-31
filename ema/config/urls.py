@@ -26,6 +26,7 @@ from matrix import urls as matrix_urls
 from profiles import urls as profile_urls
 from profiles.views import index
 from orga import urls as orga_urls
+from telegram_bot import urls as bot_urls
 
 urlpatterns = [
     # startpage
@@ -36,6 +37,8 @@ urlpatterns = [
     url(r'^matrix/', include(matrix_urls, namespace="matrix")),
     # orga app
     url(r'^orga/', include(orga_urls, namespace="orga")),
+    # telegram bot
+    url(r'^bot/', include(bot_urls, namespace="bot")),
     # admin tool
     url(r'^admin/', include(admin.site.urls)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

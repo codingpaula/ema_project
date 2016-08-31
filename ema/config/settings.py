@@ -148,3 +148,6 @@ DATETIME_INPUT_FORMATS = [
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Telegram Settings for bot
+TOKEN = "262348506:AAFc-XzZ5KZXCP6rz_3uIztYCgT_N4mfT6g"
