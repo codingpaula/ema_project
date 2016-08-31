@@ -2,7 +2,7 @@
 .dot {
   position: absolute;
   bottom: 0px;
-  opacity: 0.7;
+  /* opacity: 0.7; */
   border: 2px solid black;
   border-radius: 5px;
   cursor: pointer;
@@ -26,10 +26,6 @@
   background: steelblue;
 }
 
-.bar:hover {
-  opacity: 1.0;
-}
-
 /* Aufgaben-Details (nur angezeigt bei Mouse-hover) */
 .dot .hoverField {
   display: none;
@@ -42,6 +38,7 @@
   border: 1px solid black;
   width: 150px;
   background-color: white;
+  opacity:0.9;
 }
 
 .dot:hover .hoverField {
@@ -97,7 +94,6 @@ textarea.form-control {
   position: relative;
   width: 73%;
   background-size: 850px;
-  /* z-index:0; */
   vertical-align: top;
 }
 
