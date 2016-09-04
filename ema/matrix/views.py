@@ -35,7 +35,6 @@ def matrix(request):
     settings_file = UserOrga.objects.get(owner=request.user)
     if (settings_file == None):
         settings_file.urgent_axis = '1'
-    # locals()
     return render(request, 'matrix/matrix.html',
                     {'all_topics': all_topics, 'all_tasks': all_tasks,
                     'end_data': end_data, 'topic_data': topic_data,
@@ -61,6 +60,7 @@ class AjaxableResponseMixin(object):
         # call form.save() for example).
         response = super(AjaxableResponseMixin, self).form_valid(form)
         if self.request.is_ajax():
+            topic = form.instance.topic_id
             all_tasks = Task.objects.filter(topic__topic_owner=self.request.user.id, done=False)
             response_data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
             return HttpResponse(response_data, content_type="application/json")
