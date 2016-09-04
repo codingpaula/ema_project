@@ -51,6 +51,8 @@ $('#submitAjax').on('click', function(e) {
     success: function(data) {
       Matrix.updateMatrixAjax(data);
       displayMessage(task_id);
+      var topic = $('#ajaxTask').find('#id_topic').val();
+      updateSidebarNumbers(task_id, topic);
       $('#ajaxTask')[0].reset();
       $('#ajaxModal').find('button[data-dismiss="modal"]').click();
     },
@@ -83,10 +85,11 @@ $('#ajaxDeleteSubmit').on('click', function(e) {
     success: function(data) {
       Matrix.updateMatrixAjax(data);
       displayMessage("delete");
+      var topic = $('#ajaxTask').find('#id_topic').val();
+      updateSidebarNumbers("-1", topic);
       $('#ajaxTask')[0].reset();
       hideDeleteQuestion();
       $('#ajaxModal').find('button[data-dismiss="modal"]').click();
-      //$('.topicButton#'+data+' span').text('kwark');
     },
     error: function(data) {
       for(error in data.responseJSON) {
@@ -98,7 +101,18 @@ $('#ajaxDeleteSubmit').on('click', function(e) {
   });
 });
 
-
+function updateSidebarNumbers(task_id, topic) {
+  if (task_id == "0" || task_id == "-1") {
+    var button2change = $('button#'+topic).children('span');
+    var stringTo = button2change.text();
+    var this_number = parseInt(stringTo.replace(/[^0-9\.]/g, ''), 10);
+    if (task_id == "0") {
+      button2change.text('('+(this_number+1)+')');
+    } else {
+      button2change.text('('+(this_number-1)+')');
+    }
+  }
+}
 
 function prefillForm(task_id, editForm, submit_footer) {
   var task = TaskData.data[task_id];

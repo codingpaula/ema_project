@@ -455,6 +455,11 @@ input[type=password] {
 	box-sizing: border-box;
 }
 
+.noTopic {
+	padding: 3px;
+	margin-left: 3px;
+}
+
 #Topics {
 	/* border-bottom: 1px solid #777; */
 }
