@@ -2,11 +2,13 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from orga.forms import OrgaForm
 from orga.models import UserOrga
@@ -25,7 +27,7 @@ def index(request):
 wird nach Login angezeigt
 Informationen ueber diesen Benutzer (bis jetzt nur Name) werden angezeigt
 """
-@login_required(login_url='/account/login')
+@login_required()
 def account(request):
     form = OrgaForm(user=request.user)
     user_orga = get_object_or_404(UserOrga, owner=request.user)
@@ -46,10 +48,41 @@ class AccountSettings(SuccessMessageMixin, UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-    # def get_context_data(self, *args, **kwargs):
-    #     context = super(AccountSettings, self).get_context_data(*args, **kwargs)
-    #    context['books'] = Book.objects.filter(popular=True)
-    #    return context
+    def get_context_data(self, *args, **kwargs):
+         context = super(AccountSettings, self).get_context_data(*args, **kwargs)
+         context['passwordChange'] = PasswordChangeForm(self.request.user)
+         return context
+
+@login_required()
+def settings(request):
+    if request.method == 'POST':
+        form = OrgaForm(request.POST, request.user)
+        if form.is_valid():
+            form.save()
+            messages.info("Successfully saved!")
+            return HttpResponseRedirect(reverse('profiles:account'))
+    else:
+        form = OrgaForm(request.user)
+        passwordChange = PasswordChangeForm(request.user)
+        settings = get_object_or_404(UserOrga, owner=request.user)
+        return render(request, 'profiles/account.html',
+                    {'form': form,
+                    'passwordChange': passwordChange,
+                    'settings': settings})
+
+def update_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.POST)
+        print(request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            messages.info(request, "Password successfully changed!")
+            return HttpResponseRedirect(reverse('profiles:account'))
+        else:
+            messages.info(request, "error")
+            return HttpResponseRedirect(reverse('profiles:account'))
+
 """
 Registrierung
 """
