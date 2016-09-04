@@ -11,15 +11,18 @@
 
 .dot .dotSchrift {
   font-size: 8px;
-  margin: 8px auto 0px auto;
+  text-align: center;
+  margin-top: 9px;
 }
 
 .dot .dotName {
   width: 40px;
+  margin-left: -15px;
 }
 
 .dot .dotNumber {
   width: 10px;
+  margin-left: 0px;
 }
 
 .dot:hover {
@@ -85,22 +88,54 @@ textarea.form-control {
   height: 20%;
 }
 
+@media screen and (min-width:1600px) {
+  #dots {
+    width: 900px;
+    height: 725px;
+    background-size: 915px;
+  }
+  .matrixSettings {
+    width: 10%;
+  }
+}
+
+@media screen and (min-width:1201px) and (max-width:1599px) {
+  #dots {
+    width: 700px;
+    height: 545px;
+    background-size: 700px;
+  }
+  .matrixSettings {
+    width: 13%;
+  }
+}
+
+@media screen and (max-width:1200px) {
+  #dots {
+    width: 700px;
+    height: 545px;
+    background-size: 700px;
+  }
+  .matrixSettings {
+    width: 18%;
+  }
+}
+
 /* Matrix-Einstellungen */
 #Matrix {
   display: inline-block;
   border: 1px solid #111;
   margin: 5px 1%;
-  padding: 10px 1%;
-  position: relative;
-  width: 73%;
+  padding: 10px 2% 10px 1%;
+  /* position: relative;
   background-size: 850px;
-  vertical-align: top;
+  vertical-align: top; */
 }
 
 /* div mit den Aufgaben-Kreisen */
 #dots {
   position: relative;
   display: block;
-  background-size: 900px;
+  /* background-size: 910px; */
   box-sizing: content-box;
 }

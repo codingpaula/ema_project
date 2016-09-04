@@ -2,7 +2,7 @@ $(function() {
   // Start der Matrix
   Matrix.init();
   // Achsen zeichnen mit vorgegebenen Massen
-  // Matrix.drawAxes(s.drawing, s.width, s.height);
+  //Matrix.drawAxes(s.drawing, s.width, s.height);
   // Topic-Daten behandeln
   TopicData.getTopics(topic_data);
   // Task-Daten behandlen
@@ -10,6 +10,12 @@ $(function() {
   // Aufgaben in die Matrix zeichnen
   Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
   // csrf token for javascript/ajax
+  $(window).resize(function () {
+    waitForFinalEvent(function(){
+      Matrix.updateSettings();
+      Matrix.updateMatrixAjax(task_data);
+    }, 500, "matrix resize");
+  });
   function getCookie(name) {
     var cookieValue = null;
     var i = 0;
@@ -39,3 +45,15 @@ $(function() {
     }
   });
 });
+var waitForFinalEvent = (function () {
+  var timers = {};
+  return function (callback, ms, uniqueId) {
+    if (!uniqueId) {
+      uniqueId = "Don't call this twice without a uniqueId";
+    }
+    if (timers[uniqueId]) {
+      clearTimeout (timers[uniqueId]);
+    }
+    timers[uniqueId] = setTimeout(callback, ms);
+  };
+})();
