@@ -5,21 +5,94 @@
   {% include "navbar.html" with active_tab='Help' %}
 {% endblock navbar %}
 {% block content %}
-<h1>FAQ</h1>
-<h3 class="FAQtitle">Can I add a standard topic to be pre-selected when adding tasks?</h3>
-<p>
-  Yes, you can. Go to "Account" - "Matrix", select the preferred topic and
-  click "save".
-</p>
-<h3 class="FAQtitle">Can I change my username or password?</h3>
-<p>
-  Not yet. If you want to do that, please contact me through the mail address
-  at "About EMA".
-</p>
-<h3 class="FAQtitle">I can't find my question here!</h3>
-<p>
-  Don't panic! You can write me a mail to the address at "About EMA".
-</p>
+<div class="row">
+  <div class="col-lg-12">
+    <h1>FAQ</h1>
+  </div>
+  <div class="col-lg-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1>The Eisenhower Matrix</h1>
+      </div>
+      <div class="panel-body">
+        <h3 class="FAQtitle">What is the Eisenhower Matrix?</h3>
+        <p class="FAQparagraph">
+          The Eisenhower Matrix is a time management tool originally invented
+          by the former US president Dwight D. Eisenhower. When confronted with
+          an overwhelming amount of tasks it can help you to set priorities
+          based on the importance and urgency of your tasks.
+        </p>
+        <hr />
+        <h3 class="FAQtitle">And how does this work now?</h3>
+        <p class="FAQparagraph">
+          The tasks added by you are put into the matrix based on their
+          importance and due date. The matrix is divided into 4 fields that
+          imply how the tasks in it should be handled:
+          <ol>
+            <li>urgent and important - do now!</li>
+            <li>not urgent and important - organize for when to do!</li>
+            <li>urgent and not important - try to delegate!</li>
+            <li>not urgent and not important - don't do (yet)!</li>
+          </ol>
+        </p>
+        <hr />
+        <h3 class="FAQtitle">How can I edit my tasks?</h3>
+        <p class="FAQparagraph">
+          Simple click on the task's dot in the matrix. Then you can edit it in
+          the pop-up modal window that appears.
+        </p>
+        <hr />
+        <h3 class="FAQtitle">
+          I have a task that takes me three days to complete, so if i use the
+          date it should be finished as a due date, the EMA will show it at the
+          very front too late!
+        </h3>
+        <p class="FAQparagraph">
+          For very big tasks you have two options. Either split it up in smaller
+          tasks that can be accomplished in one day or less or you see the due date
+          that you fill in more as a latest starting due date and deliberately put
+          it three days before the actual deadline.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1>Account and Settings</h1>
+      </div>
+      <div class="panel-body">
+        <h3 class="FAQtitle">
+          I have accidently ticked a task "done" and now it is gone!
+        </h3>
+        <p class="FAQparagraph">
+          Don't worry! Under "Account" - "Done Tasks" you can access a list of all
+          your accomplished tasks and by clicking on a tasks name edit it.
+        </p>
+        <hr />
+        <h3 class="FAQtitle">
+          Can I add a standard topic to be pre-selected when adding tasks?
+        </h3>
+        <p class="FAQparagraph">
+          Yes, you can. Go to "Account" - "Matrix", select the preferred topic and
+          click "save".
+        </p>
+        <hr />
+        <h3 class="FAQtitle">Can I change my username or password?</h3>
+        <p class="FAQparagraph">
+          Not yet. If you want to do that, please contact me through the mail
+          address at "About EMA".
+        </p>
+        <hr />
+        <h3 class="FAQtitle">I can't find my question here!</h3>
+        <p class="FAQparagraph">
+          Don't panic! You can write me an e-mail to the address you find at
+          "About EMA".
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
 {% block footer %}
   {% include "footer.html" %}
