@@ -27,7 +27,8 @@ var Sidebar = {
 		// die Hintergrundfarbe des Buttons entscheidet, welche Aktion vorgenommen
 		// wird, da auch User anhand dieser die eine oder ander Aktion erwartet
 		// Hintergrund grau --> alles ausschalten
-		if($('button#all').css('background-color') == 'rgb(192, 192, 192)') {
+		var all_button = $('button#all');
+		if(all_button.css('background-color') == 'rgb(192, 192, 192)') {
 			for(button in TopicData.data) {
 				// jeder Button, der an ist, wird ausgeklickt
         var toggle = $('button#'+button);
@@ -38,7 +39,8 @@ var Sidebar = {
       // update Matrix
       $('#dots').empty();
 			// die Buttonfarbe des All-Buttons wird geaendert
-			$('button#all').css('background-color', '#eee');
+			clickSidebarButton(all_button);
+			all_button.text('select all topics');
 		} else {
 			for(button in TopicData.data) {
 				// alle Buttons, die aus sind, werden angemacht
@@ -50,35 +52,52 @@ var Sidebar = {
       // update Matrix
       Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
 			// Farbe updaten
-			$('button#all').css('background-color', 'rgb(192, 192, 192)');
+			unclickSidebarButton(all_button);
+			all_button.text('unselect all topics');
 		}
 	},
 	// Moeglichkeit die Topics zu editieren
 	editTopics: function() {
 		// wieder Unterscheidung anhand von Hintergrundfarbe des Edit-Buttons
-		if($('button#editTopics').css('background-color') == 'rgb(192, 192, 192)') {
+		var editButton = $('button#editTopics');
+		if(editButton.css('background-color') == 'rgb(192, 192, 192)') {
 			for(button in TopicData.data) {
 				// alle onclick-Attribute der Buttons auf die Topic-Anzeige lenken
 				var glyphi = $('<span/>', {
+					id: 'icon',
 					class: 'glyphicon glyphicon-pencil pull-right'
 				});
-				$('button#'+button).append(glyphi);
-				$('button#'+button).attr('onclick', "location.href='/matrix/"+button+"/edittopic'");
+				var toggling = $('button#'+button);
+				toggling.append(glyphi);
+				toggling.attr('onclick', "location.href='/matrix/"+button+"/edittopic'");
 			}
 			// All-Button ausmachen
 			$('button#all').attr('onclick', '');
 			// Hintergrund anpassen
-			$('button#editTopics').css('background-color', '#eee');
+			clickSidebarButton(editButton);
 		} else {
 			for(button in TopicData.data) {
 				// zurueck zu der Button beeinflusst die Matrix
-				$('button#'+button).find('span').remove();
-				$('button#'+button).attr('onclick', 'Sidebar.button(button)');
+				var toggling = $('button#'+button);
+				toggling.find('span#icon').remove();
+				toggling.attr('onclick', 'Sidebar.button('+button+')');
 			}
 			// All-Button geht wieder
 			$('button#all').attr('onclick', 'Sidebar.allButton()');
 			// Hintergrund anpassen
-			$('button#editTopics').css('background-color', 'rgb(192, 192, 192)');
+			unclickSidebarButton(editButton);
 		}
 	}
 };
+
+function clickSidebarButton(button) {
+	button.css('background-color', '#eee');
+	button.css('border-color', 'black');
+	button.css('color', 'black');
+}
+
+function unclickSidebarButton(button) {
+	button.css('background-color', 'rgb(192, 192, 192)');
+	button.css('border-color', 'white');
+	button.css('color', 'white');
+}

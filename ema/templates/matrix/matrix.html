@@ -17,7 +17,12 @@
   var task_data = {{ end_data|safe }};
   var topic_data = {{ topic_data|safe }};
 </script>
-  <div id="MatrixSettings">
+  <div class="matrixSettings">
+    <button class="btn emaButton emaTask topicButton topicButtonShow abstandU abstandO"
+        data-toggle="modal" data-target="#ajaxModal" data-task="0">
+      add task
+    </button>
+    <div class="trennlinie"></div>
     <div id="Topics" class="myContainer">
       <div class="align-left">
         <h3>Topics</h3>
@@ -38,6 +43,7 @@
                     style="background-color: {{ topic.color }};
                           border: 1px solid {{ topic.color }}">
               {{ topic.topic_name }}
+              <span class="topicNumber pull-right">({{ topic.task_set.count }})</span>
             </button>
           </li>
           {% endfor %}
@@ -46,22 +52,14 @@
                     id="all"
                     onclick="Sidebar.allButton();"
                     style="margin-top: 15px;">
-              all
+              unselect all topics
             </button>
           </li>
           <li class="topicList">
             <button class="btn emaButton topicButton topicButtonShow"
                     id="editTopics"
-                    onclick="Sidebar.editTopics();"
-                    style="margin-top: 15px;">
+                    onclick="Sidebar.editTopics();">
               edit topics
-            </button>
-          </li>
-          <li class="topicList">
-            <button type="button" class="btn emaButton topicButton topicButtonShow"
-                    data-toggle="modal" data-target="#ajaxModal"
-                    data-task="0">
-              add task
             </button>
           </li>
         </ul>
@@ -80,12 +78,13 @@
     </div>
   </div>
   <div id="Matrix">
-    <!--<canvas id="ema" width="900" height="700">
+    <!--canvas id="ema" width="900" height="750">
       The Eisenhower Matrix! If you are seeing this text, your browser does
       not support this website. Please update or download Firefox or Opera.
-    </canvas>-->
-    <div id="dots" style="width: 900px; height:725px; background-image: url({% static "pictures/matrix.png" %});"></div>
+    </canvas-->
+    <div id="dots" style="background-image: url({% static "pictures/matrix.png" %});"></div>
   </div>
+
   <!-- Modal um Aufgaben zu adden und zu editieren -->
   <div class="modal fade" id="ajaxModal"
         tabindex="-1" role="dialog" aria-labelledby="taskModal">
