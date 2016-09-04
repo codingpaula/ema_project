@@ -43,8 +43,8 @@ function doubles(dots, newDot) {
 // left oder bottom property gegeben, bis wo liegen die Punkte ganz oder
 // teilweise aufeinander
 function liesIn(takenDot, newDot) {
-	if (takenDot.x - 20 < newDot.x && takenDot.x + 20 > newDot.x) {
-		if (takenDot.y - 20 < newDot.y && takenDot.y + 20 > newDot.y) {
+	if (takenDot.x - 25 < newDot.x && takenDot.x + 25 > newDot.x) {
+		if (takenDot.y - 25 < newDot.y && takenDot.y + 25 > newDot.y) {
 			return true;
 		}
 	} else {
@@ -54,17 +54,24 @@ function liesIn(takenDot, newDot) {
 }
 
 // calculate cluster included coordinates so that they are in the Matrix
-function coordinates(cluster, radius, bogen, runde) {
+function coordinates(cluster, radius, bogen, schritt) {
 	// berechne Koordinaten
 	var xC = cluster.x + (radius * Math.cos(bogen));
 	var yC = cluster.y + (radius * Math.sin(bogen));
-  var paket = {};
-	if (xC < s.width-8 && xC > 40 && yC > 50 && yC < s.height) {
-		paket = {'x': xC, 'y': yC, 'radius': radius, 'bogen': bogen};
+	var paket = {};
+	if (xC < s.width-8 && xC > 38 && yC > 58 && yC <= s.height) {
+		paket = {
+			'x': xC,
+			'y': yC,
+			'radius': radius,
+			'bogen': bogen,
+			'schritt': schritt
+		};
 		return paket;
 	} else {
+		bogen = bogen+(Math.PI/(4+(schritt/4)));
 		// rekursiver Aufruf, um mit neuen Parametern neuen Punkt zu berechnen
-    paket = coordinates(cluster, radius+1.5, bogen+(Math.PI/4), runde+1);
+    paket = coordinates(cluster, radius+1.5, bogen, schritt+1);
 		return paket;
 	}
 }
@@ -157,12 +164,14 @@ function formatImp(imp) {
 
 // structure:
 // https://css-tricks.com/how-do-you-structure-javascript-the-module-pattern-edition/
-var s,
-Matrix = {
+var s = {};
+var Matrix = {
 	settings: {
 		//canvas: $('canvas'),
 		//drawing: document.getElementById('ema').getContext("2d"),
+		//width: 900,
 		width: $('#dots').width(),
+		//height: 700
 		height: $('#dots').height()
 	},
 	// has an x and an y value, created when two dots are drawn at the same spot
@@ -379,18 +388,20 @@ Matrix = {
 			var radius = 12;
 			// eine Runde = 2*pi, start = 0
 			var bogen = 0;
+			var schritt = 0;
 			for(var i = 0; i < cluster['included'].length; i++) {
 				var task_id = cluster['included'][i];
 				var task = TaskData.data[task_id];
 				var color = TopicData.data[task.topic].color;
 				// Koordinaten rausfinden, damit Spirale um cluster entsteht
-				var paket = coordinates(cluster, radius, bogen, 1);
+				var paket = coordinates(cluster, radius, bogen, schritt);
 				// Punkt zeichnen mit Modus "noName"
 				that.drawDot(task, paket.x, paket.y, color, "noName");
 				// pro Runde um 1.5 mehr fuer r, damit eine Spirale entsteht
 				radius = paket.radius + 1.5;
 				// pro Runde ein viertel pi mehr
-				bogen = paket.bogen + Math.PI/4;
+				bogen = paket.bogen + (Math.PI/(4+(paket.schritt/4)));
+				schritt = paket.schritt + 1;
 			}
 		});
 	},
@@ -400,5 +411,9 @@ Matrix = {
 		that.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
 		//console.log(TaskData.data);
 		//console.log(Matrix.clusters);
+	},
+	updateSettings: function() {
+		s.width = $('#dots').width();
+		s.height = $('#dots').height();
 	}
 };
