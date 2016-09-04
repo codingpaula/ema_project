@@ -55,7 +55,6 @@ $('#submitAjax').on('click', function(e) {
       $('#ajaxModal').find('button[data-dismiss="modal"]').click();
     },
     error: function(data) {
-      console.log(data.responseJSON);
       for(error in data.responseJSON) {
         var divWithError = form.find('#'+error);
         divWithError.attr('class', 'form-group has-error');
@@ -87,10 +86,14 @@ $('#ajaxDeleteSubmit').on('click', function(e) {
       $('#ajaxTask')[0].reset();
       hideDeleteQuestion();
       $('#ajaxModal').find('button[data-dismiss="modal"]').click();
+      //$('.topicButton#'+data+' span').text('kwark');
     },
     error: function(data) {
-      // TODO display error message
-      console.log('error');
+      for(error in data.responseJSON) {
+        var divWithError = form.find('#'+error);
+        divWithError.attr('class', 'form-group has-error');
+        divWithError.children('.help-block').text(data.responseJSON[error]);
+      }
     }
   });
 });
