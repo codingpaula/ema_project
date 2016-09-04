@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('orga', '0001_initial'),
+        ('orga', '0003_remove_userorga_tele_username'),
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.AddField(
             model_name='userorga',
-            name='default_topic',
-            field=models.ForeignKey(to='matrix.Topic', null=True),
+            name='tele_username',
+            field=models.TextField(max_length=30, blank=True),
         ),
     ]

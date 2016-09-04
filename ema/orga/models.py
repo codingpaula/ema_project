@@ -17,5 +17,6 @@ class UserOrga(TimeStampedModel):
                                     choices=URGENT_OPTIONS,
                                     default=TWOMONTH)
     default_topic = models.ForeignKey(Topic, null=True, default=None)
+    tele_username = models.TextField(max_length=30, blank=True)
     def __unicode__(self):
         return self.owner.username
