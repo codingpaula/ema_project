@@ -13,12 +13,13 @@ body {
 	right:0;
 	left:0;
 	background-color: #B0B2B8;
+	padding-top: 45px;
 	/* margin-bottom:-80px; */
 }
 
 footer {
 	height: 80px;
-	width: 99.4%;
+	width: 100%;
 	text-align: right;
 	overflow: hidden;
 	background-color: #2B4660;
@@ -39,6 +40,30 @@ footer p {
 .footer {
 	padding: 15px;
 	height: 80px;
+}
+
+.emaNavbar div {
+	display: inline-block;
+	padding: 3px 5px 3px 5px;
+	margin: 3px 3%;
+}
+.gap {
+	margin-left: 18%;
+}
+
+.emaNavbar {
+	width: 100%;
+	text-align: center;
+	overflow: hidden;
+	background-color: #2B4660;
+	/* background-color: #DDDDCC; */
+	padding: 5px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+.emaNavbar ul {
+	margin: 0 auto;
 }
 
 /* forms */
@@ -306,30 +331,6 @@ input[type=password] {
 	color: grey;
 	cursor: pointer;
 	cursor: hand;
-}
-
-.emaNavbar div {
-	display: inline-block;
-	padding: 3px 5px 3px 5px;
-	margin: 3px 3%;
-}
-.gap {
-	margin-left: 18%;
-}
-
-.emaNavbar {
-	width: 99.4%;
-	text-align: center;
-	overflow: hidden;
-	background-color: #2B4660;
-	/* background-color: #DDDDCC; */
-	padding: 5px;
-	text-decoration: none;
-	text-transform: uppercase;
-}
-
-.emaNavbar ul {
-	margin: 0 auto;
 }
 
 .add {
