@@ -10,21 +10,22 @@
   <form class="emaForm" action="{% url 'profiles:register' %}" method="post">
     {% csrf_token %}
     <div class="form-group">
-      {{ form.username.errors }}
       <label for="{{ form.username.id_for_label }}">username</label>
       <span class="pull-right">{{ form.username.help_text }}</span>
       {{ form.username|add_attrs:"form-control" }}
+      {{ form.username.errors }}
     </div>
     <div class="form-group">
-      {{ form.password1.errors }}
       <label for="{{ form.password1.id_for_label }}">password</label>
       <span class="pull-right">{{ form.password1.help_text }}</span>
       {{ form.password1|add_attrs:"form-control" }}
+      {{ form.password1.errors }}
     </div>
     <div class="form-group">
       <label for="{{ form.password2.id_for_label }}">repeat password</label>
       <span class="pull-right">{{ form.password2.help_text }}</span>
       {{ form.password2|add_attrs:"form-control" }}
+      {{ form.password2.errors }}
     </div>
     <input class="btn emaButton emaNormal" type="submit" value="create account">
   </form>
