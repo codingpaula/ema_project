@@ -13,9 +13,11 @@ body {
 	right:0;
 	left:0;
 	background-color: #B0B2B8;
+	/* margin-bottom:-80px; */
 }
 
 footer {
+	height: 80px;
 	width: 99.4%;
 	text-align: right;
 	overflow: hidden;
@@ -26,10 +28,17 @@ footer {
 	text-transform: uppercase;
 	position: absolute;
 	bottom: 0;
+	left: 0;
+	position: fixed;
 }
 
 footer p {
 	margin-right: 15px;
+}
+
+.footer {
+	padding: 15px;
+	height: 80px;
 }
 
 /* forms */
@@ -58,7 +67,15 @@ input[type=password] {
 }
 */
 
+.emptyPanel {
+	width: 100%;
+}
 
+.equal, .equal > div[class*='col-'] {
+    display: -webkit-flex;
+    display: flex;
+    flex:1 1 auto;
+}
 
 /* links */
 .navLink {
@@ -89,6 +106,10 @@ input[type=password] {
 
 .abstandO {
 	margin-top: 10px;
+}
+
+.abstandUgross {
+	margin-bottom: 20px;
 }
 
 .loginpage {
@@ -201,6 +222,10 @@ input[type=password] {
 	color: #69995D;
 }
 
+.FAQparagraph {
+	font-size: 16px;
+}
+
 .aboutEMAtext {
 	font-size: 16px;
 }
@@ -254,7 +279,23 @@ input[type=password] {
 }
 
 .topicButtonShow {
-	width: 90%;
+	width: 97%;
+}
+
+.emaTask {
+	/* background-color: #69995D; */
+	/* background-color: #80021C; */
+	background-color: #2B4660;
+	font-size: 13px;
+	border-color: white;
+}
+
+.topicNumber {
+	margin-left: 5px;
+}
+
+.trennlinie {
+	border-bottom: 1px solid #777;
 }
 
 .closeNotification {
@@ -306,10 +347,6 @@ input[type=password] {
 }
 
 /* stuff to decorate */
-.footer {
-	padding: 15px;
-}
-
 .center {
 	text-align: center;
 }
@@ -390,20 +427,34 @@ input[type=password] {
 }
 
 /* IDs */
-#MatrixSettings {
-	display: inline-block;
-	vertical-align: top;
+.matrixSettings {
+	position: relative;
+	/* display: inline-block; */
+	/* vertical-align: top; */
+	float: left;
+	width: 10%;
+	border: 1px solid #111;
+	margin: 5px 1%;
+	padding: 2px 8px 5px 8px;
+	box-sizing: border-box;
+}
+
+.matrixSettings h3 {
+	font-size: 18px;
+	padding: 3px;
+	border-bottom: 1px solid #777;
+	margin-left: 3px;
+}
+
+.addTaskContainer {
+	position: relative;
 	width: 10%;
 	border: 1px solid #111;
 	margin: 5px 1%;
 	padding: 2px 4px 5px 8px;
 	box-sizing: border-box;
 }
-#MatrixSettings h3 {
-	font-size: 18px;
-	padding: 3px;
-	border-bottom: 1px solid #777;
-}
+
 #Topics {
 	/* border-bottom: 1px solid #777; */
 }
