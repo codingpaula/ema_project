@@ -2,25 +2,31 @@
 .dot {
   position: absolute;
   bottom: 0px;
-  opacity: 0.7;
+  /* opacity: 0.7; */
   border: 2px solid black;
   border-radius: 5px;
   cursor: pointer;
   box-sizing: content-box;
 }
 
-.dot .dotName {
+.dot .dotSchrift {
   font-size: 8px;
+  text-align: center;
+  margin-top: 9px;
+}
+
+.dot .dotName {
   width: 40px;
-  margin: 8px auto 0px auto;
+  margin-left: -15px;
+}
+
+.dot .dotNumber {
+  width: 10px;
+  margin-left: 0px;
 }
 
 .dot:hover {
   background: steelblue;
-}
-
-.bar:hover {
-  opacity: 1.0;
 }
 
 /* Aufgaben-Details (nur angezeigt bei Mouse-hover) */
@@ -35,6 +41,7 @@
   border: 1px solid black;
   width: 150px;
   background-color: white;
+  opacity:0.9;
 }
 
 .dot:hover .hoverField {
@@ -65,7 +72,7 @@
 }
 
 .dot .dotLabel {
-
+  word-wrap: break-word;
 }
 
 .pickerInTheMiddle {
@@ -81,23 +88,54 @@ textarea.form-control {
   height: 20%;
 }
 
+@media screen and (min-width:1600px) {
+  #dots {
+    width: 900px;
+    height: 725px;
+    background-size: 915px;
+  }
+  .matrixSettings {
+    width: 10%;
+  }
+}
+
+@media screen and (min-width:1201px) and (max-width:1599px) {
+  #dots {
+    width: 700px;
+    height: 545px;
+    background-size: 700px;
+  }
+  .matrixSettings {
+    width: 13%;
+  }
+}
+
+@media screen and (max-width:1200px) {
+  #dots {
+    width: 700px;
+    height: 545px;
+    background-size: 700px;
+  }
+  .matrixSettings {
+    width: 18%;
+  }
+}
+
 /* Matrix-Einstellungen */
 #Matrix {
   display: inline-block;
   border: 1px solid #111;
   margin: 5px 1%;
-  padding: 10px 1%;
-  position: relative;
-  width: 73%;
+  padding: 10px 2% 10px 1%;
+  /* position: relative;
   background-size: 850px;
-  /* z-index:0; */
-  vertical-align: top;
+  vertical-align: top; */
 }
 
 /* div mit den Aufgaben-Kreisen */
 #dots {
   position: relative;
   display: block;
-  background-size: 900px;
+  /* background-size: 910px; */
   box-sizing: content-box;
 }

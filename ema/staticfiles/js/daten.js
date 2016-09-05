@@ -1,4 +1,3 @@
-// TODO displayed?
 var TopicData = {
   data: {},
   /*
@@ -54,9 +53,9 @@ var TaskData = {
         'id': task.id,
         'name': task.task_name,
         'description': task.task_description,
-        'topic': task.topic
+        'topic': task.topic,
+        'cluster': undefined
       };
-      help = task.task_name;
     });
   }
 };
@@ -139,9 +138,5 @@ function newDateCoordinate(date, urgent_axis) {
 
 // Wichtigkeitskoordinate
 function importanceCoordinate(imp) {
-	return imp/4*s.height + 60;
+	return imp/4*s.height + 100;
 }
-
-// -----------------------------------------------------------------------------
-// default settings that can be changed per user
-var SettingsData = {};

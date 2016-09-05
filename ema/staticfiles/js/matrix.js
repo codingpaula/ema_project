@@ -9,35 +9,73 @@
 	@param newDot_x = x-Koordinate(date) des neuen Punktes
 	@param newDot_y = y-Koordinate(importance) des neuen Punktes
 */
-function doubles(dots, newDot_x, newDot_y) {
-	var newDot = {x: newDot_x, y: newDot_y};
+function doubles(dots, newDot) {
+	var versorgt = false;
 	dots.forEach(function(oldDot) {
 		if(liesIn(oldDot, newDot)) {
+			//console.log('newDot: '+newDot.id+', oldDot: '+oldDot.id);
 			// TODO wie kann erkannt werden dass die neue Stelle nicht auch schon
 			// besetzt ist?
-			newDot.x += 10;
-			newDot.y += 10;
+			var cluster_id = oldDot.id;
+			if (Matrix.clusters.hasOwnProperty(cluster_id) && versorgt == false) {
+				//console.log('add to old cluster');
+				TaskData.data[newDot.id]['cluster'] = cluster_id;
+				Matrix.clusters[cluster_id]['included'].push(newDot.id);
+				versorgt = true;
+			} else if (versorgt == false){
+				//console.log('new cluster');
+				TaskData.data[newDot.id]['cluster'] = cluster_id;
+				TaskData.data[cluster_id]['cluster'] = cluster_id;
+				var newCluster = {
+					'id': cluster_id,
+					'x': oldDot.x,
+					'y': oldDot.y,
+				 	'included': [cluster_id, newDot.id]
+				}
+				Matrix.clusters[cluster_id] = newCluster;
+				versorgt = true;
+			}
 		}
 	});
-	// Rückgabe von 2 Werten nicht erlaubt, dadurch als Objekt
-	//var dot = {
-	//	'date': newDot_x,
-	//	'imp': newDot_y
-	//};
-	return newDot;
+	return versorgt;
 }
 
 // left oder bottom property gegeben, bis wo liegen die Punkte ganz oder
 // teilweise aufeinander
 function liesIn(takenDot, newDot) {
-	if (takenDot.x - 42 < newDot.x && takenDot.x + 42 > newDot.x) {
-		if (takenDot.y - 32 < newDot.y && takenDot.y + 32 > newDot.y) {
+	if (takenDot.x - 25 < newDot.x && takenDot.x + 25 > newDot.x) {
+		if (takenDot.y - 25 < newDot.y && takenDot.y + 25 > newDot.y) {
 			return true;
 		}
 	} else {
 		return false;
 	}
+	return false;
 }
+
+// calculate cluster included coordinates so that they are in the Matrix
+function coordinates(cluster, radius, bogen, schritt) {
+	// berechne Koordinaten
+	var xC = cluster.x + (radius * Math.cos(bogen));
+	var yC = cluster.y + (radius * Math.sin(bogen));
+	var paket = {};
+	if (xC < s.width-8 && xC > 38 && yC > 58 && yC <= s.height) {
+		paket = {
+			'x': xC,
+			'y': yC,
+			'radius': radius,
+			'bogen': bogen,
+			'schritt': schritt
+		};
+		return paket;
+	} else {
+		bogen = bogen+(Math.PI/(4+(schritt/4)));
+		// rekursiver Aufruf, um mit neuen Parametern neuen Punkt zu berechnen
+    paket = coordinates(cluster, radius+1.5, bogen, schritt+1);
+		return paket;
+	}
+}
+
 
 // Date in lesbares Format umwandeln
 function formatDate(date) {
@@ -98,42 +136,53 @@ function formatImp(imp) {
 		class: 'glyphicon glyphicon-star-empty'
 	});
 	stars.append(full_star.clone());
-	if (imp == 0) {
-		stars.append(empty_star.clone());
-		stars.append(empty_star.clone());
-		stars.append(empty_star.clone());
-		return stars;
-	}
-	if (imp == 1) {
-		stars.append(full_star.clone());
-		stars.append(empty_star.clone());
-		stars.append(empty_star.clone());
-		return stars;
-	}
-	if (imp == 2) {
-		stars.append(full_star.clone());
-		stars.append(full_star.clone());
-		stars.append(empty_star.clone());
-		return stars;
-	}
-	if (imp == 3) {
-		stars.append(full_star.clone());
-		stars.append(full_star.clone());
-		stars.append(full_star.clone());
-		return stars;
+	switch(imp) {
+		case '0':
+			stars.append(empty_star.clone());
+			stars.append(empty_star.clone());
+			stars.append(empty_star.clone());
+			return stars;
+		case '1':
+			stars.append(full_star.clone());
+			stars.append(empty_star.clone());
+			stars.append(empty_star.clone());
+			return stars;
+		case '2':
+			stars.append(full_star.clone());
+			stars.append(full_star.clone());
+			stars.append(empty_star.clone());
+			return stars;
+		case '3':
+			stars.append(full_star.clone());
+			stars.append(full_star.clone());
+			stars.append(full_star.clone());
+			return stars;
+		default:
+			return stars;
 	}
 }
 
 // structure:
 // https://css-tricks.com/how-do-you-structure-javascript-the-module-pattern-edition/
-var s,
-Matrix = {
+var s = {};
+var Matrix = {
 	settings: {
 		//canvas: $('canvas'),
 		//drawing: document.getElementById('ema').getContext("2d"),
+		//width: 900,
 		width: $('#dots').width(),
+		//height: 700
 		height: $('#dots').height()
 	},
+	// has an x and an y value, created when two dots are drawn at the same spot
+	clusters: [],
+	/*
+	cluster-index = task_id
+		'id': same id as the first task
+		'x': x value of cluster,
+		'y': y value of cluster,
+		'included': list of included dots
+	*/
 	init: function() {
 		s = this.settings;
 	},
@@ -202,36 +251,38 @@ Matrix = {
 	},
 	drawTasks: function(taskData, topicData, width, height) {
 		// gets correct data
-		// console.log(taskData);
-		// console.log(topicData);
 		$('#dots').empty();
 		// how to find out if tasks are on the same spot
 		var that = this;
 		var taken = [];
+		that.clusters = [];
+		var count = 1;
 		// Hilfsvariablen
 		// durch alle übergebenen Aufgaben
 		taskData.forEach(function(task){
 			var colorIndex = task.topic;
 			if(topicData[colorIndex]['displayed'] == false) {
-
+				// don't display dot when sidebar setting says so
 			} else {
 				// check überschneidungen
-				var dot = {x: task.x, y: task.y};
-				//console.log("x vor doubles: "+task.x);
-				//var dot = doubles(taken, task.x, task.y);
-				//task.x = dot.x;
-				//task.y = dot.y;
-				//console.log("coordinates are: x - "+task.x+", y - "+task.y);
-				var topicColor = topicData[colorIndex]['color'];
-				// eigentlichen Punkt kreieren und zeichnen
-				that.drawDot(task, topicColor);
-				// Array mit bereits gezeichneten Koordinaten
-				taken.push(dot);
+				var dot = {id: task.id, x: task.x, y: task.y};
+				if (doubles(taken, dot)) {
+					// cluster is made in doubles
+				} else {
+					var topicColor = topicData[colorIndex]['color'];
+					// eigentlichen Punkt kreieren und zeichnen
+					that.drawDot(task, task.x, task.y, topicColor, "");
+					// Array mit bereits gezeichneten Koordinaten
+					taken.push(dot);
+					count++;
+				}
 			}
 		});
+		//console.log(taken);
+		that.drawCluster(count);
 	},
 	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
-	drawDot: function(task, color) {
+	drawDot: function(task, xC, yC, color, mode) {
 		// eigentlicher Kreis mit task_id in entsprechender Farbe des Topics
 		var clickHandler = function(){
 			$('#ajaxEditTask').data = $(this).attr('id');
@@ -240,8 +291,8 @@ Matrix = {
 			class: 'dot',
 			id: task.id,
 			css: {
-				left: task.x,
-				bottom: task.y,
+				left: xC,
+				bottom: yC,
 				borderColor: color,
 				width: 7,
 				height: 7
@@ -251,17 +302,22 @@ Matrix = {
 		taskItem.attr('data-toggle', 'modal');
 		taskItem.attr('data-target', '#ajaxModal');
 		taskItem.attr('data-task', task.id);
-		$('#dots').append(taskItem);
-		// div mit den Aufgaben-Details
+		var shortened_name = "";
+		if (task.name.length > 20) shortened_name = task.name.substring(0, 20)+"...";
+		else shortened_name = task.name;
 		var name = $('<p/>', {
-			class: 'dotName',
+			class: 'dotSchrift dotName',
 			css: {
 				color: color
 			},
-			text: task.name
-		})
+			text: shortened_name
+		});
+		// div mit den Aufgaben-Details
 		var label = $('<div/>', {
-			class: 'hoverField'
+			class: 'hoverField',
+			css: {
+				zIndex: 1
+			}
 		});
 		// Titel
 		var title = $('<h1/>', {
@@ -287,87 +343,77 @@ Matrix = {
 			})
 		];
 		// anfügen, Erkennung des richtigen Kreises über task_id
-		$('#dots').children('#'+task.id).append(name);
-		$('#dots').children('#'+task.id).append(label);
-		$('#dots').children('#'+task.id).children('.hoverField').append(title, attributes, formatImp(task.importance));
-	}
-};
-
-var Sidebar = {
-	// Topic-Button steuert Matrix
-	button: function(topic_id) {
-		// Attribut displayed, um zu tracken, was an und was aus ist
-		// nach neu-laden allerdings wieder alles an
-		if(TopicData.data[topic_id].displayed == true) {
-			// falls gerade noch an --> click macht aus
-			// Farbenaenderung, aussen Topic-Color, innen Hintergrund
-			$('button#'+topic_id).css('background-color', '#f1f1f1');
-			$('button#'+topic_id).css('color', TopicData.data[topic_id].color);
-			// update data, um Button-States zu tracken
-			TopicData.data[topic_id].displayed = false;
-			// update die Matrix
-			Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+		label.append(title, attributes, formatImp(task.importance));
+		if (mode == "noName") {
+			taskItem.attr('class', 'dot cluster'+task.cluster);
+			taskItem.append(label);
+			taskItem.css('display', 'none');
 		} else {
-			// Farben zuruecktauschen
-			$('button#'+topic_id).css('background-color', TopicData.data[topic_id].color);
-			$('button#'+topic_id).css('color', '#fff');
-			// Button-Status updaten
-			TopicData.data[topic_id].displayed = true;
-			// Matrix neu laden
-			Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+			taskItem.append(name, label);
 		}
+		$('#dots').append(taskItem);
 	},
-	// alle Topic-Button ein oder ausschalten
-	allButton: function() {
-		// die Hintergrundfarbe des Buttons entscheidet, welche Aktion vorgenommen
-		// wird, da auch User anhand dieser die eine oder ander Aktion erwartet
-		// Hintergrund grau --> alles ausschalten
-		if($('button#all').css('background-color') == 'rgb(192, 192, 192)') {
-			for(button in TopicData.data) {
-				// jeder Button, der an ist, wird ausgeklickt
-				if(TopicData.data[button].displayed == true) {
-						$('button#'+button).click();
+	drawCluster: function(count) {
+		var that = this;
+		that.clusters.forEach(function(cluster) {
+			$('#dots').children('#'+cluster.id).remove();
+			// zeichnet das cluster
+			var taskItem = $('<div/>', {
+				class: 'dot cluster',
+				id: cluster.id,
+				css: {
+					left: cluster.x,
+					bottom: cluster.y,
+					borderColor: 'black',
+					backgroundColor: 'grey',
+					width: 7,
+					height: 7
 				}
+			});
+			var number = $('<p/>', {
+				class: 'dotSchrift dotNumber',
+				css: {
+					color: 'black'
+				},
+				text: cluster['included'].length
+			});
+			taskItem.append(number);
+			taskItem.click(function() {
+				var query = $('#dots').find('.dot.cluster'+cluster.id);
+				query.toggle();
+			});
+			$('#dots').append(taskItem);
+			// TODO append die restlichen dots
+			// startabstand (r)
+			var radius = 12;
+			// eine Runde = 2*pi, start = 0
+			var bogen = 0;
+			var schritt = 0;
+			for(var i = 0; i < cluster['included'].length; i++) {
+				var task_id = cluster['included'][i];
+				var task = TaskData.data[task_id];
+				var color = TopicData.data[task.topic].color;
+				// Koordinaten rausfinden, damit Spirale um cluster entsteht
+				var paket = coordinates(cluster, radius, bogen, schritt);
+				// Punkt zeichnen mit Modus "noName"
+				that.drawDot(task, paket.x, paket.y, color, "noName");
+				// pro Runde um 1.5 mehr fuer r, damit eine Spirale entsteht
+				radius = paket.radius + 1.5;
+				// pro Runde ein viertel pi mehr
+				bogen = paket.bogen + (Math.PI/(4+(paket.schritt/4)));
+				schritt = paket.schritt + 1;
 			}
-			// die Buttonfarbe des All-Buttons wird geaendert
-			$('button#all').css('background-color', '#eee');
-		} else {
-			for(button in TopicData.data) {
-				// alle Buttons, die aus sind, werden angemacht
-				if(TopicData.data[button].displayed == false) {
-						$('button#'+button).click();
-				}
-			}
-			// Farbe updaten
-			$('button#all').css('background-color', 'rgb(192, 192, 192)');
-		}
+		});
 	},
-	// Moeglichkeit die Topics zu editieren
-	editTopics: function() {
-		// wieder Unterscheidung anhand von Hintergrundfarbe des Edit-Buttons
-		if($('button#editTopics').css('background-color') == 'rgb(192, 192, 192)') {
-			for(button in TopicData.data) {
-				// alle onclick-Attribute der Buttons auf die Topic-Anzeige lenken
-				var glyphi = $('<span/>', {
-					class: 'glyphicon glyphicon-pencil pull-right'
-				});
-				$('button#'+button).append(glyphi);
-				$('button#'+button).attr('onclick', "location.href='/matrix/"+button+"'");
-			}
-			// All-Button ausmachen
-			$('button#all').attr('onclick', '');
-			// Hintergrund anpassen
-			$('button#editTopics').css('background-color', '#eee');
-		} else {
-			for(button in TopicData.data) {
-				// zurueck zu der Button beeinflusst die Matrix
-				$('button#'+button).find('span').remove();
-				$('button#'+button).attr('onclick', 'Sidebar.button(button)');
-			}
-			// All-Button geht wieder
-			$('button#all').attr('onclick', 'Sidebar.allButton()');
-			// Hintergrund anpassen
-			$('button#editTopics').css('background-color', 'rgb(192, 192, 192)');
-		}
+	updateMatrixAjax: function(data) {
+		var that = this;
+		TaskData.getTasks(data, settings);
+		that.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+		//console.log(TaskData.data);
+		//console.log(Matrix.clusters);
+	},
+	updateSettings: function() {
+		s.width = $('#dots').width();
+		s.height = $('#dots').height();
 	}
 };

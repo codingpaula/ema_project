@@ -5,6 +5,10 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
   // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
   var modal = $(this);
+  hideDeleteQuestion();
+  // empty error fields
+  $('.help-block').empty();
+  $('.form-group.has-error').attr('class', 'form-group');
   if(task_id == "0") {
     $('#taskModalHeader').text('Add a new task');
     $('#ajaxTask')[0].reset();
@@ -41,17 +45,18 @@ $('#submitAjax').on('click', function(e) {
       'task_description': form.find('#id_task_description').val(),
       'due_date': formatDate2Form($('#datetimepicker').data("DateTimePicker").date()),
       'importance': form.find('#id_importance').val(),
-      'topic': form.find('#id_topic').val()
+      'topic': form.find('#id_topic').val(),
+      'done': form.find('#id_done').prop('checked')
     },
     success: function(data) {
-      TaskData.getTasks(data, settings);
-      Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+      Matrix.updateMatrixAjax(data);
       displayMessage(task_id);
+      var topic = $('#ajaxTask').find('#id_topic').val();
+      updateSidebarNumbers(task_id, topic);
       $('#ajaxTask')[0].reset();
       $('#ajaxModal').find('button[data-dismiss="modal"]').click();
     },
     error: function(data) {
-      console.log(data.responseJSON);
       for(error in data.responseJSON) {
         var divWithError = form.find('#'+error);
         divWithError.attr('class', 'form-group has-error');
@@ -63,28 +68,51 @@ $('#submitAjax').on('click', function(e) {
 
 $('#ajaxDeleteConfirm').on('click', function(e) {
   e.preventDefault();
-  deleteQuestion();
+  showDeleteQuestion();
+});
+
+$('#ajaxDeleteCancel').on('click', function(e) {
+  e.preventDefault();
+  hideDeleteQuestion();
 });
 
 $('#ajaxDeleteSubmit').on('click', function(e) {
   e.preventDefault();
   var task_id = $('#ajaxDeleteSubmit').data('task_id');
   $.ajax({
-    url: "/matrix/"+task_id+"/taskdeleting",
+    url: "/matrix/"+task_id+"/taskdelete/",
     type: "POST",
     success: function(data) {
-      // TODO display success message
-      TaskData.getTasks(data, settings);
-      Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
-      displayMessage(task_id);
+      Matrix.updateMatrixAjax(data);
+      displayMessage("delete");
+      var topic = $('#ajaxTask').find('#id_topic').val();
+      updateSidebarNumbers("-1", topic);
       $('#ajaxTask')[0].reset();
+      hideDeleteQuestion();
       $('#ajaxModal').find('button[data-dismiss="modal"]').click();
     },
     error: function(data) {
-      // TODO display error message
+      for(error in data.responseJSON) {
+        var divWithError = form.find('#'+error);
+        divWithError.attr('class', 'form-group has-error');
+        divWithError.children('.help-block').text(data.responseJSON[error]);
+      }
     }
   });
 });
+
+function updateSidebarNumbers(task_id, topic) {
+  if (task_id == "0" || task_id == "-1") {
+    var button2change = $('button#'+topic).children('span');
+    var stringTo = button2change.text();
+    var this_number = parseInt(stringTo.replace(/[^0-9\.]/g, ''), 10);
+    if (task_id == "0") {
+      button2change.text('('+(this_number+1)+')');
+    } else {
+      button2change.text('('+(this_number-1)+')');
+    }
+  }
+}
 
 function prefillForm(task_id, editForm, submit_footer) {
   var task = TaskData.data[task_id];
@@ -93,6 +121,7 @@ function prefillForm(task_id, editForm, submit_footer) {
   editForm.find('#datetimepicker').data('DateTimePicker').date(formatDate2Form(task.due_date));
   editForm.find('select#id_importance').val(task.importance).attr('selected', 'selected');
   editForm.find('select#id_topic').val(task.topic).attr('selected', 'selected');
+  // don't need to fill in done, because all displayed tasks are not done!
   submit_footer.find('input[type="submit"]#submitAjax').data('task_id', task_id);
   submit_footer.find('input[type="submit"]#ajaxDeleteSubmit').data('task_id', task_id);
 }
@@ -130,7 +159,15 @@ function displayMessage(task_id) {
   // created
   if (task_id == "0") {
     var text_span = $('<span/>', {
-      text: 'Successfully created task "' +  '"'
+      text: 'Successfully created new task!'
+    });
+  } else if (task_id == "delete") {
+    var text_span = $('<span/>', {
+      text: 'Deleted!'
+    });
+  } else if (TaskData.data[task_id] == undefined) {
+    var text_span = $('<span/>', {
+      text: 'Great Job!'
     });
   } else {
   // edited
@@ -142,8 +179,14 @@ function displayMessage(task_id) {
   $('.messages .text').prepend(text_span);
 }
 
-function deleteQuestion() {
+function showDeleteQuestion() {
   $('.deleteConfirmDialog').css('display', 'inline-block');
   $('#ajaxDeleteConfirm').attr('disabled', 'disabled');
   $('#submitAjax').attr('disabled', 'disabled');
+}
+
+function hideDeleteQuestion() {
+  $('.deleteConfirmDialog').css('display', 'none');
+  $('#ajaxDeleteConfirm').removeAttr('disabled');
+  $('#submitAjax').removeAttr('disabled');
 }

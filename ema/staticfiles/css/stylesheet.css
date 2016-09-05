@@ -12,22 +12,58 @@ body {
 	position: absolute;
 	right:0;
 	left:0;
+	background-color: #B0B2B8;
+	padding-top: 45px;
+	/* margin-bottom:-80px; */
 }
 
 footer {
-	width: 99.4%;
+	height: 80px;
+	width: 100%;
 	text-align: right;
 	overflow: hidden;
-	background-color: #DDDDCC;
+	background-color: #2B4660;
+	color: #E3B197;
 	padding: 5px;
 	text-decoration: none;
 	text-transform: uppercase;
 	position: absolute;
 	bottom: 0;
+	left: 0;
+	position: fixed;
 }
 
 footer p {
 	margin-right: 15px;
+}
+
+.footer {
+	padding: 15px;
+	height: 80px;
+}
+
+.emaNavbar div {
+	display: inline-block;
+	padding: 3px 5px 3px 5px;
+	margin: 3px 3%;
+}
+.gap {
+	margin-left: 18%;
+}
+
+.emaNavbar {
+	width: 100%;
+	text-align: center;
+	overflow: hidden;
+	background-color: #2B4660;
+	/* background-color: #DDDDCC; */
+	padding: 5px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+.emaNavbar ul {
+	margin: 0 auto;
 }
 
 /* forms */
@@ -40,7 +76,7 @@ footer p {
 }
 
 .deleteConfirmDialog {
-	
+	margin-top: 15px;
 }
 /* form {
 	text-align: center;
@@ -55,22 +91,34 @@ input[type=password] {
 	padding: 5px;
 }
 */
+
+.emptyPanel {
+	width: 100%;
+}
+
+.equal, .equal > div[class*='col-'] {
+    display: -webkit-flex;
+    display: flex;
+    flex:1 1 auto;
+}
+
 /* links */
-a {
+.navLink {
+	color: white;
 	text-decoration: none;
 }
-a:link {
-	color: #111;
+
+.navLink:link {
+	color: white;
 }
-a:visited {
-	color: #111;
+
+.navLink:visited {
+	color:white;
 }
-a:hover {
-	color: #777;
+
+.navLink:hover {
+	color:#8DA1B9;
 	text-decoration: none;
-}
-a:active {
-	color: #777;
 }
 
 .loginbody {
@@ -85,11 +133,15 @@ a:active {
 	margin-top: 10px;
 }
 
+.abstandUgross {
+	margin-bottom: 20px;
+}
+
 .loginpage {
 	background-color: #f1f1f1;
 	margin: 100px auto 100px auto;
-	padding: 20px 30px 25px 30px;
-	width: 25%;
+	padding: 20px 50px 40px 50px;
+	width: 28%;
 	text-align: center;
 	border-radius: 10px;
 	font-size: 18px;
@@ -100,11 +152,11 @@ a:active {
 	width: 30px;
 	height: 30px;
 	margin: 5px;
-	border: 1px solid #eee;
+	border: 2px solid #eee;
 }
 
 .colorSelection:hover {
-	border: 1px solid #222;
+	border: 2px solid #222;
 }
 
 .selectionList {
@@ -118,7 +170,7 @@ a:active {
 .main {
 	margin: 10px auto;
 	width: 90%;
-	background-color: #EEE;
+	background-color: #EFF1F3;
 	padding: 20px;
 	/* min-height: 80%; */
 	/* equal to footer height */
@@ -163,50 +215,85 @@ a:active {
 	display: none;
 }
 
+.dueDateInput {
+ 	display: none;
+}
+
+.task_list {
+	padding: 1px 0px 2px 3px;
+}
+
+/* error display */
+.errorlist {
+	color: darkred;
+	list-style: none;
+	padding-left: 0;
+	margin-bottom: 0;
+}
+
+.errorlist li {
+	display: inline-block;
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+
+.errorMessage {
+	color: darkred;
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+
+.FAQtitle {
+	color: #69995D;
+}
+
+.FAQparagraph {
+	font-size: 16px;
+}
+
+.aboutEMAtext {
+	font-size: 16px;
+}
+
 /* buttons */
 /* Grundstruktur */
 .emaButton {
 	border-radius: 4px;
+	white-space: normal;
 	/* padding: 8px 10px; */
 	font-size: 14px;
 	color: white;
 }
 
-.emaButton a {
-	color: white;
-	display: block;
-	padding: 8px 10px;
-}
-
 .emaButton:hover {
 	border-color: black;
+	color: white;
 }
 
 /* einzelne Buttons */
 .emaLogin {
+	margin-top: 4px;
 	border: 1px solid olivedrab;
 	background-color: olivedrab;
-	width: 60%;
+	width: 100%;
 	padding: 8px 10px;
 }
 
 .emaRegister {
 	border: 1px solid crimson;
 	background-color: crimson;
-	width: 60%;
+	width: 100%;
+	padding: 8px 10px;
 }
 
 .emaNormal {
-	border: 1px solid dodgerblue;
-	background-color: dodgerblue;
+	border: 1px solid #69995D;
+	background-color: #69995D;
 }
 
 .topicButton {
-	background-color: #C0C0C0;
-	white-space: normal;
-	border-radius: 4px;
-	color: #fff;
 	border: 1px solid #f1f1f1;
+	background-color: #C0C0C0;
 	padding: 8px;
 	font-size: 11px;
 	/* text-shadow: 1px 3px 2px rgba(0,0,0,0.2); */
@@ -217,7 +304,23 @@ a:active {
 }
 
 .topicButtonShow {
-	width: 90%;
+	width: 97%;
+}
+
+.emaTask {
+	/* background-color: #69995D; */
+	/* background-color: #80021C; */
+	background-color: #2B4660;
+	font-size: 13px;
+	border-color: white;
+}
+
+.topicNumber {
+	margin-left: 5px;
+}
+
+.trennlinie {
+	border-bottom: 1px solid #777;
 }
 
 .closeNotification {
@@ -230,43 +333,21 @@ a:active {
 	cursor: hand;
 }
 
-.emaNavbar div {
-	display: inline-block;
-	padding: 3px 5px 3px 5px;
-	margin: 3px 3%;
-}
-.gap {
-	margin-left: 18%;
-}
-
-.emaNavbar {
-	width: 99.4%;
-	text-align: center;
-	overflow: hidden;
-	background-color: #DDDDCC;
-	padding: 5px;
-	text-decoration: none;
-	text-transform: uppercase;
-}
-
-.emaNavbar ul {
-	margin: 0 auto;
-}
-
 .add {
 	position: absolute;
 	top: 300px;
 }
 
-.settings {
+.emaForm {
+	margin: 25px 20px 10px 20px;
+	width: 60%;
+}
 
+.emaFormTopic {
+	width: 95%;
 }
 
 /* stuff to decorate */
-.footer {
-	padding: 15px;
-}
-
 .center {
 	text-align: center;
 }
@@ -276,6 +357,7 @@ a:active {
 	list-style-type: none;
 	padding: 0;
 }
+
 .topicList {
 	font-size: 1.1em;
 	list-style-type: none;
@@ -283,62 +365,102 @@ a:active {
 	margin: 3px 0 10px 3px;
 	padding-left: 0;
 }
+
 .myContainer:after {
 	content:"";
 	display: table;
 	clear: both;
 }
+
 .myContainer {
 	width: 100%;
 	position: relative;
 }
+
 .align-left {
 	display: inline-block;
-	width: 80%;
+	width: 60%;
 }
+
 .align-right {
 	display: inline-block;
-	width: 4%;
+	width: 30%;
+	text-align: right;
 }
+
 .clear {
 	clear: both;
 }
+
 .float-right {
 	float: right;
 }
+
 .lorem {
 	height: 2500px;
 }
+
 .now {
-	color: #666;
+	color: #8DA1B9;
 }
+
 .borderR {
 	border: 1px solid red;
 	background-color: white;
 }
+
 .borderB {
 	border: 1px dashed blue;
 	background-color: white;
 }
+
 .emaNavbar li {
 	display: inline;
 }
 
+.noBottomMargList {
+	margin-bottom: 0;
+}
+
+.noListStyle {
+	list-style: none;
+	padding-left: 0;
+}
+
 /* IDs */
-#MatrixSettings {
-	display: inline-block;
-	vertical-align: top;
+.matrixSettings {
+	position: relative;
+	/* display: inline-block; */
+	/* vertical-align: top; */
+	float: left;
+	width: 10%;
+	border: 1px solid #111;
+	margin: 5px 1%;
+	padding: 2px 8px 5px 8px;
+	box-sizing: border-box;
+}
+
+.matrixSettings h3 {
+	font-size: 18px;
+	padding: 3px;
+	border-bottom: 1px solid #777;
+	margin-left: 3px;
+}
+
+.addTaskContainer {
+	position: relative;
 	width: 10%;
 	border: 1px solid #111;
 	margin: 5px 1%;
 	padding: 2px 4px 5px 8px;
 	box-sizing: border-box;
 }
-#MatrixSettings h3 {
-	font-size: 18px;
+
+.noTopic {
 	padding: 3px;
-	border-bottom: 1px solid #777;
+	margin-left: 3px;
 }
+
 #Topics {
 	/* border-bottom: 1px solid #777; */
 }
