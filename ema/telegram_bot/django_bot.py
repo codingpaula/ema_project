@@ -1,27 +1,41 @@
 from __future__ import absolute_import
+from datetime import datetime, timedelta, time
 
-from settings import TOKEN
-from matrix import Task, Topic
-from orga import UserOrga
+from django.core.management.base import BaseCommand
+
+from ema.orga.models import UserOrga
+from ema.matrix.models import Task, Topic
 
 import telebot
 
-bot = telebot.TeleBot(TOKEN)
+from daemon_command import DaemonCommand
 
-@bot.message_handler(commands=['start', 'help'])
-def send_welcome(message):
-    bot.reply_to(message, "Howdy, how are you doing?")
+def start_telebot():
 
-#@bot.message_handler(func=lambda m: True)
-#def echo_all(message):
-#    bot.reply_to(message, message.text)
+    bot = telebot.TeleBot(settings.TELEBOT_TOKEN)
 
-@bot.message_handler(commands=['info'])
-def send_info(message):
-    bot.reply_to(message, "I am the EMA Bot!")
+    @bot.message_handler(commands=['hello', 'today', 'week', 'reminder'])
+    def command_list(message):
+        text = message.text
+        if 'hello' in text:
+            bot.send_message(message.chat.id, "Hello %s!" % (message.from_user.first_name))
+        elif 'today' in text:
+            todays_tasks(message.from_user.id, 'today')
+        elif 'week' in text:
+            todays_tasks(message.from_user.id, 'week')
 
-@bot.message_handler(commands=['today'])
-def send_todays_tasks(message):
+    bot.polling()
+
+class Command(DaemonCommand):
+
+    STDOUT = '../log/telebot.err'
+    STDERR = STDOUT
+
+    def loop_callback(self):
+        start_telebot()
+        time.sleep(2.5)
+
+def todays_tasks(user_id, mode):
     try:
         user_settings = UserOrga.objects.get(tele_username=user_id)
     except UserOrga.DoesNotExist:
@@ -43,6 +57,5 @@ def send_todays_tasks(message):
                             topic__topic_owner=user_settings.owner,
                             due_date__lte=today_start,
                             due_date__gte=week)
-    bot.reply_to(message, msg)
-
-bot.polling()
+        bot.send_message(user_id,
+                        "These are your tasks for today: ")

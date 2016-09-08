@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block navbar %}
+  {% include 'navbar.html' with active_tab='Telegram' %}
+{% endblock navbar %}
+{% block content %}
+  <div class="row equal">
+    <div class="col-lg-12">
+      <h1>EMA Telegram Bot</h1>
+    </div>
+    <div class="col-lg-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>What is a Telegram Bot?</h3>
+        </div>
+        <div class="panel-body">
+          <p>
+            A funny thing!
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>Telegram Bot Settings</h3>
+        </div>
+        <div class="panel-body">
+          <p>
+            Have fun with the bot!
+          </p>
+          <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="btn emaButton emaNormal" type="submit" value="save" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block footer %}
+  {% include 'footer.html' %}
+{% endblock footer %}

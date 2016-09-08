@@ -15,6 +15,13 @@
       </a>
     </li>
     <li>
+      <a class="navLink" href={% url 'bot:setup' %}>
+        <div class="{% if active_tab == 'Telegram' %}now{% endif %}">
+          Telegram Bot
+        </div>
+      </a>
+    </li>
+    <li>
       <a class="navLink" href={% url 'orga:help' %}>
         <div class="{% if active_tab == 'Help' %}now{% endif %}">Help</div>
       </a>
