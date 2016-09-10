@@ -41,6 +41,7 @@ class TaskForm(ModelForm):
         kwargs.pop('user')
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['topic'].queryset = Topic.objects.filter(topic_owner=self.user)
+        # wichtig, da User aus älteren Versionen noch keine UserOrga haben!
         try:
             user_settings = UserOrga.objects.get(owner=self.user)
         except ObjectDoesNotExist:
