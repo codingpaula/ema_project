@@ -407,6 +407,7 @@ var Matrix = {
 	},
 	updateMatrixAjax: function(data) {
 		var that = this;
+		TopicData.resetCounts();
 		TaskData.getTasks(data, settings);
 		that.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
 		//console.log(TaskData.data);
