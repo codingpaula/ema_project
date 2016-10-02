@@ -1,42 +1,82 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% block title %}EMA Telegram Bot{% endblock title %}
 {% block navbar %}
   {% include 'navbar.html' with active_tab='Telegram' %}
 {% endblock navbar %}
 {% block content %}
-  <div class="row equal">
-    <div class="col-lg-12">
-      <h1>EMA Telegram Bot</h1>
-    </div>
+  <h1 class="abstandUgross">EMA Telegram Bot</h1>
+  <div class="row equal abstandO">
     <div class="col-lg-4">
-      <div class="panel panel-default">
+      <div class="panel panel-default emptyPanel">
         <div class="panel-heading">
           <h3>What is a Telegram Bot?</h3>
         </div>
         <div class="panel-body">
           <p>
-            A funny thing!
+            A Telegram Bot is an artificial User in the messaging app
+            <a href="https://telegram.org">Telegram</a>.
+            The EMA Bot, that is connected to this web application, can remind
+            you, when your tasks are due, or tell you about your tasks, when
+            you are on the road.
           </p>
         </div>
       </div>
     </div>
     <div class="col-lg-4">
-      <div class="panel panel-default">
+      <div class="panel panel-default emptyPanel">
+        <div class="panel-heading">
+          <h3>How do I use this EMA Bot?</h3>
+        </div>
+        <div class="panel-body">
+          <h5>Steps to configure the Bot:</h5>
+          <ol>
+            <li>
+              Click on the link below and get introduced to the EMA Bot!
+            </li>
+            <li>
+              If you don't have the Telegram App yet, download and install it,
+              as you are told there!
+              (There is also a Desktop Version, if you want to try out things
+              first.)
+            </li>
+            <li>
+              Follow the instructions given to you by the EMA Bot.
+            </li>
+          </ol>
+          <p class="abstandUgross">
+            If you have any questions, please don't hesitate to
+            <a href={% url 'orga:about_ema' %}>contact me</a>!
+          </p>
+          <a class="btn emaButton emaNormal center-block abstandU"
+              href="http://telegram.me/ematrix_bot">
+            yes, introduce me to the EMA Bot!
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="panel panel-default emptyPanel">
         <div class="panel-heading">
           <h3>Telegram Bot Settings</h3>
         </div>
         <div class="panel-body">
           <p>
-            Have fun with the bot!
+            Please enter your Telegram User ID that the EMA Bot showed you here!
           </p>
-          <form action="" method="post">
+          <form class="formContainer abstandU" action="" method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <input class="btn emaButton emaNormal" type="submit" value="save" />
+            <input class="btn emaButton emaNormal center-block" type="submit" value="save" />
           </form>
+          <strong class="abstandO">
+            If you wish to unregister from the EMA Bot, simply delete your tele
+            username above and click "save"!
+          </strong>
         </div>
       </div>
     </div>
+
   </div>
 {% endblock content %}
 {% block footer %}
