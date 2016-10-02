@@ -36,16 +36,29 @@ class BotForm(ModelForm):
             )
         }
 
-    def clean(self):
-        cleaned_data = super(BotForm, self).clean()
-        #if self.has_changed():  # new instance or existing updated (form has data to save)
-        if self.instance.pk is not None:  # new instance only
-            if self.instance.tele_username != cleaned_data['tele_username']:
-                if self.instance.tele_username is not None:
-                    send_telegram_message(cleaned_data['tele_username'])
-        return cleaned_data
+    def clean_tele_username(self):
+        new_username = self.cleaned_data['tele_username']
+        # wenn das neue leer ist
+        if not self.cleaned_data['tele_username']:
+            # alte auch leer
+            if self.instance.tele_username is None:
+                pass
+            # alte nicht leer
+            else:
+                send_telegram_unregister(self.instance.tele_username)
+        # wenn das neue nicht leer ist
+        else:
+            if self.instance.tele_username != self.cleaned_data['tele_username']:
+                send_telegram_message(self.cleaned_data['tele_username'])
+        # fix for unique problem
+        return self.cleaned_data['tele_username'] or None
 
 def send_telegram_message(user_id):
     bot = telebot.TeleBot(TOKEN)
     msg = 'Congrats! You registered for the EMA Bot'
+    bot.send_message(user_id, msg)
+
+def send_telegram_unregister(user_id):
+    bot = telebot.TeleBot(TOKEN)
+    msg = 'You successfully unregistered from the EMA Bot'
     bot.send_message(user_id, msg)

@@ -47,11 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'management',
     'matrix',
     'profiles',
     'orga',
-    'telegram_bot'
+    'telegram_bot',
+    'django_crontab'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -129,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Berlin'
 
 USE_I18N = False
 
@@ -139,7 +139,9 @@ USE_TZ = True
 
 DATETIME_INPUT_FORMATS = [
                             '%d/%m/%Y %H:%M',
+                            '%Y-%m-%dT%H:%M:%SZ',
                             '%d/%m/%Y',
+                            '%Y-%m-%d %H:%M:%S%z',
                             '%Y-%m-%d %H:%M:%S',
                             '%Y-%m-%d',
                             '%Y-%m-%d %H:%M'
@@ -152,3 +154,9 @@ STATIC_URL = '/static/'
 
 # Telegram Settings for bot
 TOKEN = "262348506:AAFc-XzZ5KZXCP6rz_3uIztYCgT_N4mfT6g"
+
+CRONJOBS = [
+    ('*/5 * * * *', 'telegram_bot.cron.push_due_dates')
+]
+
+HOST_ADDRESS = '127.0.0.1:8000'
