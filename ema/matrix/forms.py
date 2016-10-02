@@ -1,6 +1,5 @@
 from django.forms import ModelForm
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
 from .models import Task, Topic
@@ -41,13 +40,13 @@ class TaskForm(ModelForm):
         kwargs.pop('user')
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['topic'].queryset = Topic.objects.filter(topic_owner=self.user)
-        try:
-            user_settings = UserOrga.objects.get(owner=self.user)
-        except ObjectDoesNotExist:
-            user_settings = UserOrga(owner=self.user)
-            user_settings.save()
-        self.initial['topic'] = user_settings.default_topic
-
+        if not self.instance.task_name:
+            try:
+                user_settings = UserOrga.objects.get(owner=self.user)
+            except UserOrga.DoesNotExist:
+                user_settings = UserOrga.objects.create(owner=self.user)
+                user_settings.save()
+            self.initial['topic'] = user_settings.default_topic
 
 """
 create new Topic
@@ -64,7 +63,7 @@ class TopicForm(ModelForm):
             ),
             'topic_description': forms.Textarea(
                 attrs={
-                        'placeholder': 'What ist this topic about?',
+                        'placeholder': 'What is this topic about?',
                         'class': 'form-control',
                         'rows': 5
                         }

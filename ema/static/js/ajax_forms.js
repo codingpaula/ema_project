@@ -2,8 +2,6 @@
 $('#ajaxModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget); // Button that triggered the modal
   var task_id = button.data('task'); // Extract info from data-* attributes
-  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
   var modal = $(this);
   hideDeleteQuestion();
   // empty error fields
@@ -43,7 +41,7 @@ $('#submitAjax').on('click', function(e) {
     data: {
       'task_name': form.find('#id_task_name').val(),
       'task_description': form.find('#id_task_description').val(),
-      'due_date': formatDate2Form($('#datetimepicker').data("DateTimePicker").date()),
+      'due_date': formatDate2Form(moment.utc(form.find($('#datetimepicker')).data("DateTimePicker").date()).format()),
       'importance': form.find('#id_importance').val(),
       'topic': form.find('#id_topic').val(),
       'done': form.find('#id_done').prop('checked')
@@ -118,7 +116,8 @@ function prefillForm(task_id, editForm, submit_footer) {
   var task = TaskData.data[task_id];
   editForm.find('input#id_task_name').val(task.name);
   editForm.find('textarea#id_task_description').val(task.description);
-  editForm.find('#datetimepicker').data('DateTimePicker').date(formatDate2Form(task.due_date));
+  datum = new Date(task.due_date);
+  editForm.find('#datetimepicker').data('DateTimePicker').date(datum);
   editForm.find('select#id_importance').val(task.importance).attr('selected', 'selected');
   editForm.find('select#id_topic').val(task.topic).attr('selected', 'selected');
   // don't need to fill in done, because all displayed tasks are not done!
