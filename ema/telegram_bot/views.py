@@ -15,7 +15,7 @@ class SetupBot(SuccessMessageMixin, UpdateView):
     form_class = BotForm
     template_name = 'telegram_bot/telegram_setup.html'
     success_message = 'Successfully saved!'
-    success_url = '/bot/telegrambot'
+    success_url = '/bot/telegrambot/'
 
     def get_object(self):
         return get_object_or_404(UserOrga, owner=self.request.user)

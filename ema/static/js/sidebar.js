@@ -4,14 +4,13 @@ var Sidebar = {
 		// Attribut displayed, um zu tracken, was an und was aus ist
 		// nach neu-laden allerdings wieder alles an
 		if(TopicData.data[topic_id].displayed == true) {
-			// falls gerade noch an --> click macht aus
 			// Farbenaenderung, aussen Topic-Color, innen Hintergrund
 			$('button#'+topic_id).css('background-color', '#f1f1f1');
 			$('button#'+topic_id).css('color', TopicData.data[topic_id].color);
 			// update data, um Button-States zu tracken
 			TopicData.data[topic_id].displayed = false;
 			// update die Matrix
-			Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+			Matrix.drawTasks(TaskData.data, TopicData.data);
 		} else {
 			// Farben zuruecktauschen
 			$('button#'+topic_id).css('background-color', TopicData.data[topic_id].color);
@@ -19,7 +18,7 @@ var Sidebar = {
 			// Button-Status updaten
 			TopicData.data[topic_id].displayed = true;
 			// Matrix neu laden
-			Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+			Matrix.drawTasks(TaskData.data, TopicData.data);
 		}
 	},
 	// alle Topic-Button ein oder ausschalten
@@ -50,7 +49,7 @@ var Sidebar = {
         TopicData.data[button].displayed = true;
 			}
       // update Matrix
-      Matrix.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
+      Matrix.drawTasks(TaskData.data, TopicData.data);
 			// Farbe updaten
 			unclickSidebarButton(all_button);
 			all_button.text('unselect all topics');

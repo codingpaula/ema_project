@@ -11,7 +11,7 @@ var TopicData = {
   getTopics: function(topics) {
     // workaround um data zu editieren
     var that = this;
-    topic_data.topics.forEach(function(topic) {
+    topics.topics.forEach(function(topic) {
       var id = topic.id;
       that.data[id] = {
         'color': topic.color,
@@ -46,8 +46,8 @@ var TaskData = {
     tasks.forEach(function(task) {
       index = task.id;
       that.data[index] = {
-        'x': newDateCoordinate(task.due_date, urgent_axis),
-        'y': importanceCoordinate(task.importance),
+        'x': getDateCoordinate(task.due_date, urgent_axis),
+        'y': getImportanceCoordinate(task.importance),
         'due_date': task.due_date,
         'importance': task.importance,
         'id': task.id,
@@ -57,6 +57,14 @@ var TaskData = {
         'cluster': undefined
       };
     });
+    console.log(that.data);
+  },
+  updateCoordinates: function(urgent_axis) {
+    var that = this;
+    that.data.forEach(function(task) {
+      task.x = getDateCoordinate(task.due_date, urgent_axis);
+      task.y = getImportanceCoordinate(task.importance);
+    })
   }
 };
 
@@ -80,7 +88,7 @@ function dateCoordinate(date) {
   }
 }
 
-function newDateCoordinate(date, urgent_axis) {
+function getDateCoordinate(date, urgent_axis) {
   TWOMONTHS = [2, 7, 15, 60];
   ONEMONTH = [1, 4, 7, 30];
   FOURMONTHS = [4, 14, 30, 120];
@@ -137,6 +145,7 @@ function newDateCoordinate(date, urgent_axis) {
 }
 
 // Wichtigkeitskoordinate
-function importanceCoordinate(imp) {
+function getImportanceCoordinate(imp) {
+  // Abstand zur unteren Kante = 100
 	return imp/4*s.height + 100;
 }

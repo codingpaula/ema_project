@@ -13,17 +13,12 @@ function doubles(dots, newDot) {
 	var versorgt = false;
 	dots.forEach(function(oldDot) {
 		if(liesIn(oldDot, newDot)) {
-			//console.log('newDot: '+newDot.id+', oldDot: '+oldDot.id);
-			// TODO wie kann erkannt werden dass die neue Stelle nicht auch schon
-			// besetzt ist?
 			var cluster_id = oldDot.id;
 			if (Matrix.clusters.hasOwnProperty(cluster_id) && versorgt == false) {
-				//console.log('add to old cluster');
 				TaskData.data[newDot.id]['cluster'] = cluster_id;
 				Matrix.clusters[cluster_id]['included'].push(newDot.id);
 				versorgt = true;
 			} else if (versorgt == false){
-				//console.log('new cluster');
 				TaskData.data[newDot.id]['cluster'] = cluster_id;
 				TaskData.data[cluster_id]['cluster'] = cluster_id;
 				var newCluster = {
@@ -249,14 +244,13 @@ var Matrix = {
 
 		field.restore();
 	},
-	drawTasks: function(taskData, topicData, width, height) {
+	drawTasks: function(taskData, topicData) {
 		// gets correct data
 		$('#dots').empty();
 		// how to find out if tasks are on the same spot
 		var that = this;
 		var taken = [];
 		that.clusters = [];
-		var count = 1;
 		// Hilfsvariablen
 		// durch alle übergebenen Aufgaben
 		taskData.forEach(function(task){
@@ -274,19 +268,14 @@ var Matrix = {
 					that.drawDot(task, task.x, task.y, topicColor, "");
 					// Array mit bereits gezeichneten Koordinaten
 					taken.push(dot);
-					count++;
 				}
 			}
 		});
-		//console.log(taken);
-		that.drawCluster(count);
+		that.drawCluster();
 	},
 	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
 	drawDot: function(task, xC, yC, color, mode) {
 		// eigentlicher Kreis mit task_id in entsprechender Farbe des Topics
-		var clickHandler = function(){
-			$('#ajaxEditTask').data = $(this).attr('id');
-		};
 		var taskItem = $('<div/>', {
 			class: 'dot',
 			id: task.id,
@@ -296,8 +285,7 @@ var Matrix = {
 				borderColor: color,
 				width: 7,
 				height: 7
-			},
-			onclick: clickHandler
+			}
 		});
 		taskItem.attr('data-toggle', 'modal');
 		taskItem.attr('data-target', '#ajaxModal');
@@ -353,7 +341,7 @@ var Matrix = {
 		}
 		$('#dots').append(taskItem);
 	},
-	drawCluster: function(count) {
+	drawCluster: function() {
 		var that = this;
 		that.clusters.forEach(function(cluster) {
 			$('#dots').children('#'+cluster.id).remove();
@@ -383,7 +371,6 @@ var Matrix = {
 				query.toggle();
 			});
 			$('#dots').append(taskItem);
-			// TODO append die restlichen dots
 			// startabstand (r)
 			var radius = 12;
 			// eine Runde = 2*pi, start = 0
@@ -408,12 +395,11 @@ var Matrix = {
 	updateMatrixAjax: function(data) {
 		var that = this;
 		TaskData.getTasks(data, settings);
-		that.drawTasks(TaskData.data, TopicData.data, s.width, s.height);
-		//console.log(TaskData.data);
-		//console.log(Matrix.clusters);
+		that.drawTasks(TaskData.data, TopicData.data);
 	},
 	updateSettings: function() {
 		s.width = $('#dots').width();
+		console.log(s.width);
 		s.height = $('#dots').height();
 	}
 };

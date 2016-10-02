@@ -12,7 +12,7 @@
   <script src={% static "js/bootstrap-datetimepicker.min.js" %} type="text/javascript"></script>
 {% endblock js %}
 {% block content %}
-<h1>Editing Task "{{ task.task_name }}"</h1>
+<h1>Task "{{ task.task_name }}"</h1>
 <form class="emaForm" action="" method="post">
   {% csrf_token %}
   {% for field in form.visible_fields %}
@@ -53,7 +53,11 @@
   {% for hidden in task_form.hidden_fields %}
     {{ hidden }}
   {% endfor %}
-  <input class="btn emaButton emaNormal" type="submit" value="Update" />
+  <input class="btn emaButton emaNormal" type="submit" value="update task" />
+  <a class="btn emaButton btn-danger"
+      href={% url 'matrix:taskdeleting' task.id %}>
+    delete this task
+  </a>
 </form>
 {% endblock content %}
 {% block javascript %}

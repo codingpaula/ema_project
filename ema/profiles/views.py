@@ -94,10 +94,8 @@ def register(request):
             new_user = form.save()
             new_user = authenticate(username=form.cleaned_data['username'],
                                     password=form.cleaned_data['password1'])
-            user_settings = UserOrga(owner=new_user)
-            user_settings.save()
             login(request, new_user)
-            return HttpResponseRedirect(reverse('profiles:account'))
+            return HttpResponseRedirect(reverse('matrix:matrix'))
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})

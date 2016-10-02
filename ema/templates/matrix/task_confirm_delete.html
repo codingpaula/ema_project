@@ -1,8 +1,9 @@
 {% extends 'matrix_base.html' %}
 {% load staticfiles %}
 {% block content %}
-<h1>{{ task.task_name }}</h1>
+<h1>Are you sure you want to delete this task?</h1>
 <ul class="noListStyle">
+  <li><small>Task Name:</small> {{ task.task_name }}</li>
   <li><small>Task Description:</small> {{ task.task_description }}</li>
   <li><small>Topic:</small> {{ task.topic }}</li>
   <li><small>Importance:</small> {{ task.get_importance_display }}</li>
@@ -11,8 +12,7 @@
   <li><small>Done?</small> {% if task.done == False %}no{% else %}yes{% endif %}</li>
 </ul>
 <form action="" method="post">{% csrf_token %}
-    <p>Are you sure you want to delete this task?</p>
-    <input class="btn emaButton btn-danger" type="submit" value="Confirm" />
-    <a class="btn emaButton emaNormal" href={% url 'matrix:tasks' object.id %}>cancel</a>
+    <input class="btn emaButton btn-danger" type="submit" value="confirm" />
+    <a class="btn emaButton emaNormal" href={% url 'matrix:taskediting' object.id %}>cancel</a>
 </form>
 {% endblock content %}
