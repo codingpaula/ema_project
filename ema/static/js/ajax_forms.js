@@ -1,4 +1,4 @@
-// from bootstrap modal
+// Erweiterung des bootstrap modals
 $('#ajaxModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget); // Button that triggered the modal
   var task_id = button.data('task'); // Extract info from data-* attributes
@@ -7,15 +7,19 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
   // empty error fields
   $('.help-block').empty();
   $('.form-group.has-error').attr('class', 'form-group');
+  // wenn eine neue Aufgabe hinzugefuegt wird
   if(task_id == "0") {
     $('#taskModalHeader').text('Add a new task');
+    // sichergehen dass das Form leer ist
     $('#ajaxTask')[0].reset();
+    // vorbereiten
     var submitInput = $('#submitAjax');
     submitInput.val('add task');
     submitInput.attr('class', 'btn btn-success center-block');
     submitInput.data('task_id', task_id);
     $('#ajaxDeleteConfirm').css('display', 'none');
   } else {
+    // Aufgabe bearbeiten
     $('#taskModalHeader').text('Edit task "' + TaskData.data[task_id].name + '"');
     $('#submitAjax').val('save task');
     var modal_body = modal.find('form#ajaxTask').children('.modal-body');
@@ -26,10 +30,12 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
   }
 });
 
+// AJAX Request fuer erstellen oder bearbeiten einer Aufgabe
 $('#submitAjax').on('click', function(e) {
   e.preventDefault();
   var task_id = $('#submitAjax').data('task_id');
   var form = $('form#ajaxTask');
+  // url je nach erstellen oder bearbeiten
   var urlAjax = "/matrix/"+task_id+"/taskediting/";
   if (task_id == "0") {
     urlAjax = "/matrix/adding/";
@@ -41,20 +47,28 @@ $('#submitAjax').on('click', function(e) {
     data: {
       'task_name': form.find('#id_task_name').val(),
       'task_description': form.find('#id_task_description').val(),
+      // richtiges zeitformat, richtige zeitzone
       'due_date': formatDate2Form(moment.utc(form.find($('#datetimepicker')).data("DateTimePicker").date()).format()),
       'importance': form.find('#id_importance').val(),
       'topic': form.find('#id_topic').val(),
       'done': form.find('#id_done').prop('checked')
     },
     success: function(data) {
+      // alle Aufgaben neu zeichnen, updaten
       Matrix.updateMatrixAjax(data);
+      // Ersatz fuer django messages System
       displayMessage(task_id);
+      // Sidebar updaten
       var topic = $('#ajaxTask').find('#id_topic').val();
       updateSidebarNumbers(task_id, topic);
+      // Form reseten
       $('#ajaxTask')[0].reset();
+      // und schliessen
       $('#ajaxModal').find('button[data-dismiss="modal"]').click();
     },
     error: function(data) {
+      // zurueckbekommene fehler durchgehen und an die entsprechenden felder
+      // schreiben
       for(error in data.responseJSON) {
         var divWithError = form.find('#'+error);
         divWithError.attr('class', 'form-group has-error');
@@ -64,16 +78,19 @@ $('#submitAjax').on('click', function(e) {
   });
 });
 
+// Hilfsfunktion fuer den delete button
 $('#ajaxDeleteConfirm').on('click', function(e) {
   e.preventDefault();
   showDeleteQuestion();
 });
 
+// Hilfsfunktion fuer den cancel button
 $('#ajaxDeleteCancel').on('click', function(e) {
   e.preventDefault();
   hideDeleteQuestion();
 });
 
+// AJAX Request fuer delete task
 $('#ajaxDeleteSubmit').on('click', function(e) {
   e.preventDefault();
   var task_id = $('#ajaxDeleteSubmit').data('task_id');
@@ -99,6 +116,7 @@ $('#ajaxDeleteSubmit').on('click', function(e) {
   });
 });
 
+// Hilfsfunktion um die Nummern neben den Themen in der Sidebar anzupassen
 function updateSidebarNumbers(task_id, topic) {
   if (task_id == "0" || task_id == "-1") {
     var button2change = $('button#'+topic).children('span');
@@ -112,6 +130,7 @@ function updateSidebarNumbers(task_id, topic) {
   }
 }
 
+// Hilfsfunktion um bei der Bearbeitung die Werte der Aufgabe einzutragen
 function prefillForm(task_id, editForm, submit_footer) {
   var task = TaskData.data[task_id];
   editForm.find('input#id_task_name').val(task.name);
@@ -125,6 +144,7 @@ function prefillForm(task_id, editForm, submit_footer) {
   submit_footer.find('input[type="submit"]#ajaxDeleteSubmit').data('task_id', task_id);
 }
 
+// Formattierung eines Datums, um das richtige Format an django zu liefern
 function formatDate2Form(date) {
   var dueDate = new Date(date);
   var formattedDate = "";
@@ -152,6 +172,7 @@ function formatDate2Form(date) {
   return formattedDate;
 }
 
+// Hilfsfunktion, Ersatz fuer das django messages system
 function displayMessage(task_id) {
   // empty notifications of before
   $('.messages .text').empty();
@@ -178,6 +199,7 @@ function displayMessage(task_id) {
   $('.messages .text').prepend(text_span);
 }
 
+// Hilfsfunktionen Delete and Cancel
 function showDeleteQuestion() {
   $('.deleteConfirmDialog').css('display', 'inline-block');
   $('#ajaxDeleteConfirm').attr('disabled', 'disabled');

@@ -35,8 +35,11 @@ function doubles(dots, newDot) {
 	return versorgt;
 }
 
-// left oder bottom property gegeben, bis wo liegen die Punkte ganz oder
-// teilweise aufeinander
+// liegt ein Punkt auf oder direkt neben einem anderen?
+/*
+	@param takenDot = schon gezeichneter Punkt
+	@param newDot = zu zeichnender Punkt
+*/
 function liesIn(takenDot, newDot) {
 	if (takenDot.x - 25 < newDot.x && takenDot.x + 25 > newDot.x) {
 		if (takenDot.y - 25 < newDot.y && takenDot.y + 25 > newDot.y) {
@@ -49,11 +52,18 @@ function liesIn(takenDot, newDot) {
 }
 
 // calculate cluster included coordinates so that they are in the Matrix
+/*
+	@param cluster: cluster, zu dem ein Punkt hinzugefuegt wird
+	@param radius: aktueller Radius = der des letzten + wert
+	@param bogen: aktueller Bogenschritt = der des letzten + wert
+	@param schritt: wie viele sind schon gezeichneter
+*/
 function coordinates(cluster, radius, bogen, schritt) {
 	// berechne Koordinaten
 	var xC = cluster.x + (radius * Math.cos(bogen));
 	var yC = cluster.y + (radius * Math.sin(bogen));
 	var paket = {};
+	// liegt der Punkt noch in der Matrix?
 	if (xC < s.width-8 && xC > 38 && yC > 58 && yC <= s.height) {
 		paket = {
 			'x': xC,
@@ -70,7 +80,6 @@ function coordinates(cluster, radius, bogen, schritt) {
 		return paket;
 	}
 }
-
 
 // Date in lesbares Format umwandeln
 function formatDate(date) {
@@ -159,14 +168,13 @@ function formatImp(imp) {
 
 // structure:
 // https://css-tricks.com/how-do-you-structure-javascript-the-module-pattern-edition/
+// Matrix mit ihren Funktionen
 var s = {};
 var Matrix = {
 	settings: {
 		//canvas: $('canvas'),
 		//drawing: document.getElementById('ema').getContext("2d"),
-		//width: 900,
 		width: $('#dots').width(),
-		//height: 700
 		height: $('#dots').height()
 	},
 	// has an x and an y value, created when two dots are drawn at the same spot
@@ -181,6 +189,7 @@ var Matrix = {
 	init: function() {
 		s = this.settings;
 	},
+	// frueher fuers Zeichnen der Achsen
 	drawAxes: function(field, width, height) {
 		// untere Ecke y-Wert
 		var uEy = height-25;
@@ -271,6 +280,7 @@ var Matrix = {
 				}
 			}
 		});
+		// zum ende aller cluster zeichnen
 		that.drawCluster();
 	},
 	// Hilfsfunktion um ausführlichere Detailanzeige zu zeichnen
@@ -287,9 +297,11 @@ var Matrix = {
 				height: 7
 			}
 		});
+		// eigenschaften fuer modal hinzufuegen
 		taskItem.attr('data-toggle', 'modal');
 		taskItem.attr('data-target', '#ajaxModal');
 		taskItem.attr('data-task', task.id);
+		// Name darunter
 		var shortened_name = "";
 		if (task.name.length > 20) shortened_name = task.name.substring(0, 20)+"...";
 		else shortened_name = task.name;
@@ -332,6 +344,7 @@ var Matrix = {
 		];
 		// anfügen, Erkennung des richtigen Kreises über task_id
 		label.append(title, attributes, formatImp(task.importance));
+		// bei cluster-Punkten kein Name
 		if (mode == "noName") {
 			taskItem.attr('class', 'dot cluster'+task.cluster);
 			taskItem.append(label);
@@ -339,11 +352,14 @@ var Matrix = {
 		} else {
 			taskItem.append(name, label);
 		}
+		// ins dots div einfuegen
 		$('#dots').append(taskItem);
 	},
 	drawCluster: function() {
 		var that = this;
+		// die in clusters gespeicherten cluster zeichnen
 		that.clusters.forEach(function(cluster) {
+			// den urspruenglichen Punkt entfernen
 			$('#dots').children('#'+cluster.id).remove();
 			// zeichnet das cluster
 			var taskItem = $('<div/>', {
@@ -371,6 +387,7 @@ var Matrix = {
 				query.toggle();
 			});
 			$('#dots').append(taskItem);
+			// startwerte fuer das zeichnen der punkte
 			// startabstand (r)
 			var radius = 12;
 			// eine Runde = 2*pi, start = 0
@@ -392,14 +409,15 @@ var Matrix = {
 			}
 		});
 	},
+	// konsistentes Neuzeichnen nach AJAX-Requests
 	updateMatrixAjax: function(data) {
 		var that = this;
 		TaskData.getTasks(data, settings);
 		that.drawTasks(TaskData.data, TopicData.data);
 	},
+	// bei Veränderung der Matrix-Groesse
 	updateSettings: function() {
 		s.width = $('#dots').width();
-		console.log(s.width);
 		s.height = $('#dots').height();
 	}
 };

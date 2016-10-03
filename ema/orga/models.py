@@ -24,6 +24,8 @@ class UserOrga(TimeStampedModel):
     def __unicode__(self):
         return self.owner.username
 
+# die Erstellung eines UserOrga-Objekts wird an die Speicherung des User-
+# Objektes gebunden
 @receiver(post_save, sender=User)
 def create_user_orga(sender, instance, created, **kwargs):
     if created:

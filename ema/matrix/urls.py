@@ -41,8 +41,6 @@ urlpatterns = [
     # /matrix/done_tasks
     url(r'^done_tasks/$', views.done_tasks, name='done_tasks'),
     # ajax-urls
-    # no ajax-urls anymore because of AjaxableResponseMixin
-    # just for delete task
     # /matrix/5/taskdelete
     url(r'^(?P<task_id>[0-9]+)/taskdelete/$',
             login_required(AjaxTaskDelete.as_view()),

@@ -7,6 +7,10 @@ import telebot
 from .models import UserOrga
 from matrix.models import Topic
 
+"""
+Form fuer die Editierung der Matrix bezogenen Einstellungen eines Nutzers
+zusaetzlicher Parameter: user
+"""
 class OrgaForm(ModelForm):
     class Meta:
         model = UserOrga
@@ -22,10 +26,14 @@ class OrgaForm(ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(OrgaForm, self).__init__(*args, **kwargs)
-        # get different list of choices here
+        # reduziere choices auf Nutzereigene Themen
         topics = Topic.objects.filter(topic_owner=user)
         self.fields['default_topic'].queryset = topics
 
+"""
+Form fuer die Editierung der Telegram Nutzer ID
+stellt die Verbindung zum EMA Bot dar
+"""
 class BotForm(ModelForm):
     class Meta:
         model = UserOrga
@@ -36,6 +44,7 @@ class BotForm(ModelForm):
             )
         }
 
+    # Bestaetigung an den Nutzer mit dieser ID schicken
     def clean_tele_username(self):
         new_username = self.cleaned_data['tele_username']
         # wenn das neue leer ist
@@ -53,6 +62,7 @@ class BotForm(ModelForm):
         # fix for unique problem
         return self.cleaned_data['tele_username'] or None
 
+# Hilfsfunktion fuer die Versendung von Nachrichten mit dem Bot
 def send_telegram_message(user_id):
     bot = telebot.TeleBot(TOKEN)
     msg = 'Congrats! You registered for the EMA Bot'

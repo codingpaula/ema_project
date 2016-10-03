@@ -22,16 +22,19 @@ commands = {
 
 hiddenKeyBoard = types.ReplyKeyboardHide()
 
+# Tasks Keyboard
 markup = types.ReplyKeyboardMarkup()
 one_day = types.KeyboardButton('one day')
 one_week = types.KeyboardButton('one week')
 overdue = types.KeyboardButton('overdue')
 
+# Aufgabe fuer Nachricht formattieren
 def task_to_message(task):
     importance = int(task.importance)+1
     due_date = timezone.localtime(task.due_date).strftime(format='%d/%m/%Y %H:%M')
     return "Task '%s' of Topic '%s': \n importance: %s, due date: %s \n" % (task.task_name, task.topic, importance, due_date)
 
+# returns String with tasks or no-tasks-message
 def task_message(task_queryset, mode):
     if task_queryset.count() > 0:
         answer = ""
@@ -76,6 +79,7 @@ def start_telebot():
                 reply_markup=hiddenKeyBoard
         )
 
+    # Erklaerung fuer die Registrierung
     @bot.message_handler(commands=['howtosetup'])
     def command_howtosetup(message):
         setup_text = "To set up your EMApp account with this bot, simply log into the EMApp and go to Account."
@@ -87,6 +91,7 @@ def start_telebot():
                 reply_markup=hiddenKeyBoard
         )
 
+    # Abfrage registriert oder nicht
     @bot.message_handler(commands=['registered'])
     def command_registered(message):
         try:
@@ -99,6 +104,7 @@ def start_telebot():
         except:
             not_registered_message(message.chat.id)
 
+    # welche Aufgaben anzeigen, Tastatur einblenden
     @bot.message_handler(commands=['tasks'])
     def command_tasks(message):
         bot.send_message(
@@ -107,10 +113,13 @@ def start_telebot():
                     reply_markup=markup
         )
 
+    # dieser Tag Aufgaben
     @bot.message_handler(func=lambda message: message.text == "one day")
     def command_one_day(message):
         try:
             user_orga = UserOrga.objects.get(tele_username=message.from_user.id)
+            # richtige Zeitzone
+            # Zeitraum query
             jetzt = timezone.localtime(timezone.now())
             bis = jetzt+timedelta(days=1)
             tasks = Task.objects.filter(
@@ -128,13 +137,16 @@ def start_telebot():
         except:
             not_registered_message(message.chat.id)
 
+    # diese Woche Aufaben
     @bot.message_handler(func=lambda message: message.text == "one week")
     def command_one_week(message):
         try:
             user_orga = UserOrga.objects.get(tele_username=message.from_user.id)
+            jetzt = timezone.localtime(timezone.now())
+            bis = jetzt+timedelta(days=7)
             tasks = Task.objects.filter(
-                            due_date__gt=timezone.now(),
-                            due_date__lt=timezone.now()+timedelta(days=7),
+                            due_date__gt=jetzt,
+                            due_date__lt=bis,
                             done=False,
                             topic__topic_owner=user_orga.owner
             )
@@ -151,8 +163,9 @@ def start_telebot():
     def command_overdue(message):
         try:
             user_orga = UserOrga.objects.get(tele_username=message.from_user.id)
+            jetzt = timezone.localtime(timezone.now())
             tasks = Task.objects.filter(
-                            due_date__lt=timezone.now(),
+                            due_date__lt=jetzt,
                             done=False,
                             topic__topic_owner=user_orga.owner
             )
@@ -165,6 +178,7 @@ def start_telebot():
         except:
             not_registered_message(message.chat.id)
 
+    # bot starten
     bot.polling()
 
 class Command(DaemonCommand):

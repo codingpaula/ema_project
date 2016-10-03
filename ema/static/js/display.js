@@ -9,7 +9,7 @@ $(function() {
   TaskData.getTasks(task_data, settings);
   // Aufgaben in die Matrix zeichnen
   Matrix.drawTasks(TaskData.data, TopicData.data);
-  // csrf token for javascript/ajax
+  // update Matrix wenn die groesse sich veraendert hat
   $(window).resize(function () {
     waitForFinalEvent(function(){
       Matrix.updateSettings();
@@ -17,6 +17,7 @@ $(function() {
       Matrix.drawTasks(TaskData.data, TopicData.data);
     }, 500, "matrix resize");
   });
+  // CSRF-TOKEN fuer AJAX-Requests
   function getCookie(name) {
     var cookieValue = null;
     var i = 0;
@@ -46,6 +47,7 @@ $(function() {
     }
   });
 });
+// erst event wenn fenster vollstaendig bewegt = veraenderung der groesse
 var waitForFinalEvent = (function () {
   var timers = {};
   return function (callback, ms, uniqueId) {

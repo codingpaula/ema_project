@@ -10,6 +10,9 @@ from orga.models import UserOrga
 def ema_authenticate(request):
     return render(request, 'telegram_bot/start.html')
 
+"""
+Einstellungen fuer den Bot anzeigen
+"""
 class SetupBot(SuccessMessageMixin, UpdateView):
     model = UserOrga
     form_class = BotForm

@@ -89,6 +89,7 @@ var Sidebar = {
 	}
 };
 
+// Hilfsfunktionen Aussehen Button an und aus
 function clickSidebarButton(button) {
 	button.css('background-color', '#eee');
 	button.css('border-color', 'black');

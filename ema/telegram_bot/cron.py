@@ -1,3 +1,6 @@
+"""
+Push-Funktion fuer den Telegram Bot
+"""
 from django.db.models import Q
 from django.utils import timezone
 
@@ -12,16 +15,18 @@ from datetime import datetime, timedelta
 
 bot = telebot.TeleBot(settings.TOKEN)
 
+# an cron tab uerbergebenen Funktion, ruft check_tasks auf
 def push_due_dates():
     to_push = check_tasks()
     for task in to_push:
         bot.send_message(task['user'], task['msg'])
 
+# sucht nach faelligen Aufgaben von Telegram Nutzern
 def check_tasks():
     to_push = []
     jetzt = timezone.localtime(timezone.now())
     bis = jetzt+timedelta(minutes=-5)
-    # eigentlich nur die die dran sind
+    # finde alle Nutzer, die eine ID angegeben haben
     telis = UserOrga.objects.exclude(tele_username='')
     for teli in telis:
         tasks = Task.objects.filter(
