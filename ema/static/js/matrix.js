@@ -413,6 +413,7 @@ var Matrix = {
 	// konsistentes Neuzeichnen nach AJAX-Requests
 	updateMatrixAjax: function(data) {
 		var that = this;
+		TopicData.resetCounts();
 		TaskData.getTasks(data, settings);
 		that.drawTasks(TaskData.data, TopicData.data);
 	},

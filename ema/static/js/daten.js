@@ -18,8 +18,15 @@ var TopicData = {
       that.data[id] = {
         'color': topic.color,
         'name': topic.topic_name,
-        'displayed': true
+        'displayed': true,
+        'count': 0
       };
+    });
+  },
+  resetCounts: function() {
+    var that = this;
+    that.data.forEach(function(topic) {
+      topic['count'] = 0;
     });
   }
 }
@@ -47,6 +54,7 @@ var TaskData = {
     that.data = [];
     tasks.forEach(function(task) {
       index = task.id;
+      topic = task.topic;
       that.data[index] = {
         'x': getDateCoordinate(task.due_date, urgent_axis),
         'y': getImportanceCoordinate(task.importance),
@@ -55,9 +63,10 @@ var TaskData = {
         'id': task.id,
         'name': task.task_name,
         'description': task.task_description,
-        'topic': task.topic,
+        'topic': topic,
         'cluster': undefined
       };
+      TopicData.data[topic].count++;
     });
   },
   // bei einer Veraenderung der Matrix-Groesse nur Koordinaten aendern
