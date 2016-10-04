@@ -59,6 +59,7 @@ function liesIn(takenDot, newDot) {
 	@param schritt: wie viele sind schon gezeichneter
 */
 function coordinates(cluster, radius, bogen, schritt) {
+	if (schritt > 1000) throw "too many tasks";
 	// berechne Koordinaten
 	var xC = cluster.x + (radius * Math.cos(bogen));
 	var yC = cluster.y + (radius * Math.sin(bogen));

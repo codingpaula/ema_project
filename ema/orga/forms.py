@@ -59,7 +59,7 @@ class BotForm(ModelForm):
         else:
             if self.instance.tele_username != self.cleaned_data['tele_username']:
                 send_telegram_message(self.cleaned_data['tele_username'])
-        # fix for unique problem
+        # Umgehen des unique-Wert-Problems in den Models
         return self.cleaned_data['tele_username'] or None
 
 # Hilfsfunktion fuer die Versendung von Nachrichten mit dem Bot

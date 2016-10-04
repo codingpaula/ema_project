@@ -77,10 +77,13 @@ class TopicForm(ModelForm):
         }
 
     def __init__(self, user, *args, **kwargs):
-        super(TopicForm, self).__init__(*args, **kwargs)
-        # get different list of choices here
-        topics = Topic.objects.filter(topic_owner=user)
-        choices = get_user_colors(self.instance, self.fields["color"].choices, topics)
-        self.fields["color"].choices = choices
-        # set the topic_owner to the request.user by default
-        self.instance.topic_owner = user
+        # Superklasse, um alle kwargs ausser eigene zu haben
+	    super(TopicForm, self).__init__(*args, **kwargs)
+	    # topicList fuer get_user_colors
+	    topics = Topic.objects.filter(topic_owner=user)
+	    # moegliche Choices durch get_user_colors ausgeben lassen
+	    choices = get_user_colors(self.instance, self.fields["color"].choices, topics)
+	    # Choices an Form uebergeben
+	    self.fields["color"].choices = choices
+	    # preset topic_owner als aktuellen User
+	    self.instance.topic_owner = user
