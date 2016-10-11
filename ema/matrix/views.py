@@ -18,27 +18,38 @@ from .forms import TaskForm, TopicForm
 from .utils import get_user_colors
 
 """
-view for startpage after login - matrix
-hands over all topics of the current user
+main view with matrix
+provides:
+    - all topics in django and in JSON
+    - all tasks in django and in JSON
+    - settings of current user
 """
 @login_required()
 def matrix(request):
+    # alle Topics
     all_topics = Topic.objects.filter(topic_owner=request.user.id)
     to_data = {}
+    # alle Topics als JSON
     data = [model_to_dict(instance) for instance in all_topics]
     to_data['topics'] = data
     topic_data = json.dumps(to_data, cls=DjangoJSONEncoder)
+    # alle Aufgaben
     all_tasks = Task.objects.filter(topic__topic_owner=request.user.id, done=False)
+    # alle Aufgaben als JSON
     data = [model_to_dict(instance) for instance in all_tasks]
     end_data = json.dumps(data, cls=DjangoJSONEncoder)
+    # Forms
     task_form = TaskForm(user=request.user)
-    settings_file = UserOrga.objects.get(owner=request.user)
-    if (settings_file == None):
-        settings_file.urgent_axis = '1'
+    # Settings
+    try:
+        settings_file = UserOrga.objects.get(owner=request.user)
+    except UserOrga.DoesNotExist:
+        settings_file = UserOrga.objects.create(owner=request.user)
+        user_settings.save()
     return render(request, 'matrix/matrix.html',
-                    {'all_topics': all_topics, 'all_tasks': all_tasks,
-                    'end_data': end_data, 'topic_data': topic_data,
-                    'task_form': task_form, 'settings_file': settings_file  })
+                    {'all_topics': all_topics, 'end_data': end_data,
+                    'topic_data': topic_data, 'task_form': task_form,
+                    'settings_file': settings_file  })
 
 # source: django docs:
 #https://docs.djangoproject.com/en/1.8/topics/class-based-views/generic-editing/
@@ -49,16 +60,15 @@ class AjaxableResponseMixin(object):
     """
     def form_invalid(self, form):
         response = super(AjaxableResponseMixin, self).form_invalid(form)
+        # Fehler uebergeben und korrekten Statuscode fuer die Behandlung mit AJAX
         if self.request.is_ajax():
             return JsonResponse(form.errors, status=400)
         else:
             return response
 
     def form_valid(self, form):
-        # We make sure to call the parent's form_valid() method because
-        # it might do some processing (in the case of CreateView, it will
-        # call form.save() for example).
         response = super(AjaxableResponseMixin, self).form_valid(form)
+        # bei AJAX werden nur nur ein JSON-Objekt der Aufgaben uebergeben
         if self.request.is_ajax():
             topic = form.instance.topic_id
             all_tasks = Task.objects.filter(topic__topic_owner=self.request.user.id, done=False)
@@ -67,6 +77,9 @@ class AjaxableResponseMixin(object):
         else:
             return response
 
+"""
+verhindert den Zugriff auf Objekte, die nicht dem aufrufenden User gehoeren
+"""
 class PermissionDeniedMixin(object):
     def users_object_test(self, request):
         self.object = self.get_object()
@@ -82,9 +95,24 @@ class PermissionDeniedMixin(object):
         return super(PermissionDeniedMixin, self).dispatch(
             request, *args, **kwargs)
 
+"""
+Abaenderung des django SuccessMessageMixin fuer AJAX Requests
+"""
+class AjaxSuccessMessageMixin(SuccessMessageMixin):
+    def get_success_message(self, cleaned_data):
+        if self.request.is_ajax():
+            return None
+        else:
+            return self.success_message % cleaned_data
+
+"""
+erstellt eine Aufgabe
+mit AJAX oder mit normalem Request verwendbar
+ruft die TaskForm mit dem zusaetzlichen Parameter user auf
+"""
 class TaskCreate(
         AjaxableResponseMixin,
-        SuccessMessageMixin,
+        AjaxSuccessMessageMixin,
         CreateView):
     model = Task
     form_class = TaskForm
@@ -92,21 +120,19 @@ class TaskCreate(
     success_message = "Task '%(task_name)s' was successfully created!"
     success_url = '/matrix/'
 
-    # display no success message on reload when created with ajax
-    def get_success_message(self, cleaned_data):
-        if self.request.is_ajax():
-            return None
-        else:
-            return self.success_message % cleaned_data
-
     def get_form_kwargs(self):
         kwargs = super(TaskCreate, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
+"""
+bearbeitet Aufgabe
+mit AJAX oder mit normalem Request verwendbar
+ruft die TaskForm mit dem zusaetzlichen Parameter user auf
+"""
 class TaskUpdate(
         AjaxableResponseMixin,
-        SuccessMessageMixin,
+        AjaxSuccessMessageMixin,
         PermissionDeniedMixin,
         UpdateView):
     model = Task
@@ -123,13 +149,10 @@ class TaskUpdate(
         kwargs['user'] = self.request.user
         return kwargs
 
-    # display no success message on reload when created with ajax
-    def get_success_message(self, cleaned_data):
-        if self.request.is_ajax():
-            return None
-        else:
-            return self.success_message % cleaned_data
-
+"""
+loescht eine Aufgabe
+nur fuer normale Requests
+"""
 class TaskDelete(SuccessMessageMixin, PermissionDeniedMixin, DeleteView):
     model = Task
     success_message = "Task '%(task_name)s' was successfully deleted!"
@@ -138,6 +161,10 @@ class TaskDelete(SuccessMessageMixin, PermissionDeniedMixin, DeleteView):
     def get_object(self):
         return get_object_or_404(Task, pk=self.kwargs.get('task_id'))
 
+"""
+loescht eine Aufgabe
+nur fuer AJAX-Requests
+"""
 class AjaxTaskDelete(PermissionDeniedMixin, SingleObjectMixin, View):
     model = Task
 
@@ -152,6 +179,11 @@ class AjaxTaskDelete(PermissionDeniedMixin, SingleObjectMixin, View):
         response_data = json.dumps([model_to_dict(instance) for instance in all_tasks], cls=DjangoJSONEncoder)
         return HttpResponse(response_data, content_type="application/json")
 
+"""
+erstellt ein Thema
+nicht fuer AJAX-Requests
+ruft das TopicForm mit dem zusaetzlichen Parameter user auf
+"""
 class TopicCreate(SuccessMessageMixin, CreateView):
     model = Topic
     form_class = TopicForm
@@ -164,6 +196,11 @@ class TopicCreate(SuccessMessageMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+"""
+bearbeitet ein Thema
+nicht fuer AJAX-Requests
+ruft das TopicForm mit dem zusaetzlichen Parameter user auf
+"""
 class TopicUpdate(SuccessMessageMixin, PermissionDeniedMixin, UpdateView):
     model = Topic
     form_class = TopicForm
@@ -179,9 +216,13 @@ class TopicUpdate(SuccessMessageMixin, PermissionDeniedMixin, UpdateView):
     def get_object(self):
         return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))
 
-class TopicDelete(SuccessMessageMixin, PermissionDeniedMixin, DeleteView):
+"""
+loescht ein Thema
+nicht fuer AJAX-Requests
+
+"""
+class TopicDelete(PermissionDeniedMixin, DeleteView):
     model = Topic
-    success_message = "Topic '%(topic_name)s' was successfully deleted!"
     success_url = '/matrix/'
 
     # delete cascade in models.py
@@ -193,7 +234,7 @@ class TopicDelete(SuccessMessageMixin, PermissionDeniedMixin, DeleteView):
         return get_object_or_404(Topic, pk=self.kwargs.get('topic_id'))
 
 """
-shows all the topics of the logged in owner
+shows the requested topic
 @params: topic_id
 Permission denied message if unsuccessful
 """
@@ -221,8 +262,9 @@ def tasks(request, task_id):
         return HttpResponseRedirect('/matrix/')
 
 """
-shows all tasks that have been marked done, since they won't show up in matrix
-anymore
+shows all tasks that have been marked done, since they won't show up in the
+matrix anymore
+click on one to edit it
 """
 @login_required()
 def done_tasks(request):

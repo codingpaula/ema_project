@@ -1,3 +1,4 @@
+/* Datei fuer die Darstellung der Matrix und ihrer Aufgaben */
 /* Aufgaben-Kreise */
 .dot {
   position: absolute;
@@ -88,6 +89,7 @@ textarea.form-control {
   height: 20%;
 }
 
+/* Groesse der Matrix in Abhaengigkeit zur Bildschirmgroesse */
 @media screen and (min-width:1600px) {
   #dots {
     width: 900px;

@@ -12,9 +12,11 @@ from django.contrib import messages
 
 from orga.forms import OrgaForm
 from orga.models import UserOrga
+
 """
 startpage, link to register and login
 redirect, falls schon eingeloggt zur Matrix
+in config-urls Datei, da host-address/
 """
 def index(request):
     if request.user.is_authenticated():
@@ -24,15 +26,26 @@ def index(request):
         return render(request, 'registration/login.html', {'form': form})
 
 """
-wird nach Login angezeigt
-Informationen ueber diesen Benutzer (bis jetzt nur Name) werden angezeigt
+Registrierung
 """
-@login_required()
-def account(request):
-    form = OrgaForm(user=request.user)
-    user_orga = get_object_or_404(UserOrga, owner=request.user)
-    return render(request, 'profiles/account.html', {'form': form, 'user_orga': user_orga})
+# http://www.djangobook.com/en/2.0/chapter14.html
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            new_user = form.save()
+            new_user = authenticate(username=form.cleaned_data['username'],
+                                    password=form.cleaned_data['password1'])
+            login(request, new_user)
+            return HttpResponseRedirect(reverse('matrix:matrix'))
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
 
+"""
+wird nach Login angezeigt
+Name des Nutzers und seine Einstellungen werden angezeigt
+"""
 class AccountSettings(SuccessMessageMixin, UpdateView):
     model = UserOrga
     form_class = OrgaForm
@@ -48,11 +61,16 @@ class AccountSettings(SuccessMessageMixin, UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-    def get_context_data(self, *args, **kwargs):
-         context = super(AccountSettings, self).get_context_data(*args, **kwargs)
-         context['passwordChange'] = PasswordChangeForm(self.request.user)
-         return context
+    # spaeter fuer die Aenderung von Passwoertern
+    #def get_context_data(self, *args, **kwargs):
+    #     context = super(AccountSettings, self).get_context_data(*args, **kwargs)
+    #     context['passwordChange'] = PasswordChangeForm(self.request.user)
+    #     return context
 
+"""
+alternativer View fuer die Account-Seite, da die Umsetzung von zwei Forms auf
+einer Seite mit CBVs umstaendlich ist
+"""
 @login_required()
 def settings(request):
     if request.method == 'POST':
@@ -70,6 +88,9 @@ def settings(request):
                     'passwordChange': passwordChange,
                     'settings': settings})
 
+"""
+Passwortaenderung als Feature geplant
+"""
 def update_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.POST)
@@ -82,22 +103,4 @@ def update_password(request):
         else:
             messages.info(request, "error")
             return HttpResponseRedirect(reverse('profiles:account'))
-
-"""
-Registrierung
-"""
-# http://www.djangobook.com/en/2.0/chapter14.html
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            new_user = authenticate(username=form.cleaned_data['username'],
-                                    password=form.cleaned_data['password1'])
-            user_settings = UserOrga(owner=new_user)
-            user_settings.save()
-            login(request, new_user)
-            return HttpResponseRedirect(reverse('profiles:account'))
-    else:
-        form = UserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+            

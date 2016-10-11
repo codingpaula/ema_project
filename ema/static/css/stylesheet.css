@@ -1,3 +1,4 @@
+/* allgemeines Stylesheet der EMApp */
 html, body {
 	font-size: 16px;
 	margin: 0;
@@ -17,6 +18,7 @@ body {
 	/* margin-bottom:-80px; */
 }
 
+/* footer und navbar */
 footer {
 	height: 80px;
 	width: 100%;
@@ -47,6 +49,7 @@ footer p {
 	padding: 3px 5px 3px 5px;
 	margin: 3px 3%;
 }
+
 .gap {
 	margin-left: 18%;
 }
@@ -78,20 +81,8 @@ footer p {
 .deleteConfirmDialog {
 	margin-top: 15px;
 }
-/* form {
-	text-align: center;
-}
 
-input {
-	margin: 5px 10px 15px 10px;
-}
-
-input[type=text],
-input[type=password] {
-	padding: 5px;
-}
-*/
-
+/* gleich grosse Rahmen */
 .emptyPanel {
 	width: 100%;
 }
@@ -177,6 +168,7 @@ input[type=password] {
   	margin-bottom: 100px; */
 }
 
+/* Nachrichten oben rechts */
 .messages {
 	position: absolute;
 	right: 20px;
@@ -196,6 +188,12 @@ input[type=password] {
 
 .messages:hover {
 	border: 1px solid #333;
+}
+
+.closeNotification:hover {
+	color: grey;
+	cursor: pointer;
+	cursor: hand;
 }
 
 .text {
@@ -243,6 +241,7 @@ input[type=password] {
 	margin-bottom: 5px;
 }
 
+/* help page */
 .FAQtitle {
 	color: #69995D;
 }
@@ -321,16 +320,6 @@ input[type=password] {
 
 .trennlinie {
 	border-bottom: 1px solid #777;
-}
-
-.closeNotification {
-
-}
-
-.closeNotification:hover {
-	color: grey;
-	cursor: pointer;
-	cursor: hand;
 }
 
 .add {
@@ -427,7 +416,6 @@ input[type=password] {
 	padding-left: 0;
 }
 
-/* IDs */
 .matrixSettings {
 	position: relative;
 	/* display: inline-block; */
@@ -459,8 +447,4 @@ input[type=password] {
 .noTopic {
 	padding: 3px;
 	margin-left: 3px;
-}
-
-#Topics {
-	/* border-bottom: 1px solid #777; */
 }

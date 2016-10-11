@@ -10,7 +10,6 @@ from .views import AccountSettings
 urlpatterns = [
     #/account/
     url(r'^$', login_required(AccountSettings.as_view()), name='account'),
-    #url(r'^$', views.settings, name='account'),
     #/account/login/
     url(r'^login/$', login, name='login'),
     #/account/loggedout/
@@ -18,5 +17,5 @@ urlpatterns = [
     #/account/register/
     url(r'^register/$', views.register, name='register'),
     #/account/passwordchange/
-    url(r'^passwordchange/$', views.update_password, name="passwordchange")
+    # url(r'^passwordchange/$', views.update_password, name="passwordchange")
 ]

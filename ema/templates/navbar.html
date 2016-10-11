@@ -6,12 +6,19 @@
     <li>
       <!-- https://djangosnippets.org/snippets/2421/ navbar DRY method -->
       <a class="navLink" href={% url 'matrix:matrix' %}>
-        <div class="{% if active_tab == 'EMA' %}now{% endif %}">EMa</div>
+        <div class="{% if active_tab == 'EMA' %}now{% endif %}">EMA</div>
       </a>
     </li>
     <li>
       <a class="navLink" href={% url 'profiles:account' %}>
         <div class="{% if active_tab == 'Account' %}now{% endif %}">Account</div>
+      </a>
+    </li>
+    <li>
+      <a class="navLink" href={% url 'bot:setup' %}>
+        <div class="{% if active_tab == 'Telegram' %}now{% endif %}">
+          Telegram Bot
+        </div>
       </a>
     </li>
     <li>

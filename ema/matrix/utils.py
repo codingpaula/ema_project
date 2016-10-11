@@ -5,7 +5,7 @@ def get_user_colors(thistopic, choices, topicList):
     # alle moeglichen Choices
     for color in choices:
         gefunden = False
-        # alle topics des Nutzers
+        # alle Topics des Nutzers
         for topic in topicList:
             if topic.color == color[0]:
                 if topic == thistopic:
