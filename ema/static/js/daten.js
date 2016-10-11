@@ -1,7 +1,7 @@
 // Verarbeitung der von django erhaltenen JSON-Objekte
 // Themen
 var TopicData = {
-  data: {},
+  data: [],
   /*
     verarbeite Daten, die Django liefert
     id = {
@@ -13,6 +13,7 @@ var TopicData = {
   getTopics: function(topics) {
     // workaround um data zu editieren
     var that = this;
+    that.data = [];
     topics.topics.forEach(function(topic) {
       var id = topic.id;
       that.data[id] = {
