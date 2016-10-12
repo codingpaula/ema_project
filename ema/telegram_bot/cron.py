@@ -27,7 +27,7 @@ def check_tasks():
     jetzt = timezone.localtime(timezone.now())
     bis = jetzt+timedelta(minutes=-5)
     # finde alle Nutzer, die eine ID angegeben haben
-    telis = UserOrga.objects.exclude(tele_username='')
+    telis = UserOrga.objects.exclude(tele_username=None)
     for teli in telis:
         tasks = Task.objects.filter(
                         due_date__lt=jetzt,
