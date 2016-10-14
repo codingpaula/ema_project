@@ -1,7 +1,7 @@
 // Verarbeitung der von django erhaltenen JSON-Objekte
 // Themen
 var TopicData = {
-  data: {},
+  data: [],
   /*
     verarbeite Daten, die Django liefert
     id = {
@@ -13,6 +13,7 @@ var TopicData = {
   getTopics: function(topics) {
     // workaround um data zu editieren
     var that = this;
+    that.data = [];
     topics.topics.forEach(function(topic) {
       var id = topic.id;
       that.data[id] = {
@@ -22,7 +23,6 @@ var TopicData = {
         'count': 0
       };
     });
-    console.log(that.data);
   },
   resetCounts: function() {
     var that = this;
@@ -82,7 +82,6 @@ var TaskData = {
 
 // Helfer-Funktionen
 // Datumskoordinate herausfinden
-var today = new Date();
 // Rahmen min und max:
 // unten 60
 // links 50
@@ -91,6 +90,7 @@ var today = new Date();
 // params: date: datum, das umgewandelt werden soll
 // params: urgent_axis: einstellung wie viele tage auf der achse
 function getDateCoordinate(date, urgent_axis) {
+  var today = new Date();
   // Einteilung Tage pro Phase
   ONEMONTH = [1, 4, 7, 30];
   TWOMONTHS = [2, 7, 15, 60];
