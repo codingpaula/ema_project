@@ -10,11 +10,14 @@ from orga.models import UserOrga
 create or edit Task
 additional parameters: user
 """
+
+
 class TaskForm(ModelForm):
     # Input-Formate und CSS zum Textfeld
     due_date = forms.DateTimeField(
-                input_formats=settings.DATETIME_INPUT_FORMATS,
-                widget=forms.TextInput(attrs={'class': 'dueDateInput'}))
+        input_formats=settings.DATETIME_INPUT_FORMATS,
+        widget=forms.TextInput(attrs={'class': 'dueDateInput'}))
+
     class Meta:
         model = Task
         fields = ['task_name', 'task_description', 'due_date', 'importance', 'topic', 'done']
@@ -25,9 +28,9 @@ class TaskForm(ModelForm):
             # Reihen dieses grossen Feldes begrenzen
             'task_description': forms.Textarea(
                 attrs={
-                        'placeholder': 'What is this task about?',
-                        'class': 'form-control',
-                        'rows': 5}
+                    'placeholder': 'What is this task about?',
+                    'class': 'form-control',
+                    'rows': 5}
             ),
             'importance': forms.Select(
                 attrs={'class': 'form-control'}
@@ -54,10 +57,13 @@ class TaskForm(ModelForm):
             # Default Topic als Wert fuer neue Aufgaben setzen
             self.initial['topic'] = user_settings.default_topic
 
+
 """
 create or edit Topic
 additional parameters: user
 """
+
+
 class TopicForm(ModelForm):
     class Meta:
         model = Topic
@@ -69,21 +75,21 @@ class TopicForm(ModelForm):
             ),
             'topic_description': forms.Textarea(
                 attrs={
-                        'placeholder': 'What is this topic about?',
-                        'class': 'form-control',
-                        'rows': 5
-                        }
+                    'placeholder': 'What is this topic about?',
+                    'class': 'form-control',
+                    'rows': 5
+                }
             )
         }
 
     def __init__(self, user, *args, **kwargs):
         # Superklasse, um alle kwargs ausser eigene zu haben
-	    super(TopicForm, self).__init__(*args, **kwargs)
-	    # topicList fuer get_user_colors
-	    topics = Topic.objects.filter(topic_owner=user)
-	    # moegliche Choices durch get_user_colors ausgeben lassen
-	    choices = get_user_colors(self.instance, self.fields["color"].choices, topics)
-	    # Choices an Form uebergeben
-	    self.fields["color"].choices = choices
-	    # preset topic_owner als aktuellen User
-	    self.instance.topic_owner = user
+        super(TopicForm, self).__init__(*args, **kwargs)
+        # topicList fuer get_user_colors
+        topics = Topic.objects.filter(topic_owner=user)
+        # moegliche Choices durch get_user_colors ausgeben lassen
+        choices = get_user_colors(self.instance, self.fields["color"].choices, topics)
+        # Choices an Form uebergeben
+        self.fields["color"].choices = choices
+        # preset topic_owner als aktuellen User
+        self.instance.topic_owner = user

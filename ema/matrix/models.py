@@ -70,6 +70,7 @@ class Topic(TimeStampedModel):
     color = models.CharField(max_length=15,
                             choices=COLOR_OPTIONS,
                             default=BLACK)
+
     def __unicode__(self):
         return self.topic_name
 
@@ -96,6 +97,7 @@ class Task(TimeStampedModel):
                                 default=LESS_IMPORTANT)
     due_date = models.DateTimeField(auto_now=False, auto_now_add=False)
     done = models.BooleanField(default=False)
+
     def __unicode__(self):
         return self.task_name
 
