@@ -25,7 +25,6 @@ STATICFILES_DIRS = (
 )
 # os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -48,11 +47,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'whitenoise.runserver_nostatic',
+    'gunicorn',
     'matrix',
     'profiles',
     'orga',
     'telegram_bot',
-    'django_crontab'
+    'django_crontab',
+    'favicon'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -164,4 +166,8 @@ CRONJOBS = [
     ('*/5 * * * *', 'telegram_bot.cron.push_due_dates')
 ]
 
-HOST_ADDRESS = '127.0.0.1:8000'
+ALLOWED_HOSTS = ['ema-project.herokuapp.com', '*']
+
+HOST_ADDRESS = 'ema-project.herokuapp.com'
+
+FAVICON_PATH = STATIC_URL + 'icons/EMA_Icon.png'

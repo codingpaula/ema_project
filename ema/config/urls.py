@@ -41,5 +41,7 @@ urlpatterns = [
     url(r'^bot/', include(bot_urls, namespace="bot")),
     # admin tool
     url(r'^admin/', include(admin.site.urls)),
+    # favicon
+    url(r'^', include('favicon.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # static files und speicherung static files
