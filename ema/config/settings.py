@@ -53,8 +53,7 @@ INSTALLED_APPS = [
     'profiles',
     'orga',
     'telegram_bot',
-    'django_crontab',
-    'favicon'
+    'django_crontab'
 ]
 
 MIDDLEWARE_CLASSES = [
