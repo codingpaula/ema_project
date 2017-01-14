@@ -130,7 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-STATICFILES_STORAGE = 'whitenoise.django.CompressedManifestStaticFileStorage'
+STATICFILES_STORAGE = 'whitenoise.django.CompressedManifestStaticFilesStorage'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
