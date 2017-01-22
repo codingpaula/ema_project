@@ -30,6 +30,11 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
   }
 });
 
+// not possible to add task when there is no topic
+$('#nullTopic').on('click', function(e) {
+  displayMessage("noTopic");
+});
+
 // AJAX Request fuer erstellen oder bearbeiten einer Aufgabe
 $('#submitAjax').on('click', function(e) {
   e.preventDefault();
@@ -184,6 +189,10 @@ function displayMessage(task_id) {
   } else if (task_id == "delete") {
     var text_span = $('<span/>', {
       text: 'Deleted!'
+    });
+  } else if (task_id == "noTopic") {
+    var text_span = $('<span/>', {
+      text: 'You cannot add a Task without having a Topic. Please add a Topic first!'
     });
   } else if (TaskData.data[task_id] == undefined) {
     var text_span = $('<span/>', {

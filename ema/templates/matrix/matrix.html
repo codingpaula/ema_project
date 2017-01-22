@@ -19,7 +19,11 @@
 </script>
   <div class="matrixSettings">
     <a class="btn emaButton emaTask topicButton topicButtonShow abstandU abstandO"
-        data-toggle="modal" data-target="#ajaxModal" data-task="0">
+            {% if all_topics.count > 0 %}
+       data-toggle="modal" data-target="#ajaxModal" data-task="0"
+       {% else %}
+        id="nullTopic"
+        {% endif %}>
       add task
     </a>
     <div class="trennlinie"></div>
