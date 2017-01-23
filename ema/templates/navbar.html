@@ -6,7 +6,7 @@
     <li>
       <!-- https://djangosnippets.org/snippets/2421/ navbar DRY method -->
       <a class="navLink" href={% url 'matrix:matrix' %}>
-        <div class="{% if active_tab == 'EMA' %}now{% endif %}">EMA</div>
+        <div class="{% if active_tab == 'EMA' %}now{% endif %}">HOME - EMA</div>
       </a>
     </li>
     <li>
@@ -29,7 +29,7 @@
     <li class="gap">
       {% if user.is_anonymous %}
       {% else %}
-      <a class="navLink" href={% url 'profiles:account' %}>
+      <a class="navLink userNavLink" href={% url 'profiles:account' %}>
         <div>{{ user }}</div>
       </a>
       {% endif %}
