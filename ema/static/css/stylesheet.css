@@ -112,6 +112,11 @@ footer p {
 	text-decoration: none;
 }
 
+.userNavLink {
+	text-transform: none;
+    font-size: 17px;
+}
+
 .loginbody {
 	background-color: #ddd;
 }
@@ -416,6 +421,12 @@ footer p {
 	padding-left: 0;
 }
 
+.backButton {
+    padding-left: 15px;
+    padding-right: 15px;
+    border: solid 1px #000000;
+
+}
 .matrixSettings {
 	position: relative;
 	/* display: inline-block; */

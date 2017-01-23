@@ -4,6 +4,9 @@
 <script type="text/javascript" src={% static "js/jquery-2.1.4.min.js" %}></script>
 {% endblock js %}
 {% block content %}
+<div class="back">
+  <a class="btn emaButton emaTask topicButton backButton" href={% url 'matrix:matrix' %}>< back</a>
+</div>
 <h1>Add a new topic:</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
