@@ -20,7 +20,7 @@ class TaskForm(ModelForm):
 
     class Meta:
         model = Task
-        fields = ['task_name', 'task_description', 'due_date', 'importance', 'topic', 'done']
+        fields = ['task_name', 'task_description', 'due_date', 'importance', 'topic', 'duration', 'done']
         widgets = {
             'task_name': forms.TextInput(
                 attrs={'placeholder': 'Name', 'class': 'form-control'}
@@ -37,6 +37,9 @@ class TaskForm(ModelForm):
             ),
             'topic': forms.Select(
                 attrs={'class': 'form-control'}
+            ),
+            'duration': forms.TextInput(
+                attrs={'placeholder': 'Duration of Task', 'class': 'form-control'}
             )
         }
 

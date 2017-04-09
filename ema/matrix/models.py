@@ -97,6 +97,7 @@ class Task(TimeStampedModel):
                                 default=LESS_IMPORTANT)
     due_date = models.DateTimeField(auto_now=False, auto_now_add=False)
     done = models.BooleanField(default=False)
+    duration = models.FloatField(blank=True, null=False, default=1)
 
     def __unicode__(self):
         return self.task_name
