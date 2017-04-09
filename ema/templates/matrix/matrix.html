@@ -18,6 +18,19 @@
   var topic_data = {{ topic_data|safe }};
 </script>
   <div class="matrixSettings">
+    <div class="align-left">
+        <h3>Tasks</h3>
+    </div>
+    <div class="align-right">
+      <a class="btn emaButton emaNormal btn-sm" {% if all_topics.count > 0 %}
+         data-toggle="modal" data-target="#ajaxModal" data-task="0"
+         {% else %}
+         id="nullTopic"
+         {% endif %}>
+        +
+      </a>
+    </div>
+  <!--
     <a class="btn emaButton emaTask topicButton topicButtonShow abstandU abstandO"
             {% if all_topics.count > 0 %}
        data-toggle="modal" data-target="#ajaxModal" data-task="0"
@@ -26,7 +39,14 @@
         {% endif %}>
       add task
     </a>
+    <div class="align-right">
+      <a class="btn emaButton emaNormal btn-sm" href={% url 'matrix:addtopic' %}>
+        +
+      </a>
+    </div>
+
     <div class="trennlinie"></div>
+    -->
     <div id="Topics" class="myContainer">
       <div class="align-left">
         <h3>Topics</h3>

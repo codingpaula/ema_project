@@ -18,6 +18,7 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
     submitInput.attr('class', 'btn btn-success center-block');
     submitInput.data('task_id', task_id);
     $('#ajaxDeleteConfirm').css('display', 'none');
+    modal.find('#done').css('display', 'none');
   } else {
     // Aufgabe bearbeiten
     $('#taskModalHeader').text('Edit task "' + TaskData.data[task_id].name + '"');
@@ -26,6 +27,7 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
     var submit_footer = modal.find('.modal-footer');
     submit_footer.children('#submitAjax').attr('class', 'btn btn-success gap');
     submit_footer.children('#ajaxDeleteConfirm').css('display', 'inline-block');
+    modal_body.find('#done').css('display', 'block');
     prefillForm(task_id, modal_body, submit_footer);
   }
 });
