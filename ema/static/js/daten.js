@@ -89,6 +89,7 @@ var TaskData = {
 // rechts 880
 // params: date: datum, das umgewandelt werden soll
 // params: urgent_axis: einstellung wie viele tage auf der achse
+var oneDay = 24*60*60*1000;
 function getDateCoordinate(date, urgent_axis) {
   var today = new Date();
   // Einteilung Tage pro Phase
@@ -113,63 +114,36 @@ function getDateCoordinate(date, urgent_axis) {
   // millisecond from task due date to this moment
   var distance2today = Date.parse(date) - Date.parse(today)
   // ein Tag in milliseconds
-  var oneDay = 24*60*60*1000;
   // weiter weg als matrix maximum --> linke seite
   if (distance2today > abstand[3]*oneDay) return 50;
   // ueberfaellige aufgaben verschwinden nicht, sondern am rechten rand
   if (distance2today <= 0) return s.width-10;
   // assure: everything is between maximum and today!
   if (distance2today <= abstand[0]*oneDay) {
-    // 1 = abstand[0]+today, 0 = today
-    // wo liegt die Aufgabe zwischen diesen beiden?
-    var bet0and1 = 1-(distance2today/(abstand[0]*oneDay))
-    // wird auf einem viertel der achse angezeigt
-    // 0 bis 0,25
-    var axespart = bet0and1/4;
-    // verschiebung nach rechts
-    // 0,75 bis 1
-    var verschieben = axespart+0.75;
-    // eigentliche Koordinate berechnen
-    var coordinate = verschieben*(s.width-70)+50;
-    return coordinate;
+    return calculateDistanceBetween0and1(distance2today, 0, abstand[0], 4, 0.75);
   }
   if (distance2today <= abstand[1]*oneDay) {
-    // 1 = abstand[1]+today, 0 = abstand[0]+today
-    // 0 bis 1
-    var bet0and1 = 1-(distance2today - (abstand[0]*oneDay))/((abstand[1]-abstand[0])*oneDay);
-    // viertel der achse
-    // 0 bis 0,25
-    var axespart = bet0and1/4;
-    // 0,5 bis 0,75
-    var verschieben = axespart+0.5;
-    var coordinate = (verschieben*(s.width-70))+50;
-    return coordinate;
+    return calculateDistanceBetween0and1(distance2today, abstand[0], abstand[1]-abstand[0], 4, 0.5);
   }
   if (distance2today <= abstand[2]*oneDay) {
-    // 1 = abstand[2]+today, 0 = abstand[1]+today
-    // 0 bis 1
-    var bet0and1 = 1-(distance2today - (abstand[1]*oneDay))/((abstand[2]-abstand[1])*oneDay);
-    // achtel der achse
-    // 0 bis 0,125
-    var axespart = bet0and1/8;
-    // 0,375 bis 0,5
-    var verschieben = axespart+0.375;
-    var coordinate = (verschieben*(s.width-70))+50;
-    return coordinate;
+    return calculateDistanceBetween0and1(distance2today, abstand[1], abstand[2]-abstand[1], 8, 0.375);
   }
   if (distance2today <= abstand[3]*oneDay) {
-    // 1 = abstand[3]+today, 0 = abstand[2]+today
-    // 0 bis 1
-    var bet0and1 = 1-(distance2today - (abstand[2]*oneDay))/((abstand[3]-abstand[2])*oneDay);
-    // drei achtel der achse
-    // 0 bis 0,375
-    var axespart = bet0and1/8*3;
-    // muss nicht verschoben werden
-    var verschieben = axespart;
-    var coordinate = (verschieben*(s.width-70))+50;
-    return coordinate;
+    return calculateDistanceBetween0and1(distance2today, abstand[2], abstand[3]-abstand[2], 8*3, 0);
   }
 }
+
+// Funktion:
+// (1-(x - (block[y]*oneDay))/((block[y+1]-block[y])*oneDay))/block_breite + step_before
+// @param: distance = Datum Aufgabe bis jetzt
+// @param: abstand = wo beginnt der Abschnitt auf der Zeitachse
+// @param: davor = wo endet der Abschnitt auf der Zeitachse
+// @param: step_size = wie lang ist der Abschnitt
+// @param: teil = wie viel liegt vor dem Abschnitt
+function calculateDistanceBetween0and1(distance, abstand, davor, step_size, teil) {
+  return (((1-(distance-(abstand*oneDay))/(davor*oneDay))/step_size)+teil)(s.width-70)+50;
+}
+
 
 // Wichtigkeitskoordinate
 function getImportanceCoordinate(imp) {
