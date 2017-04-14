@@ -19,7 +19,7 @@ class UserOrga(TimeStampedModel):
     urgent_axis = models.CharField(max_length=1,
                                     choices=URGENT_OPTIONS,
                                     default=TWOMONTH)
-    default_topic = models.ForeignKey(Topic, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    # default_topic = models.ForeignKey(Topic, blank=True, null=True, default=None, on_delete=models.SET_NULL)
     tele_username = models.TextField(max_length=30, blank=True, null=True, default=None, unique=True)
     def __unicode__(self):
         return self.owner.username

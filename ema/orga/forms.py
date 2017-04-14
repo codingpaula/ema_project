@@ -14,21 +14,18 @@ zusaetzlicher Parameter: user
 class OrgaForm(ModelForm):
     class Meta:
         model = UserOrga
-        fields = ['urgent_axis', 'default_topic']
+        fields = ['urgent_axis']
         widgets = {
             'urgent_axis': forms.Select(
                 attrs = {'class': 'form-control'}
-            ),
-            'default_topic': forms.Select(
-                attrs = {'required': False, 'class': 'form-control'}
             )
         }
 
     def __init__(self, user, *args, **kwargs):
         super(OrgaForm, self).__init__(*args, **kwargs)
-        # reduziere choices auf Nutzereigene Themen
-        topics = Topic.objects.filter(topic_owner=user)
-        self.fields['default_topic'].queryset = topics
+    #    # reduziere choices auf Nutzereigene Themen
+    #    topics = Topic.objects.filter(topic_owner=user)
+    #    self.fields['default_topic'].queryset = topics
 
 """
 Form fuer die Editierung der Telegram Nutzer ID
