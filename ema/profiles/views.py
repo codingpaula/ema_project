@@ -91,6 +91,7 @@ def settings(request):
 """
 Passwortaenderung als Feature geplant
 """
+# TODO Passwortaenderung
 def update_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.POST)
@@ -103,4 +104,3 @@ def update_password(request):
         else:
             messages.info(request, "error")
             return HttpResponseRedirect(reverse('profiles:account'))
-            

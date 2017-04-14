@@ -7,11 +7,10 @@ from .utils import get_user_colors
 from orga.models import UserOrga
 
 """
-create or edit Task
-additional parameters: user
+create or edit Tasks
+additional parameters used: user
 """
-
-
+# TODO Eingabefeld Duration for Zeit nicht Text
 class TaskForm(ModelForm):
     # Input-Formate und CSS zum Textfeld
     due_date = forms.DateTimeField(
@@ -58,15 +57,13 @@ class TaskForm(ModelForm):
                 user_settings = UserOrga.objects.create(owner=self.user)
                 user_settings.save()
             # Default Topic als Wert fuer neue Aufgaben setzen
-            self.initial['topic'] = user_settings.default_topic
+            # self.initial['topic'] = user_settings.default_topic
 
 
 """
 create or edit Topic
 additional parameters: user
 """
-
-
 class TopicForm(ModelForm):
     class Meta:
         model = Topic

@@ -7,6 +7,7 @@ from . import views
 from .views import TopicCreate, TaskCreate, TaskUpdate, AjaxTaskDelete
 from .views import TopicUpdate, TaskDelete, TopicDelete
 
+# TODO unneccessary pages entfernen
 urlpatterns = [
     # /matrix/
     url(r'^$', views.matrix, name='matrix'),

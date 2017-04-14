@@ -145,6 +145,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Settings to handle datetimes between frontend and database
 DATETIME_INPUT_FORMATS = [
                             '%d/%m/%Y %H:%M',
                             '%Y-%m-%dT%H:%M:%SZ',
@@ -163,12 +164,15 @@ STATIC_URL = '/static/'
 # Telegram Settings for bot
 TOKEN = "262348506:AAFc-XzZ5KZXCP6rz_3uIztYCgT_N4mfT6g"
 
+# Telegram Bot Cronjob
 CRONJOBS = [
     ('*/5 * * * *', 'telegram_bot.cron.push_due_dates')
 ]
 
+# Hosting on herokuapp
 ALLOWED_HOSTS = ['ema-project.herokuapp.com', '*']
 
 HOST_ADDRESS = 'ema-project.herokuapp.com'
 
+# Image in Tab
 FAVICON_PATH = STATIC_URL + 'icons/EMA_Icon.png'

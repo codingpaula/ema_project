@@ -1,5 +1,6 @@
 # auswaehlbare Farben restriktieren, je nachdem welche schon vergeben sind
 # pro User
+# TODO warum ist das hier und nicht in den Forms?
 def get_user_colors(thistopic, choices, topicList):
     options = []
     # alle moeglichen Choices

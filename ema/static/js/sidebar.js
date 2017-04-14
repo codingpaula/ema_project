@@ -1,3 +1,5 @@
+/* left side buttons to influence matrix and add tasks/topics */
+
 var Sidebar = {
 	// Topic-Button steuert Matrix
 	button: function(topic_id) {

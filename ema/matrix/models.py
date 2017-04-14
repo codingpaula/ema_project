@@ -23,6 +23,7 @@ class Topic(TimeStampedModel):
     topic_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     topic_name = models.CharField(max_length=30)
     topic_description = models.TextField(max_length=2000, blank=True)
+    # colors plus displayed names
     BLACK = 'black'
     GREY = 'grey'
     ROSYBROWN = 'rosybrown'
@@ -77,7 +78,7 @@ class Topic(TimeStampedModel):
     def get_absolute_url(self):
         return reverse('matrix:topics', kwargs={'topic_id': self.pk})
 
-
+# TODO Zahlen bei Importance?
 class Task(TimeStampedModel):
     task_name = models.CharField(max_length=50)
     task_description = models.TextField(max_length=3000, blank=True)

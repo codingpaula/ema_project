@@ -1,3 +1,5 @@
+/* Matrix functions */
+
 // Helfer-Funktionen
 // Verteilung
 /*

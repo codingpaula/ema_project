@@ -17,6 +17,7 @@ from .models import Topic, Task
 from .forms import TaskForm, TopicForm
 from .utils import get_user_colors
 
+# TODO was wird noch gebraucht was nicht?
 """
 main view with matrix
 provides:
@@ -107,7 +108,7 @@ class AjaxSuccessMessageMixin(SuccessMessageMixin):
 
 """
 erstellt eine Aufgabe
-mit AJAX oder mit normalem Request verwendbar
+mit AJAX verwendbar
 ruft die TaskForm mit dem zusaetzlichen Parameter user auf
 """
 class TaskCreate(
@@ -116,7 +117,7 @@ class TaskCreate(
         CreateView):
     model = Task
     form_class = TaskForm
-    template_name = 'matrix/adding.html'
+    # template_name = 'matrix/adding.html'
     success_message = "Task '%(task_name)s' was successfully created!"
     success_url = '/matrix/'
 
