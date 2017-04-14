@@ -141,7 +141,7 @@ function getDateCoordinate(date, urgent_axis) {
 // @param: step_size = wie lang ist der Abschnitt
 // @param: teil = wie viel liegt vor dem Abschnitt
 function calculateDistanceBetween0and1(distance, abstand, davor, step_size, teil) {
-  return (((1-(distance-(abstand*oneDay))/(davor*oneDay))/step_size)+teil)(s.width-70)+50;
+  return (((1-(distance-(abstand*oneDay))/(davor*oneDay))/step_size)+teil)*(s.width-70)+50;
 }
 
 
