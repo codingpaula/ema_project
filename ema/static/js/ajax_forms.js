@@ -9,10 +9,14 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
   $('.form-group.has-error').attr('class', 'form-group');
   // wenn eine neue Aufgabe hinzugefuegt wird
   if(task_id == "0") {
+    var topic_id = button.data('topic');
     $('#taskModalHeader').text('Add a new task');
     // sichergehen dass das Form leer ist
     $('#ajaxTask')[0].reset();
     // vorbereiten
+    var modal_body = modal.find('form#ajaxTask').children('.modal-body');
+    modal_body.find('select#id_topic').val(topic_id).attr('selected', 'selected');
+    //$('#id_topic option[value="'+topic_id+'"]').attr("selected",true);
     var submitInput = $('#submitAjax');
     submitInput.val('add task');
     submitInput.attr('class', 'btn btn-success center-block');

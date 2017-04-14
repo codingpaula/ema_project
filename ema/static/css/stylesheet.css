@@ -165,7 +165,7 @@ footer p {
 
 .main {
 	margin: 10px auto;
-	width: 90%;
+	width: 95%;
 	background-color: #EFF1F3;
 	padding: 20px;
 	/* min-height: 80%; */
@@ -274,6 +274,10 @@ footer p {
 	color: white;
 }
 
+.emaButton:focus {
+	color: white;
+}
+
 /* einzelne Buttons */
 .emaLogin {
 	margin-top: 4px;
@@ -309,6 +313,22 @@ footer p {
 
 .topicButtonShow {
 	width: 97%;
+}
+
+.topicButtonTopic {
+	width: 57%;
+}
+
+.topicButtonEdit {
+	width: 20%;
+}
+
+.topicButtonEditSpan {
+	line-height: inherit;
+}
+
+.topicButtonAdd {
+		width: 20%;
 }
 
 .emaTask {

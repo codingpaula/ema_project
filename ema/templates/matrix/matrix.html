@@ -18,6 +18,7 @@
   var topic_data = {{ topic_data|safe }};
 </script>
   <div class="matrixSettings">
+    <!--
     <div class="align-left">
         <h3>Tasks</h3>
     </div>
@@ -30,6 +31,7 @@
         +
       </a>
     </div>
+  -->
   <!--
     <a class="btn emaButton emaTask topicButton topicButtonShow abstandU abstandO"
             {% if all_topics.count > 0 %}
@@ -61,14 +63,31 @@
         <ul class="noIndentList">
           {% for topic in all_topics %}
           <li class="topicList">
-            <button role="button" class="btn emaButton topicButton topicButtonShow"
-                    id="{{ topic.id }}"
-                    onclick="Sidebar.button({{ topic.id }});"
-                    style="background-color: {{ topic.color }};
-                          border: 1px solid {{ topic.color }}">
-              {{ topic.topic_name }}
-              <span class="topicNumber pull-right">({{ topic.task_set.count }})</span>
-            </button>
+            <div class="btn-group topicButtonShow" role="group">
+              <button type="button" class="btn emaButton topicButton topicButtonEdit"
+                      onclick="location.href='/matrix/{{ topic.id}}/edittopic'"
+                      style="background-color: {{ topic.color }};
+                            border: 1px solid {{ topic.color }};">
+                <span class="glyphicon glyphicon-pencil pull-right topicButtonEditSpan"></span>
+              </button>
+              <button type="button" class="btn emaButton topicButton topicButtonTopic"
+                      id="{{ topic.id }}"
+                      onclick="Sidebar.button({{ topic.id }});"
+                      style="background-color: {{ topic.color }};
+                            border: 1px solid {{ topic.color }};
+                            border-left: 1px solid white;">
+                {{ topic.topic_name }}
+                <span class="topicNumber pull-right">({{ topic.task_set.count }})</span>
+              </button>
+              <button type="button" class="btn emaButton topicButton topicButtonAdd"
+                      data-toggle="modal" data-target="#ajaxModal" data-task="0"
+                      data-topic="{{ topic.id }}"
+                      style="background-color: {{ topic.color }};
+                            border: 1px solid {{ topic.color }};
+                            border-left: 1px solid white;">
+                +
+              </button>
+            </div>
           </li>
           {% endfor %}
           <li class="topicList">
@@ -79,13 +98,13 @@
               unselect all topics
             </button>
           </li>
-          <li class="topicList">
+          <!--li class="topicList">
             <button class="btn emaButton topicButton topicButtonShow"
                     id="editTopics"
                     onclick="Sidebar.editTopics();">
               edit topics
             </button>
-          </li>
+          </li-->
         </ul>
         {% else %}
           <p class="noTopic">No topics are available.</p>
