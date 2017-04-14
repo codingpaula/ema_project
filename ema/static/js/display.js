@@ -1,3 +1,5 @@
+/* Main-JS-File, calls necessary functions to display matrix */
+
 $(function() {
   // Start der Matrix
   Matrix.init();
