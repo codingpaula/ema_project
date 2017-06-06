@@ -7,9 +7,17 @@
 <div>
   <h1>These are your accomplished tasks!</h1>
   <ul class="noListStyle">
-  {% for done in dones %}
-    <li><a href={% url 'matrix:taskediting' done.id %}>{{ done.task_name }}</a></li>
-  {% endfor %}
+  {% if dones %}
+    {% for done in dones %}
+      <li><a href={% url 'matrix:taskediting' done.id %}>{{ done.task_name }}</a></li>
+    {% endfor %}
+  {% else %}
+    <li>
+      <p>
+        No finished tasks yet! Come on, get stuff done ;)
+      </p>
+    </li>
+  {% endif %}
   </ul>
 </div>
 {% endblock content %}

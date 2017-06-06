@@ -18,37 +18,6 @@
   var topic_data = {{ topic_data|safe }};
 </script>
   <div class="matrixSettings">
-    <!--
-    <div class="align-left">
-        <h3>Tasks</h3>
-    </div>
-    <div class="align-right">
-      <a class="btn emaButton emaNormal btn-sm" {% if all_topics.count > 0 %}
-         data-toggle="modal" data-target="#ajaxModal" data-task="0"
-         {% else %}
-         id="nullTopic"
-         {% endif %}>
-        +
-      </a>
-    </div>
-  -->
-  <!--
-    <a class="btn emaButton emaTask topicButton topicButtonShow abstandU abstandO"
-            {% if all_topics.count > 0 %}
-       data-toggle="modal" data-target="#ajaxModal" data-task="0"
-       {% else %}
-        id="nullTopic"
-        {% endif %}>
-      add task
-    </a>
-    <div class="align-right">
-      <a class="btn emaButton emaNormal btn-sm" href={% url 'matrix:addtopic' %}>
-        +
-      </a>
-    </div>
-
-    <div class="trennlinie"></div>
-    -->
     <div id="Topics" class="myContainer">
       <div class="align-left">
         <h3>Topics</h3>
@@ -135,11 +104,35 @@
           <form action="" method="post" id="ajaxTask"
               class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" id="closeTaskModal"
-                      data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-              <h4 class="modal-title" id="taskModalHeader">Add a task</h4>
+              <div class="row">
+                <div class="col-xs-7">
+                  <h4 class="modal-title" id="taskModalHeader">
+                    Add a task to topic:
+                  </h4>
+                </div>
+                <div class="col-xs-4">
+                  {% for field in task_form.visible_fields %}
+                    {% if field.html_name == "topic" %}
+                      <div id="{{ field.html_name }}"
+                        class="form-group">
+                        {{ field }}
+                        <div class="text-muted pull-right">
+                          <small>{{ field.help_text }}</small>
+                        </div>
+                        <span class="help-block">
+                          {{ field.errors }}
+                        </span>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <div class="col-xs-1">
+                  <button type="button" class="close" id="closeTaskModal"
+                          data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="modal-body">
               {% csrf_token %}
@@ -156,6 +149,7 @@
                     });
                   });
                 </script>
+              {% elif field.html_name == "topic" %}
               {% else %}
                 <div id="{{ field.html_name }}"
                   class="form-group">
