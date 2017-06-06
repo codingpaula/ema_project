@@ -10,12 +10,11 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
   // wenn eine neue Aufgabe hinzugefuegt wird
   if(task_id == "0") {
     var topic_id = button.data('topic');
-    $('#taskModalHeader').text('Add a new task');
+    $('#taskModalHeader').text('Add a new task to topic:');
     // sichergehen dass das Form leer ist
     $('#ajaxTask')[0].reset();
     // vorbereiten
-    var modal_body = modal.find('form#ajaxTask').children('.modal-body');
-    modal_body.find('select#id_topic').val(topic_id).attr('selected', 'selected');
+    $('select#id_topic').val(topic_id).attr('selected', 'selected');
     //$('#id_topic option[value="'+topic_id+'"]').attr("selected",true);
     var submitInput = $('#submitAjax');
     submitInput.val('add task');
@@ -28,11 +27,12 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
     $('#taskModalHeader').text('Edit task "' + TaskData.data[task_id].name + '"');
     $('#submitAjax').val('save task');
     var modal_body = modal.find('form#ajaxTask').children('.modal-body');
+    var modal_header = modal.find('form#ajaxTask').children('.modal-header');
     var submit_footer = modal.find('.modal-footer');
     submit_footer.children('#submitAjax').attr('class', 'btn btn-success gap');
     submit_footer.children('#ajaxDeleteConfirm').css('display', 'inline-block');
     modal_body.find('#done').css('display', 'block');
-    prefillForm(task_id, modal_body, submit_footer);
+    prefillForm(task_id, modal_body, modal_header, submit_footer);
   }
 });
 
@@ -62,6 +62,7 @@ $('#submitAjax').on('click', function(e) {
       'due_date': formatDate2Form(moment.utc(form.find($('#datetimepicker')).data("DateTimePicker").date()).format()),
       'importance': form.find('#id_importance').val(),
       'topic': form.find('#id_topic').val(),
+      'duration': form.find('#id_duration').val(),
       'done': form.find('#id_done').prop('checked')
     },
     success: function(data) {
@@ -142,14 +143,15 @@ function updateSidebarNumbers(task_id, topic) {
 }
 
 // Hilfsfunktion um bei der Bearbeitung die Werte der Aufgabe einzutragen
-function prefillForm(task_id, editForm, submit_footer) {
+function prefillForm(task_id, editForm, headerForTopic, submit_footer) {
   var task = TaskData.data[task_id];
   editForm.find('input#id_task_name').val(task.name);
   editForm.find('textarea#id_task_description').val(task.description);
   datum = new Date(task.due_date);
   editForm.find('#datetimepicker').data('DateTimePicker').date(datum);
   editForm.find('select#id_importance').val(task.importance).attr('selected', 'selected');
-  editForm.find('select#id_topic').val(task.topic).attr('selected', 'selected');
+  headerForTopic.find('select#id_topic').val(task.topic).attr('selected', 'selected');
+  editForm.find('#id_duration').val(task.duration);
   // don't need to fill in done, because all displayed tasks are not done!
   submit_footer.find('input[type="submit"]#submitAjax').data('task_id', task_id);
   submit_footer.find('input[type="submit"]#ajaxDeleteSubmit').data('task_id', task_id);

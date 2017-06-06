@@ -64,6 +64,7 @@ var TaskData = {
         'id': task.id,
         'name': task.task_name,
         'description': task.task_description,
+        'duration': task.duration,
         'topic': topic,
         'cluster': undefined
       };
