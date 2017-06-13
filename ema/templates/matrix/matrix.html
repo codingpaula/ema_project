@@ -19,7 +19,7 @@
 </script>
   <div class="matrixSettings">
     <div id="Topics" class="myContainer">
-      <div class="align-left">
+      <div class="align-left topicHeading">
         <h3>Topics</h3>
       </div>
       <div class="align-right">
@@ -29,9 +29,9 @@
       </div>
       <div>
         {% if all_topics %}
-        <ul class="noIndentList">
+        <ul class="noIndentList topicList">
           {% for topic in all_topics %}
-          <li class="topicList">
+          <li>
             <div class="btn-group topicButtonShow" role="group">
               <button type="button" class="btn emaButton topicButton topicButtonEdit"
                       onclick="location.href='/matrix/{{ topic.id}}/edittopic'"
@@ -59,7 +59,7 @@
             </div>
           </li>
           {% endfor %}
-          <li class="topicList">
+          <li>
             <button class="btn emaButton topicButton topicButtonShow"
                     id="all"
                     onclick="Sidebar.allButton();"
@@ -67,18 +67,53 @@
               unselect all topics
             </button>
           </li>
-          <!--li class="topicList">
-            <button class="btn emaButton topicButton topicButtonShow"
-                    id="editTopics"
-                    onclick="Sidebar.editTopics();">
-              edit topics
-            </button>
-          </li-->
+        </ul>
+        <div class="align-left">
+          <h3>Preferences</h3>
+        </div>
+        <ul class="noIndentList topicList">
+          <li>
+            <div class="btn-group topicButtonShow" role="group" id="prefsMonths">
+              <button class="btn emaButton topicButton
+                      {% if settings_file.urgent_axis == '0' %}prefs-months-active{% endif %}"
+                      onclick="Sidebar.prefsMonths(1)"
+                      id="months-1">
+                1 M.
+              </button>
+              <button class="btn emaButton topicButton
+                      {% if settings_file.urgent_axis == '1' %}prefs-months-active{% endif %}"
+                      onclick="Sidebar.prefsMonths(2)"
+                      id="months-2">
+                2 M.
+              </button>
+              <button class="btn emaButton topicButton
+                      {% if settings_file.urgent_axis == '2' %}prefs-months-active{% endif %}"
+                      onclick="Sidebar.prefsMonths(4)"
+                      id="months-4">
+                4 M.
+              </button>
+            </div>
+            <a class="prefMonthButton">save as default</a>
+          </li>
+          <li>
+            <div class="btn-group topicButtonShow" role="group" id="matrixOrList">
+              <button class="btn emaButton topicButton"
+                      onclick=""
+                      id="emaMatrix">
+                ema
+              </button>
+              <button class="btn emaButton topicButton"
+                      onclick=""
+                      id="emaList">
+                list
+              </button>
+            </div>
+          </li>
         </ul>
         {% else %}
           <p class="noTopic">No topics are available.</p>
-          <ul class="noIndentList">
-            <li class="topicList">
+          <ul class="noIndentList topicList">
+            <li>
               <a class="btn emaButton emaNormal topicButton topicButtonShow"
                   href={% url 'matrix:addtopic' %}>
                 add a new topic

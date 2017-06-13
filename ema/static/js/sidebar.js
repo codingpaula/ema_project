@@ -88,6 +88,28 @@ var Sidebar = {
 			// Hintergrund anpassen
 			unclickSidebarButton(editButton);
 		}
+	},
+	prefsMonths: function(pressed) {
+		var prefMonthButton = $('#prefsMonths');
+		var month1 = prefMonthButton.children('#months-1');
+		var month2 = prefMonthButton.children('#months-2');
+		var month4 = prefMonthButton.children('#months-4');
+		if(pressed == 1) {
+			month1.css('background-color', '#2B4660');
+			month2.css('background-color', '#C0C0C0');
+			month4.css('background-color', '#C0C0C0');
+			Matrix.updateMatrixPrefs(0);
+		} else if (pressed == 2) {
+			month2.css('background-color', '#2B4660');
+			month1.css('background-color', '#C0C0C0');
+			month4.css('background-color', '#C0C0C0');
+			Matrix.updateMatrixPrefs(1);
+		} else if (pressed == 4) {
+			month4.css('background-color', '#2B4660');
+			month1.css('background-color', '#C0C0C0');
+			month2.css('background-color', '#C0C0C0');
+			Matrix.updateMatrixPrefs(2);
+		}
 	}
 };
 

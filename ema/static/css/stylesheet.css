@@ -93,6 +93,10 @@ footer p {
     flex:1 1 auto;
 }
 
+.prefMonthDefault {
+	font: 14px;
+}
+
 /* links */
 .navLink {
 	color: white;
@@ -316,7 +320,7 @@ footer p {
 }
 
 .topicButtonTopic {
-	width: 57%;
+	width: 60%;
 }
 
 .topicButtonEdit {
@@ -373,7 +377,7 @@ footer p {
 	padding: 0;
 }
 
-.topicList {
+.topicList li {
 	font-size: 1.1em;
 	list-style-type: none;
 	text-decoration: none;
@@ -394,7 +398,7 @@ footer p {
 
 .align-left {
 	display: inline-block;
-	width: 60%;
+	/* width: 60%; */
 }
 
 .align-right {
@@ -467,6 +471,14 @@ footer p {
 	margin-left: 3px;
 }
 
+.matrixSettings .topicHeading {
+	width: 60%;
+}
+
+.matrixSettings .prefHeading {
+
+}
+
 .addTaskContainer {
 	position: relative;
 	width: 10%;
@@ -479,4 +491,16 @@ footer p {
 .noTopic {
 	padding: 3px;
 	margin-left: 3px;
+}
+
+.prefs-months-active {
+	background-color: #2B4660;
+}
+
+#matrixOrList button {
+	width: 50%;
+}
+
+#prefsMonths button {
+	width: 33%;
 }

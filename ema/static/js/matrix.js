@@ -412,6 +412,11 @@ var Matrix = {
 			}
 		});
 	},
+	updateMatrixPrefs: function(months) {
+		var that = this;
+		TaskData.getTasks(task_data, months);
+		that.drawTasks(TaskData.data, TopicData.data);
+	},
 	// konsistentes Neuzeichnen nach AJAX-Requests
 	updateMatrixAjax: function(data) {
 		var that = this;
