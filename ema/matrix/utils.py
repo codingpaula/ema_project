@@ -1,7 +1,9 @@
-# auswaehlbare Farben restriktieren, je nachdem welche schon vergeben sind
-# pro User
-# TODO warum ist das hier und nicht in den Forms?
+"""Auswaehlbare Farben restriktieren, je nachdem welche schon vergeben sind."""
+
+
 def get_user_colors(thistopic, choices, topicList):
+    """Pro User diese Topic bekommt Farben, welche noch nicht vergeben sind."""
+    # TODO warum ist das hier und nicht in den Forms?
     options = []
     # alle moeglichen Choices
     for color in choices:
@@ -13,6 +15,6 @@ def get_user_colors(thistopic, choices, topicList):
                     gefunden = False
                 else:
                     gefunden = True
-        if gefunden == False:
+        if not gefunden:
             options.append(color)
     return options
