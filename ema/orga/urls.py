@@ -5,10 +5,10 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    #/orga/about_ema
+    # /orga/about_ema
     url(r'^about_ema/$', views.about_ema, name='about_ema'),
-    #/orga/impressum
+    # /orga/impressum
     url(r'^impressum/$', views.impressum, name='impressum'),
-    #/orga/help
+    # /orga/help
     url(r'^help/$', views.help, name='help')
 ]
