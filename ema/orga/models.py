@@ -18,11 +18,11 @@ class UserOrga(TimeStampedModel):
     ONEMONTH = 0
     TWOMONTH = 1
     FOURMONTH = 2
-    URGENT_OPTIONS = [
+    URGENT_OPTIONS = (
         (ONEMONTH, '1 month'),
         (TWOMONTH, '2 months'),
         (FOURMONTH, '4 months')
-    ]
+    )
     urgent_axis = models.CharField(
         max_length=1,
         choices=URGENT_OPTIONS,

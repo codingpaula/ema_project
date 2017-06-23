@@ -133,6 +133,7 @@ function formatDate(date) {
 
 // Wichtigkeit richtig anzeigen
 function formatImp(imp) {
+	console.log("entered formatImp");
 	var stars = $('<div/>', {
 		class: 'starDiv'
 	});
@@ -144,22 +145,22 @@ function formatImp(imp) {
 	});
 	stars.append(full_star.clone());
 	switch(imp) {
-		case '0':
+		case 0:
 			stars.append(empty_star.clone());
 			stars.append(empty_star.clone());
 			stars.append(empty_star.clone());
 			return stars;
-		case '1':
+		case 1:
 			stars.append(full_star.clone());
 			stars.append(empty_star.clone());
 			stars.append(empty_star.clone());
 			return stars;
-		case '2':
+		case 2:
 			stars.append(full_star.clone());
 			stars.append(full_star.clone());
 			stars.append(empty_star.clone());
 			return stars;
-		case '3':
+		case 3:
 			stars.append(full_star.clone());
 			stars.append(full_star.clone());
 			stars.append(full_star.clone());

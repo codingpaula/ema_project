@@ -113,7 +113,7 @@ function getDateCoordinate(date, urgent_axis) {
       abstand = TWOMONTHS;
   }
   // millisecond from task due date to this moment
-  var distance2today = Date.parse(date) - Date.parse(today)
+  var distance2today = Date.parse(date) - Date.parse(today);
   // ein Tag in milliseconds
   // weiter weg als matrix maximum --> linke seite
   if (distance2today > abstand[3]*oneDay) return 50;

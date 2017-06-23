@@ -4,6 +4,8 @@
   {{ block.super }}
   <link rel="stylesheet" type="text/css"
         href={% static "css/bootstrap-datetimepicker.min.css" %}>
+  <link rel="stylesheet" type="text/css"
+        href={% static "css/emalist.css" %}>
 {% endblock stylesheets %}
 {% block js %}
   {{ block.super }}
@@ -75,19 +77,19 @@
           <li>
             <div class="btn-group topicButtonShow" role="group" id="prefsMonths">
               <button class="btn emaButton topicButton
-                      {% if settings_file.urgent_axis == '0' %}prefs-months-active{% endif %}"
+                      {% if settings_file.urgent_axis == 0 %}prefs-months-active{% endif %}"
                       onclick="Sidebar.prefsMonths(1)"
                       id="months-1">
                 1 M.
               </button>
               <button class="btn emaButton topicButton
-                      {% if settings_file.urgent_axis == '1' %}prefs-months-active{% endif %}"
+                      {% if settings_file.urgent_axis == 1 %}prefs-months-active{% endif %}"
                       onclick="Sidebar.prefsMonths(2)"
                       id="months-2">
                 2 M.
               </button>
               <button class="btn emaButton topicButton
-                      {% if settings_file.urgent_axis == '2' %}prefs-months-active{% endif %}"
+                      {% if settings_file.urgent_axis == 2 %}prefs-months-active{% endif %}"
                       onclick="Sidebar.prefsMonths(4)"
                       id="months-4">
                 4 M.
@@ -103,7 +105,7 @@
                 ema
               </button>
               <button class="btn emaButton topicButton"
-                      onclick=""
+                      onclick="EmaList.drawTable(task_data, topic_data);"
                       id="emaList">
                 list
               </button>
@@ -134,7 +136,7 @@
   <div id="EmaList">
     <table class="table table-hover">
       <thead>
-        <tr>
+        <tr class="emaListHeaders">
           <th>done</th>
           <th>Topic</th>
           <th>Task Name</th>
@@ -145,15 +147,12 @@
           <th>Rating</th>
         </tr>
       </thead>
-      <tbody>
-        <td>no</td>
-        <td>POST</td>
-        <td>Stuff</td>
-        <td>-</td>
-        <td>12.07.2017 15:30 Uhr</td>
-        <td>very important</td>
-        <td>1h</td>
-        <td>-</td>
+      <tbody id="EmaListBody">
+        <tr class="emaListItem">
+          <td>no</td>
+          <td>tasks, go ahead</td>
+          <td>and add one!</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -259,6 +258,7 @@
   <script type="text/javascript" src={% static "js/daten.js" %}></script>
   <script type="text/javascript" src={% static "js/sidebar.js" %}></script>
   <script type="text/javascript" src={% static "js/matrix.js" %}></script>
+  <script type="text/javascript" src={% static "js/emalist.js" %}></script>
   <script type="text/javascript" src={% static "js/display.js" %}></script>
   <script type="text/javascript" src={% static "js/ajax_forms.js" %}></script>
 {% endblock javascript %}
