@@ -1,0 +1,15 @@
+.emaListHeaders {
+
+}
+
+.emaListItem {
+  background-color: white;
+}
+
+.emaListItem .surroundingTd div {
+  padding: 15px 0 15px 14px;
+}
+
+#EmaListBody {
+
+}

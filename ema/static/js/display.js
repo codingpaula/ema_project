@@ -11,6 +11,7 @@ $(function() {
   TaskData.getTasks(task_data, settings);
   // Aufgaben in die Matrix zeichnen
   Matrix.drawTasks(TaskData.data, TopicData.data);
+  EmaList.drawTable(TaskData.data, TopicData.data);
   // update Matrix wenn die groesse sich veraendert hat
   $(window).resize(function () {
     waitForFinalEvent(function(){
