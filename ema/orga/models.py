@@ -18,13 +18,16 @@ class UserOrga(TimeStampedModel):
     ONEMONTH = 0
     TWOMONTH = 1
     FOURMONTH = 2
+    ONEWEEK = 3
+    TWOWEEKS = 4
     URGENT_OPTIONS = (
+        (ONEWEEK, '1 week'),
+        (TWOWEEKS, '2 weeks'),
         (ONEMONTH, '1 month'),
         (TWOMONTH, '2 months'),
         (FOURMONTH, '4 months')
     )
     urgent_axis = models.IntegerField(
-        max_length=1,
         choices=URGENT_OPTIONS,
         default=TWOMONTH)
     # default_topic = models.ForeignKey(Topic, blank=True, null=True,

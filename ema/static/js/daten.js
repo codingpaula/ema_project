@@ -97,6 +97,8 @@ function getDateCoordinate(date, urgent_axis) {
   ONEMONTH = [1, 4, 7, 30];
   TWOMONTHS = [2, 7, 15, 60];
   FOURMONTHS = [4, 14, 30, 120];
+  ONEWEEK = [0.25, 1, 1.75, 7.5];
+  TWOWEEKS = [0.5, 2, 3.5, 15];
   // welche einstellung wird verwendet?
   var abstand = [];
   switch(urgent_axis) {
@@ -108,6 +110,12 @@ function getDateCoordinate(date, urgent_axis) {
       break;
     case 2:
       abstand = FOURMONTHS;
+      break;
+    case 3:
+      abstand = ONEWEEK;
+      break;
+    case 4:
+      abstand = TWOWEEKS;
       break;
     default:
       abstand = TWOMONTHS;
