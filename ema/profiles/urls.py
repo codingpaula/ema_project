@@ -8,14 +8,14 @@ from . import views
 from .views import AccountSettings
 
 urlpatterns = [
-    #/account/
+    # /account/
     url(r'^$', login_required(AccountSettings.as_view()), name='account'),
-    #/account/login/
+    # /account/login/
     url(r'^login/$', login, name='login'),
-    #/account/loggedout/
+    # /account/loggedout/
     url(r'^loggedout/$', logout, name='loggedout'),
-    #/account/register/
+    # /account/register/
     url(r'^register/$', views.register, name='register'),
-    #/account/passwordchange/
+    # /account/passwordchange/
     # url(r'^passwordchange/$', views.update_password, name="passwordchange")
 ]

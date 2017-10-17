@@ -94,17 +94,17 @@ var Sidebar = {
 		var month1 = prefMonthButton.children('#months-1');
 		var month2 = prefMonthButton.children('#months-2');
 		var month4 = prefMonthButton.children('#months-4');
-		if(pressed == 1) {
+		if(pressed == 0) {
 			month1.css('background-color', '#2B4660');
 			month2.css('background-color', '#C0C0C0');
 			month4.css('background-color', '#C0C0C0');
 			Matrix.updateMatrixPrefs(0);
-		} else if (pressed == 2) {
+		} else if (pressed == 1) {
 			month2.css('background-color', '#2B4660');
 			month1.css('background-color', '#C0C0C0');
 			month4.css('background-color', '#C0C0C0');
 			Matrix.updateMatrixPrefs(1);
-		} else if (pressed == 4) {
+		} else if (pressed == 2) {
 			month4.css('background-color', '#2B4660');
 			month1.css('background-color', '#C0C0C0');
 			month2.css('background-color', '#C0C0C0');

@@ -4,8 +4,6 @@
   {{ block.super }}
   <link rel="stylesheet" type="text/css"
         href={% static "css/bootstrap-datetimepicker.min.css" %}>
-  <link rel="stylesheet" type="text/css"
-        href={% static "css/emalist.css" %}>
 {% endblock stylesheets %}
 {% block js %}
   {{ block.super }}
@@ -78,26 +76,26 @@
             <div class="btn-group topicButtonShow" role="group" id="prefsMonths">
               <button class="btn emaButton topicButton
                       {% if settings_file.urgent_axis == 0 %}prefs-months-active{% endif %}"
-                      onclick="Sidebar.prefsMonths(1)"
+                      onclick="Sidebar.prefsMonths(0)"
                       id="months-1">
                 1 M.
               </button>
               <button class="btn emaButton topicButton
                       {% if settings_file.urgent_axis == 1 %}prefs-months-active{% endif %}"
-                      onclick="Sidebar.prefsMonths(2)"
+                      onclick="Sidebar.prefsMonths(1)"
                       id="months-2">
                 2 M.
               </button>
               <button class="btn emaButton topicButton
                       {% if settings_file.urgent_axis == 2 %}prefs-months-active{% endif %}"
-                      onclick="Sidebar.prefsMonths(4)"
+                      onclick="Sidebar.prefsMonths(2)"
                       id="months-4">
                 4 M.
               </button>
             </div>
-            <a class="prefMonthButton">save as default</a>
+            <a class="prefMonthButton" id="saveDefaultAxis">save as default</a>
           </li>
-          <li>
+          <!--li>
             <div class="btn-group topicButtonShow" role="group" id="matrixOrList">
               <button class="btn emaButton topicButton"
                       onclick=""
@@ -110,7 +108,7 @@
                 list
               </button>
             </div>
-          </li>
+          </li-->
         </ul>
         {% else %}
           <p class="noTopic">No topics are available.</p>
@@ -134,27 +132,7 @@
     <div id="dots" style="background-image: url({% static "pictures/matrix.png" %});"></div>
   </div>
   <div id="EmaList">
-    <table class="table table-hover">
-      <thead>
-        <tr class="emaListHeaders">
-          <th>done</th>
-          <th>Topic</th>
-          <th>Task Name</th>
-          <th>Task Description</th>
-          <th>Due Date</th>
-          <th>Importance</th>
-          <th>Duration</th>
-          <th>Rating</th>
-        </tr>
-      </thead>
-      <tbody id="EmaListBody">
-        <tr class="emaListItem">
-          <td>no</td>
-          <td>tasks, go ahead</td>
-          <td>and add one!</td>
-        </tr>
-      </tbody>
-    </table>
+
   </div>
 
   <!-- Modal um Aufgaben zu adden und zu editieren -->
@@ -258,7 +236,6 @@
   <script type="text/javascript" src={% static "js/daten.js" %}></script>
   <script type="text/javascript" src={% static "js/sidebar.js" %}></script>
   <script type="text/javascript" src={% static "js/matrix.js" %}></script>
-  <script type="text/javascript" src={% static "js/emalist.js" %}></script>
   <script type="text/javascript" src={% static "js/display.js" %}></script>
   <script type="text/javascript" src={% static "js/ajax_forms.js" %}></script>
 {% endblock javascript %}

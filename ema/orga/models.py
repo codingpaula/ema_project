@@ -23,7 +23,7 @@ class UserOrga(TimeStampedModel):
         (TWOMONTH, '2 months'),
         (FOURMONTH, '4 months')
     )
-    urgent_axis = models.CharField(
+    urgent_axis = models.IntegerField(
         max_length=1,
         choices=URGENT_OPTIONS,
         default=TWOMONTH)

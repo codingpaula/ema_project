@@ -1,19 +1,17 @@
+"""Views for not so important sites."""
 from django.shortcuts import render
 
-"""
-nur ein Template View mit Informationen ueber dieses Projekt
-"""
+
 def about_ema(request):
+    """Nur ein Template View mit Informationen ueber dieses Projekt."""
     return render(request, 'orga/about_ema.html')
 
-"""
-das Impressum
-"""
+
 def impressum(request):
+    """Das Impressum."""
     return render(request, 'orga/impressum.html')
 
-"""
-Hilfe-Seite = Anleitung zur Benutzung
-"""
+
 def help(request):
+    """Hilfe-Seite = Anleitung zur Benutzung."""
     return render(request, 'orga/help.html')

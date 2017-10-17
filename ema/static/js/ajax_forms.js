@@ -38,7 +38,38 @@ $('#ajaxModal').on('show.bs.modal', function (event) {
 
 // not possible to add task when there is no topic
 $('#nullTopic').on('click', function(e) {
-  displayMessage("noTopic");
+  displayMessage("noTopic", -1);
+});
+
+// AJAX Request fuer Urgent Axis
+$('#saveDefaultAxis').on('click', function(e) {
+  e.preventDefault();
+  var urgent_buttons = $('prefsMonth');
+  var month = -1;
+  if($('#months-1').css('backgroundColor') == 'rgb(43, 70, 96)') {
+    month = 0;
+  } else if ($('#months-2').css('backgroundColor') == 'rgb(43, 70, 96)') {
+    month = 1;
+  } else if ($('#months-4').css('backgroundColor') == 'rgb(43, 70, 96)') {
+    month = 2;
+  }
+  $.ajax({
+    url: "/account/",
+    type: "POST",
+    dataType: "json",
+    data: {
+      'urgent_axis': month
+    },
+    success: function(data) {
+      console.log(data[0].urgent_axis);
+      displayMessage("settingsMonth", data[0].urgent_axis);
+      Sidebar.prefsMonths(data[0].urgent_axis);
+    },
+    error: function(data) {
+      console.log("error!");
+      console.log(data);
+    }
+  });
 });
 
 // AJAX Request fuer erstellen oder bearbeiten einer Aufgabe
@@ -69,7 +100,7 @@ $('#submitAjax').on('click', function(e) {
       // alle Aufgaben neu zeichnen, updaten
       Matrix.updateMatrixAjax(data);
       // Ersatz fuer django messages System
-      displayMessage(task_id);
+      displayMessage("task", task_id);
       // Sidebar updaten
       var topic = $('#ajaxTask').find('#id_topic').val();
       updateSidebarNumbers(task_id, topic);
@@ -111,7 +142,7 @@ $('#ajaxDeleteSubmit').on('click', function(e) {
     type: "POST",
     success: function(data) {
       Matrix.updateMatrixAjax(data);
-      displayMessage("delete");
+      displayMessage("delete", -1);
       var topic = $('#ajaxTask').find('#id_topic').val();
       updateSidebarNumbers("-1", topic);
       $('#ajaxTask')[0].reset();
@@ -186,31 +217,42 @@ function formatDate2Form(date) {
 }
 
 // Hilfsfunktion, Ersatz fuer das django messages system
-function displayMessage(task_id) {
+/* modes
+  created
+  delete
+  noTopic
+  done
+  edited
+  settingsMonth
+*/
+function displayMessage(mode, id) {
   // empty notifications of before
   $('.messages .text').empty();
+  var text_span = $('<span/>');
   // created
-  if (task_id == "0") {
-    var text_span = $('<span/>', {
-      text: 'Successfully created new task!'
-    });
-  } else if (task_id == "delete") {
-    var text_span = $('<span/>', {
-      text: 'Deleted!'
-    });
-  } else if (task_id == "noTopic") {
-    var text_span = $('<span/>', {
-      text: 'You cannot add a Task without having a Topic. Please add a Topic first!'
-    });
-  } else if (TaskData.data[task_id] == undefined) {
-    var text_span = $('<span/>', {
-      text: 'Great Job!'
-    });
+  if (mode == "settingsMonth") {
+    var months = "";
+    if (id == 0) {
+      months = "1 month";
+    } else if (id == 1) {
+      months = "2 months";
+    } else if (id == 2) {
+      months = "4 months";
+    }
+    text_span.text('Successfully changed default settings to ' + months + '!');
+  } else if (mode == "task") {
+    if (id == 0) {
+      text_span.text('Successfully created new task!');
+    } else if (TaskData.data[id] == undefined) {
+      text_span.text('Great Job!');
+    }
+  } else if (mode == "delete") {
+    text_span.text('Deleted!');
+  } else if (mode == "noTopic") {
+    text_span.text('You cannot add a Task without having a Topic. Please add a Topic first!');
   } else {
   // edited
-    var text_span = $('<span/>', {
-      text: 'Successfully edited task "' + TaskData.data[task_id].name +  '"'
-    });
+    text_span.text('Successfully edited task "' + TaskData.data[id].name +  '"');
   }
   $('.messages').css('display', 'block');
   $('.messages .text').prepend(text_span);

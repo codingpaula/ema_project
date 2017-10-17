@@ -1,35 +1,40 @@
+import json
 from django import forms
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
+from django.forms.models import model_to_dict
+from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib import messages
 
 from orga.forms import OrgaForm
 from orga.models import UserOrga
+from matrix.views import AjaxSuccessMessageMixin
 
-"""
-startpage, link to register and login
-redirect, falls schon eingeloggt zur Matrix
-in config-urls Datei, da host-address/
-"""
+
 def index(request):
+    """
+    Startpage, link to register and login.
+
+    redirect, falls schon eingeloggt zur Matrix
+    in config-urls Datei, da host-address/
+    """
     if request.user.is_authenticated():
         return redirect('/matrix/')
     else:
         form = AuthenticationForm(request)
         return render(request, 'registration/login.html', {'form': form})
 
-"""
-Registrierung
-"""
+
 # http://www.djangobook.com/en/2.0/chapter14.html
 def register(request):
+    """Registrierung."""
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -42,11 +47,51 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
-"""
-wird nach Login angezeigt
-Name des Nutzers und seine Einstellungen werden angezeigt
-"""
-class AccountSettings(SuccessMessageMixin, UpdateView):
+
+class AjaxableSettingsResponseMixin(object):
+    """
+    Mixin to add AJAX support to a form.
+
+    Must be used with an object-based FormView (e.g. CreateView)
+    @source: django docs
+    https://docs.djangoproject.com/en/1.8/topics/class-based-views/generic-editing/
+    """
+
+    def form_invalid(self, form):
+        """Response bei Fehler."""
+        response = super(AjaxableSettingsResponseMixin, self).form_invalid(form)
+        # Fehler uebergeben, korrekter Statuscode fuer die Behandlung mit AJAX
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+    def form_valid(self, form):
+        """Response bei gueltigen Daten."""
+        response = super(AjaxableSettingsResponseMixin, self).form_valid(form)
+        # bei AJAX werden nur nur ein JSON-Objekt der Aufgaben uebergeben
+        if self.request.is_ajax():
+            urgent_axis = form.instance.urgent_axis
+            user_orga_object = UserOrga.objects.filter(
+                owner_id=self.request.user.id)
+            response_data = json.dumps(
+                [model_to_dict(instance) for instance in user_orga_object],
+                cls=DjangoJSONEncoder)
+            return HttpResponse(response_data, content_type="application/json")
+        else:
+            return response
+
+
+class AccountSettings(
+        AjaxableSettingsResponseMixin,
+        AjaxSuccessMessageMixin,
+        UpdateView):
+    """
+    Wird nach Login angezeigt.
+
+    Name des Nutzers und seine Einstellungen werden angezeigt
+    """
+
     model = UserOrga
     form_class = OrgaForm
     template_name = 'profiles/account.html'
@@ -62,7 +107,7 @@ class AccountSettings(SuccessMessageMixin, UpdateView):
         return kwargs
 
     # spaeter fuer die Aenderung von Passwoertern
-    #def get_context_data(self, *args, **kwargs):
+    # def get_context_data(self, *args, **kwargs):
     #     context = super(AccountSettings, self).get_context_data(*args, **kwargs)
     #     context['passwordChange'] = PasswordChangeForm(self.request.user)
     #     return context
