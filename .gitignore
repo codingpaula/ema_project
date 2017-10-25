@@ -2,3 +2,4 @@
 ema/bower_components
 ema/.idea/
 .idea/*
+/migrations
